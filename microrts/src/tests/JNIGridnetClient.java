@@ -1,5 +1,6 @@
 package tests;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
@@ -7,6 +8,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import javax.swing.*;
+import java.awt.image.*;
+import java.awt.*;
 
 import ai.core.AI;
 import ai.jni.JNIAI;
@@ -51,9 +55,11 @@ public class JNIGridnetClient {
     public GameState player1gs, player2gs;
     boolean gameover = false;
     boolean layerJSON = true;
-    public int renderTheme = PhysicalGameStatePanel.COLORSCHEME_WHITE;
+    public int whiteTheme = PhysicalGameStatePanel.COLORSCHEME_WHITE;
+    public int blackTheme = PhysicalGameStatePanel.COLORSCHEME_BLACK;
     public int maxAttackRadius;
     PhysicalGameStateJFrame w;
+    JFrame frame;
     public JNIInterface ai1;
 
     // Storage
@@ -141,23 +147,35 @@ public class JNIGridnetClient {
         response = new Response(null, null, null, null, null);
     }
 
-    public byte[] render(boolean returnPixels) throws Exception {
-        if (w==null) {
+    public byte[] render(boolean screenRender, String theme) throws Exception {
+        int renderTheme = theme.equals("white") ? whiteTheme : blackTheme;
+
+        if (w == null) {
             w = PhysicalGameStatePanel.newVisualizer(gs, 640, 640, partialObs, null, renderTheme);
         }
+
         w.setStateCloning(gs);
-        w.repaint();
 
-        if (!returnPixels) {
-            return null;
+        if (screenRender) {
+            w.setVisible(true);
+            w.repaint();
+        } else {
+            w.setVisible(false);
         }
-        BufferedImage image = new BufferedImage(w.getWidth(),
-        w.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-        w.paint(image.getGraphics());
 
-        WritableRaster raster = image .getRaster();
+        BufferedImage image = new BufferedImage(640, 640, BufferedImage.TYPE_3BYTE_BGR);
+        PhysicalGameStatePanel panel = w.getPanel();
+        panel.paint(image.getGraphics());
+
+        WritableRaster raster = image.getRaster();
         DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
-        return data.getData();
+        byte [] bd = data.getData();
+
+        if (gs.gameover()) {
+            w.dispose();
+        }
+        
+        return bd;
     }
 
     public Response gameStep(int[][] action, int player) throws Exception {

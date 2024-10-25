@@ -1,6 +1,6 @@
 import numpy as np
 from dataclasses import dataclass
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Iterator
 
 
 COST = {"worker": 1, "heavy": 2, "light": 2, "ranged": 2, "base": 10, "barrack": 5}
@@ -23,41 +23,51 @@ class UnitStatus:
     attack_damage: int | None
     attack_range: int | None
 
+
 @dataclass
 class EnvStatus:
     height: int
     width: int
     resources: Dict[Tuple[int, int], UnitStatus]
 
+
 @dataclass
 class PlayerStatus:
     id: int
     resource: int
-    units: Dict[Tuple[int, int], UnitStatus]
+    units: dict[tuple[int, int], UnitStatus]
 
     @property
-    def workers(self) -> List[UnitStatus]:
-        return [unit for unit in self.units.values() if unit.type == "worker"]
+    def workers(self) -> list[UnitStatus]:
+        return [UnitStatus for UnitStatus in self.units.values() if UnitStatus.type == "worker"]
 
     @property
-    def bases(self) -> List[UnitStatus]:
-        return [unit for unit in self.units.values() if unit.type == "base"]
+    def bases(self) -> list[UnitStatus]:
+        return [UnitStatus for UnitStatus in self.units.values() if UnitStatus.type == "base"]
 
     @property
-    def lights(self) -> List[UnitStatus]:
-        return [unit for unit in self.units.values() if unit.type == "light"]
+    def lights(self) -> list[UnitStatus]:
+        return [UnitStatus for UnitStatus in self.units.values() if UnitStatus.type == "light"]
 
     @property
-    def barracks(self) -> List[UnitStatus]:
-        return [unit for unit in self.units.values() if unit.type == "barracks"]
+    def barracks(self) -> list[UnitStatus]:
+        return [UnitStatus for UnitStatus in self.units.values() if UnitStatus.type == "barracks"]
 
     @property
-    def rangeds(self) -> List[UnitStatus]:
-        return [unit for unit in self.units.values() if unit.type == "ranged"]
+    def rangeds(self) -> list[UnitStatus]:
+        return [UnitStatus for UnitStatus in self.units.values() if UnitStatus.type == "ranged"]
 
     @property
-    def heavys(self) -> List[UnitStatus]:
-        return [unit for unit in self.units.values() if unit.type == "heavy"]
+    def heavys(self) -> list[UnitStatus]:
+        return [UnitStatus for UnitStatus in self.units.values() if UnitStatus.type == "heavy"]
+    
+    def __iter__(self) -> Iterator[UnitStatus]:
+        """Iteration over each unit in units."""
+        return iter(self.units.values())
+    
+    def __getitem__(self, location: Tuple[int, int]) -> UnitStatus:
+        """Returns the UnitStatus at the specified location."""
+        return self.units[location]
 
 
 class Observation:
@@ -92,7 +102,7 @@ class Observation:
         self.players = []
         for owner in [-1, 1, 2]:
             if owner != -1:
-                self.players.append(PlayerStatus(owner, players_resource[owner - 1], {}))
+                self.players.append(PlayerStatus(owner - 1, players_resource[owner - 1], {}))
             self._get_owner_units(owner, obs)
 
     def _get_owner_units(self, owner, obs):
@@ -125,7 +135,7 @@ class Observation:
             loc = tuple(loc.tolist())
             unit_type = TYPE_MAP[obs[TYPE_INDEX][loc]]
             unit = UnitStatus(
-                owner=owner,
+                owner=owner if owner == -1 else owner - 1,
                 id=int(obs[ID_INDEX][loc]),
                 type=unit_type,
                 location=loc,

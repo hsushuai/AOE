@@ -10,26 +10,21 @@ import jpype.imports
 import numpy as np
 from jpype.imports import registerDomain
 from jpype.types import JArray, JInt
-from PIL import Image
-
-import gym_microrts
 
 
-class MicroRTSGridModeVecEnv:
-    metadata = {"render_modes": ["human", "rgb_array"], "video_frames": 150}
+class MicroRTSGridModeVecEnv(gym.Env):
     """VecEnv environment from a microrts environment."""
-
     def __init__(
         self,
         num_selfplay_envs,
         num_bot_envs,
         partial_obs=False,
         max_steps=2000,
-        render_theme=2,
+        render_mode="rgb_array",
         frame_skip=0,
         ai2s=[],
         map_paths=[],
-        reward_weight=np.array([10]),
+        reward_weight=np.array([1, 0, 0, 0, 0, 0]),
         cycle_maps=[],
         autobuild=True,
         jvm_args=[],
@@ -37,12 +32,10 @@ class MicroRTSGridModeVecEnv:
         self.num_selfplay_envs = num_selfplay_envs
         self.num_bot_envs = num_bot_envs
         self.num_envs = num_selfplay_envs + num_bot_envs
-        assert self.num_bot_envs == len(
-            ai2s
-        ), "for each environment, a microrts ai should be provided"
+        assert self.num_bot_envs == len(ai2s), "for each environment, a microrts ai should be provided"
         self.partial_obs = partial_obs
         self.max_steps = max_steps
-        self.render_mode = render_theme
+        self.render_mode = render_mode
         self.frame_skip = frame_skip
         self.ai2s = ai2s
         self.map_paths = map_paths
@@ -52,26 +45,67 @@ class MicroRTSGridModeVecEnv:
             assert (len(map_paths) == self.num_envs), "if multiple maps are provided, they should be provided for each environment"
         self.reward_weight = reward_weight
 
-        self.microrts_path = os.path.join(gym_microrts.__path__[0], "microrts")
+        self.microrts_path = os.path.join(os.getcwd(), "microrts")
 
         # prepare training maps
         self.cycle_maps = list(map(lambda i: os.path.join(self.microrts_path, i), cycle_maps))
         self.next_map = cycle(self.cycle_maps)
 
         if autobuild:
-            print(f"removing {self.microrts_path}/microrts.jar...")
-            if os.path.exists(f"{self.microrts_path}/microrts.jar"):
-                os.remove(f"{self.microrts_path}/microrts.jar")
-            print(f"building {self.microrts_path}/microrts.jar...")
-            root_dir = os.path.dirname(gym_microrts.__path__[0])
-            print(root_dir)
-            subprocess.run(["bash", "build.sh", "&>", "build.log"], cwd=f"{root_dir}")
-
+            self.build_jar()
+        
         # read map
         root = ET.parse(os.path.join(self.microrts_path, self.map_paths[0])).getroot()
         self.height, self.width = int(root.get("height")), int(root.get("width"))
 
         # launch the JVM
+        self.launch_jvm(jvm_args)
+        
+
+        # start microrts client
+        from rts.units import UnitTypeTable
+        self.real_utt = UnitTypeTable()
+        from ai.reward import (
+            AttackRewardFunction,
+            ProduceBuildingRewardFunction,
+            ProduceCombatUnitRewardFunction,
+            ProduceWorkerRewardFunction,
+            ResourceGatherRewardFunction,
+            RewardFunctionInterface,
+            WinLossRewardFunction,
+        )
+        self.rfs = JArray(RewardFunctionInterface)(
+            [
+                WinLossRewardFunction(),
+                ResourceGatherRewardFunction(),
+                ProduceWorkerRewardFunction(),
+                ProduceBuildingRewardFunction(),
+                AttackRewardFunction(),
+                ProduceCombatUnitRewardFunction(),
+                # CloserToEnemyBaseRewardFunction(),
+            ]
+        )
+        self.start_client()
+
+        self.action_space_dims = [6, 4, 4, 4, 4, len(self.utt["unitTypes"]), 7 * 7]
+        self.action_space = gym.spaces.MultiDiscrete(np.array([self.action_space_dims] * self.height * self.width).flatten())
+        self.action_plane_space = gym.spaces.MultiDiscrete(self.action_space_dims)
+        self.source_unit_idxs = np.tile(np.arange(self.height * self.width), (self.num_envs, 1))
+        self.source_unit_idxs = self.source_unit_idxs.reshape((self.source_unit_idxs.shape + (1,)))
+
+        self.observation_space = gym.spaces.Discrete(2)
+        self.action_space = gym.spaces.Discrete(2)
+    
+    def build_jar(self):
+        print(f"removing {self.microrts_path}/microrts.jar...")
+        if os.path.exists(f"{self.microrts_path}/microrts.jar"):
+            os.remove(f"{self.microrts_path}/microrts.jar")
+        print(f"building {self.microrts_path}/microrts.jar...")
+        root_dir = os.getcwd()
+        print(root_dir)
+        subprocess.run(["bash", "build.sh", "&>", "build.log"], cwd=f"{root_dir}")
+    
+    def launch_jvm(self, jvm_args=[]):
         if not jpype._jpype.isStarted():
             registerDomain("ts", alias="tests")
             registerDomain("ai")
@@ -89,24 +123,6 @@ class MicroRTSGridModeVecEnv:
             for jar in jars:
                 jpype.addClassPath(os.path.join(self.microrts_path, jar))
             jpype.startJVM(*jvm_args, convertStrings=False)
-
-        # start microrts client
-        from rts.units import UnitTypeTable
-
-        self.real_utt = UnitTypeTable()
-        from ai.reward import RewardFunctionInterface, WinLossRewardFunction
-
-        self.rfs = JArray(RewardFunctionInterface)([WinLossRewardFunction()])
-        self.start_client()
-
-        self.action_space_dims = [6, 4, 4, 4, 4, len(self.utt["unitTypes"]), 7 * 7]
-        self.action_space = gym.spaces.MultiDiscrete(np.array([self.action_space_dims] * self.height * self.width).flatten())
-        self.action_plane_space = gym.spaces.MultiDiscrete(self.action_space_dims)
-        self.source_unit_idxs = np.tile(np.arange(self.height * self.width), (self.num_envs, 1))
-        self.source_unit_idxs = self.source_unit_idxs.reshape((self.source_unit_idxs.shape + (1,)))
-
-        self.observation_space = gym.spaces.Discrete(2)
-        self.action_space = gym.spaces.Discrete(2)
 
     def start_client(self):
         from ai.core import AI
@@ -188,26 +204,6 @@ class MicroRTSGridModeVecEnv:
     def step(self, ac):
         self.step_async(ac)
         return self.step_wait()
-    
-    def getattr_depth_check(self, name, already_found):
-        """
-        Check if an attribute reference is being hidden in a recursive call to __getattr__
-        :param name: (str) name of attribute to check for
-        :param already_found: (bool) whether this attribute has already been found in a wrapper
-        :return: (str or None) name of module whose attribute is being shadowed, if any.
-        """
-        if hasattr(self, name) and already_found:
-            return "{0}.{1}".format(type(self).__module__, type(self).__name__)
-        else:
-            return None
-
-    def render(self, mode="human"):
-        if mode == "human":
-            self.render_client.render(False)
-        elif mode == "rgb_array":
-            bytes_array = np.array(self.render_client.render(True))
-            image = Image.frombytes("RGB", (640, 640), bytes_array)
-            return np.array(image)[:, :, ::-1]
 
     def close(self):
         if jpype._jpype.isStarted():
@@ -221,16 +217,14 @@ class MicroRTSGridModeVecEnv:
 
 
 class MicroRTSBotVecEnv(MicroRTSGridModeVecEnv):
-    metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": 150}
     def __init__(
         self,
         ai1s=[],
         ai2s=[],
         partial_obs=False,
         max_steps=2000,
-        render_theme=2,
         map_paths="maps/10x10/basesTwoWorkers10x10.xml",
-        reward_weight=np.array([10, 0, 0, 0, 0, 0]),
+        reward_weight=np.array([1, 0, 0, 0, 0, 0]),
         autobuild=True,
         jvm_args=[],
     ):
@@ -240,52 +234,46 @@ class MicroRTSBotVecEnv(MicroRTSGridModeVecEnv):
         self.num_envs = len(ai1s)
         self.partial_obs = partial_obs
         self.max_steps = max_steps
-        self.render_theme = render_theme
         self.map_paths = map_paths
         self.reward_weight = reward_weight
 
         # read map
-        self.microrts_path = os.path.join(gym_microrts.__path__[0], "microrts")
+        self.microrts_path = os.path.join(os.getcwd(), "microrts")
 
         if autobuild:
-            print(f"removing {self.microrts_path}/microrts.jar...")
-            if os.path.exists(f"{self.microrts_path}/microrts.jar"):
-                os.remove(f"{self.microrts_path}/microrts.jar")
-            print(f"building {self.microrts_path}/microrts.jar...")
-            root_dir = os.path.dirname(gym_microrts.__path__[0])
-            print(root_dir)
-            subprocess.run(["bash", "build.sh", "&>", "build.log"], cwd=f"{root_dir}")
+            self.build_jar()
 
         root = ET.parse(os.path.join(self.microrts_path, self.map_paths[0])).getroot()
         self.height, self.width = int(root.get("height")), int(root.get("width"))
 
         # launch the JVM
-        if not jpype._jpype.isStarted():
-            registerDomain("ts", alias="tests")
-            registerDomain("ai")
-            registerDomain("rts")
-            jars = [
-                "microrts.jar",
-                "lib/bots/Coac.jar",
-                "lib/bots/Droplet.jar",
-                "lib/bots/GRojoA3N.jar",
-                "lib/bots/Izanagi.jar",
-                "lib/bots/MixedBot.jar",
-                "lib/bots/TiamatBot.jar",
-                "lib/bots/UMSBot.jar",
-                "lib/bots/mayariBot.jar",  # "MindSeal.jar"
-            ]
-            for jar in jars:
-                jpype.addClassPath(os.path.join(self.microrts_path, jar))
-            jpype.startJVM(*jvm_args, convertStrings=False)
+        self.launch_jvm(jvm_args)
 
         # start microrts client
         from rts.units import UnitTypeTable
 
         self.real_utt = UnitTypeTable()
-        from ai.reward import RewardFunctionInterface, WinLossRewardFunction
+        from ai.reward import (
+            AttackRewardFunction,
+            ProduceBuildingRewardFunction,
+            ProduceCombatUnitRewardFunction,
+            ProduceWorkerRewardFunction,
+            ResourceGatherRewardFunction,
+            RewardFunctionInterface,
+            WinLossRewardFunction,
+        )
 
-        self.rfs = JArray(RewardFunctionInterface)([WinLossRewardFunction()])
+        self.rfs = JArray(RewardFunctionInterface)(
+            [
+                WinLossRewardFunction(),
+                ResourceGatherRewardFunction(),
+                ProduceWorkerRewardFunction(),
+                ProduceBuildingRewardFunction(),
+                AttackRewardFunction(),
+                ProduceCombatUnitRewardFunction(),
+                # CloserToEnemyBaseRewardFunction(),
+            ]
+        )
         self.start_client()
 
         self.observation_space = gym.spaces.Discrete(2)
@@ -315,9 +303,7 @@ class MicroRTSBotVecEnv(MicroRTSGridModeVecEnv):
         return list(zip(obs, np.array(responses.resources)))
 
     def step_async(self, actions):
-        self.actions = JArray(JArray(JArray(JInt)))(
-            [JArray(JArray(JInt))([JArray(JInt)([1])])]
-        )
+        self.actions = JArray(JArray(JArray(JInt)))([JArray(JArray(JInt))([JArray(JInt)([1])])])
 
     def step(self, actions):
         self.step_async(actions)

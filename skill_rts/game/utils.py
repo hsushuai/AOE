@@ -1,14 +1,17 @@
+from __future__ import annotations
 from typing import List, Tuple, Optional
 from collections import deque
 import numpy as np
 
 
 class PathPlanner:
-    def __init__(self, valid_map: np.ndarray) -> None:
-        self.height = valid_map.shape[0]
-        self.width = valid_map.shape[1]
-        self.valid_map = valid_map
-        self.max_dist = 10**10
+    def __init__(self, obs: Observation) -> None:  # noqa: F821
+        self.height = obs.env.height
+        self.width = obs.env.width
+        self.valid_map = np.ones((obs.env.height, obs.env.width), dtype=int)
+        self.valid_map[obs.raw_obs[0][1] != 0] = 0
+        self.valid_map[obs.raw_obs[0][1] == 0] = 1
+        self.max_dist = float("inf")
 
     def get_neighbors(self, pos: Tuple[int, int], valid=True) -> List[Tuple[str, Tuple[int, int]]]:
         directions = [
@@ -43,7 +46,8 @@ class PathPlanner:
 
         while queue:
             pos, dist, first_dir = queue.popleft()
-            for dir_name, neighbor in self.get_neighbors(pos):
+            neighbors = self.get_neighbors(pos, True) if dist == 0 else self.get_neighbors(pos, False)
+            for dir_name, neighbor in neighbors:
                 if neighbor == tg_location:
                     if first_dir is None:
                         first_dir = dir_name
@@ -90,7 +94,17 @@ class PathPlanner:
                 min_i = i
                 min_dist = cur_dist
         return targets[min_i]
-
+    
+    def get_range_locs(self, pos: tuple, dist: int, valid: bool):
+        x, y = pos
+        locs = []
+        for dx in range(-dist, dist + 1):
+            for dy in range(-dist, dist + 1):
+                new_x, new_y = x + dx, y + dy
+                if 0 <= new_x < self.height and 0 <= new_y < self.width and manhattan_distance(pos, (new_x, new_y)) <= dist:
+                    if not valid or self.valid_map[new_x][new_y] == 1:
+                        locs.append((new_x, new_y))
+        return locs
 
 def manhattan_distance(l1, l2) -> int:
     """Get the manhattan distance between two locations."""
@@ -106,6 +120,16 @@ def get_neighbor(loc, direction):
         "east": (loc[0], loc[1] + 1),
     }
     return directions.get(direction)
+
+
+def get_around_locs(loc: Tuple) -> List[Tuple]:
+    locs = [
+        (loc[0] + 1, loc[1]),
+        (loc[0] - 1, loc[1]),
+        (loc[0], loc[1] + 1),
+        (loc[0], loc[1] - 1),
+    ]
+    return locs
 
 
 def get_direction(location, tgt_loc) -> str:

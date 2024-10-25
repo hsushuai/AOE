@@ -1,3 +1,5 @@
+__all__ = ["randomBiasedAI", "randomAI"]
+
 def randomBiasedAI(utt):
     from ai import RandomBiasedAI
 

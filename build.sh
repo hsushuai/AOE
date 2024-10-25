@@ -1,4 +1,4 @@
-cd gym_microrts/microrts
+cd microrts
 
 
 rm -rf build microrts.jar

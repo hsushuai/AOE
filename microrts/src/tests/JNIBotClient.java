@@ -43,7 +43,8 @@ public class JNIBotClient {
     String micrortsPath;
     boolean gameover = false;
     boolean layerJSON = true;
-    public int renderTheme = PhysicalGameStatePanel.COLORSCHEME_WHITE;
+    public int whiteTheme = PhysicalGameStatePanel.COLORSCHEME_WHITE;
+    public int blackTheme = PhysicalGameStatePanel.COLORSCHEME_BLACK;
 
     // storage
     double[] rewards;
@@ -86,23 +87,35 @@ public class JNIBotClient {
         response = new Response(null, null, null, null, null);
     }
 
-    public byte[] render(boolean returnPixels) throws Exception {
-        if (w==null) {
-            w = PhysicalGameStatePanel.newVisualizer(gs, 640, 640, false, null, renderTheme);
+    public byte[] render(boolean screenRender, String theme) throws Exception {
+        int renderTheme = theme.equals("white") ? whiteTheme : blackTheme;
+
+        if (w == null) {
+            w = PhysicalGameStatePanel.newVisualizer(gs, 640, 640, partialObs, null, renderTheme);
         }
+
         w.setStateCloning(gs);
-        w.repaint();
 
-        if (!returnPixels) {
-            return null;
+        if (screenRender) {
+            w.setVisible(true);
+            w.repaint();
+        } else {
+            w.setVisible(false);
         }
-        BufferedImage image = new BufferedImage(w.getWidth(),
-        w.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-        w.paint(image.getGraphics());
 
-        WritableRaster raster = image .getRaster();
+        BufferedImage image = new BufferedImage(640, 640, BufferedImage.TYPE_3BYTE_BGR);
+        PhysicalGameStatePanel panel = w.getPanel();
+        panel.paint(image.getGraphics());
+
+        WritableRaster raster = image.getRaster();
         DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
-        return data.getData();
+        byte [] bd = data.getData();
+
+        if (gs.gameover()) {
+            w.dispose();
+        }
+        
+        return bd;
     }
 
     public Response gameStep(int player) throws Exception {
