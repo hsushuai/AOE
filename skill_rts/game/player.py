@@ -117,7 +117,10 @@ def assign_tasks(player: Player, tasks: tuple):
         if unit_locs and enemy_locs:
             nearest_loc = min(
                 unit_locs,
-                key=lambda unit_loc: min(player.path_planner.get_shortest_path(unit_loc, enemy_loc)[0] for enemy_loc in enemy_locs)
+                key=lambda unit_loc: min(
+                    player.path_planner.get_shortest_path(unit_loc, enemy_loc)[0]
+                    for enemy_loc in enemy_locs
+                ),
             )
             player.units[nearest_loc].task = "[Attack Enemy]"
             player.units[nearest_loc].task_params = task_params
