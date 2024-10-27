@@ -19,6 +19,7 @@ import rts.GameState;
 import rts.PartiallyObservableGameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
+import rts.Trace;
 import rts.TraceEntry;
 import rts.UnitAction;
 import rts.units.Unit;
@@ -57,6 +58,7 @@ public class JNIGridnetClientSelfPlay {
     public int blackTheme = PhysicalGameStatePanel.COLORSCHEME_BLACK;
     public int maxAttackRadius;
     public int numPlayers = 2;
+    public Trace trace;
 
     // Storage
     
@@ -127,6 +129,7 @@ public class JNIGridnetClientSelfPlay {
         }
 
         pgs = PhysicalGameState.load(mapPath, utt);
+        trace = new Trace(utt);
 
         // initialize storage
         for (int i = 0; i < numPlayers; i++) {
@@ -134,7 +137,7 @@ public class JNIGridnetClientSelfPlay {
             masks[i] = new int[pgs.getHeight()][pgs.getWidth()][1+6+4+4+4+4+utt.getUnitTypes().size()+maxAttackRadius*maxAttackRadius];
             rewards[i] = new double[rfs.length];
             dones[i] = new boolean[rfs.length];
-            response[i] = new Response(null, null, null, null, null);
+            response[i] = new Response(null, null, null, null);
         }
     }
 
@@ -170,7 +173,6 @@ public class JNIGridnetClientSelfPlay {
     }
 
     public void gameStep(int[][] action1, int[][] action2) throws Exception {
-    	// FIXME do we really need to create this TraceEntry object at all?
         TraceEntry te  = new TraceEntry(gs.getPhysicalGameState().clone(), gs.getTime());
         for (int i = 0; i < numPlayers; i++) {
             playergs[i] = gs;
@@ -181,17 +183,15 @@ public class JNIGridnetClientSelfPlay {
             gs.issueSafe(pas[i]);
             te.addPlayerAction(pas[i].clone());
         }
+
+        if (!pas[0].isEmpty() || !pas[1].isEmpty()) {
+            trace.addEntry(te);
+        }
         // simulate:
         gameover = gs.cycle();
         if (gameover) {
             // ai1.gameOver(gs.winner());
             // ai2.gameOver(gs.winner());
-        }
-
-        // FIXME: Partial Observation can't known the resources of the enemy
-        int [] resources = new int[numPlayers];
-        for (int i = 0; i < numPlayers; i++) {
-            resources[i] = playergs[i].getPlayer(i).getResources();
         }
 
         for (int i = 0; i < numPlayers; i++) {
@@ -205,8 +205,7 @@ public class JNIGridnetClientSelfPlay {
                 ais[i].getObservation(i, playergs[i]),
                 rewards[i],
                 dones[i],
-                "{}",
-                resources);
+                ais[i].computeInfo(gs, playergs[i]));
         }
     }
 
@@ -244,11 +243,6 @@ public class JNIGridnetClientSelfPlay {
         pgs = PhysicalGameState.load(mapPath, utt);
         gs = new GameState(pgs, utt);
 
-        // FIXME: Partial Observation can't know the resources of the enemy
-        int[] resources = new int[numPlayers];
-        for (int i = 0; i < numPlayers; i++) {
-            resources[i] = gs.getPlayer(i).getResources();
-        }
         for (int i = 0; i < numPlayers; i++) {
             playergs[i] = gs;
             if (partialObs) {
@@ -263,8 +257,7 @@ public class JNIGridnetClientSelfPlay {
                 ais[i].getObservation(i, playergs[i]),
                 rewards[i],
                 dones[i],
-                "{}",
-                resources);
+                ais[i].computeInfo(gs, playergs[i]));
         }
 
         // return response;
@@ -272,6 +265,16 @@ public class JNIGridnetClientSelfPlay {
 
     public Response getResponse(int player) {
         return response[player];
+    }
+
+    public String getJSONStringTrace() {
+        try {
+            StringWriter stringWriter = new StringWriter();
+            trace.toJSON(stringWriter);
+            return stringWriter.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void close() throws Exception {

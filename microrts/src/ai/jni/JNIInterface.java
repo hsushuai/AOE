@@ -17,5 +17,5 @@ public interface JNIInterface {
     public int[][][] getObservation(int player, GameState gs) throws Exception;
     public void reset();
     public double computeReward(int i, int j, GameState gs) throws Exception;
-    public String computeInfo(int player, GameState gs) throws Exception;
+    public String[] computeInfo(GameState gs, GameState playergs) throws Exception;
 }

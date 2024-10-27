@@ -2,7 +2,7 @@ import numpy as np
 from abc import ABC, abstractmethod
 from skill_rts.game.utils import PathPlanner, manhattan_distance, get_neighbor, get_direction
 from skill_rts.game.unit import Unit
-from skill_rts.game.observation import Observation, UnitStatus
+from skill_rts.game.game_state import GameState, UnitState
 from skill_rts import logger
 
 
@@ -32,7 +32,7 @@ class Skill(ABC):
         self.player = player
         self.params = skill_params
         self.is_auto_attack = player.auto_attack
-        self.obs: Observation = player.obs
+        self.obs: GameState = player.obs
         self.path_planner: PathPlanner = player.path_planner
     
     def step(self) -> np.ndarray:
@@ -149,7 +149,7 @@ class BuildBuilding(Skill):
         return self.unit.noop()
     
     def assign_to_unit(self):
-        building_cost = {"base": 10, "barrack": 5}
+        building_cost = {"base": 10, "barracks": 5}
         building_type, building_loc = self.params
         if self.obs.units.get(building_loc) is None and building_cost[building_type] <= self.player.resource:
             candidates = [unit.location for unit in self.player.workers if unit.task is None]
@@ -272,7 +272,7 @@ class AttackEnemy(Skill):
     def __init__(self, player: "Player", skill_params: tuple):  # noqa: F821
         super().__init__(player, skill_params)
         self.player_id = player.id
-        self.enemy_id = 1 - player.id
+        self.enemy_id = player.id % 2 + 1
         self.enemy_loc: tuple = None
         
     def execute_step(self):
@@ -288,7 +288,7 @@ class AttackEnemy(Skill):
     def assign_to_unit(self):
         unit_type, enemy_type = self.params
         unit_locs = [unit.location for unit in self.player if unit.type == unit_type and unit.task is None]
-        enemy_locs = [unit.location for unit in self.obs.players[self.enemy_id] if unit.type == enemy_type]
+        enemy_locs = [unit.location for unit in self.obs.players[self.enemy_id - 1] if unit.type == enemy_type]
 
         if unit_locs and enemy_locs:
             nearest_loc, enemy_loc = min(
@@ -316,14 +316,14 @@ class AutoAttack(AttackEnemy):
         Note: This skill will automatically assign to a unit if `player.auto_attack` is True. Can not be a task.
         
         The attack priorities are determined by the following unit types (in order):
-        "worker", "ranged", "light", "heavy", "barrack", "base".
+        "worker", "ranged", "light", "heavy", "barracks", "base".
         Enemies with health less than or equal to the attack damage of the player's unit are prioritized first.
 
         """
-        def choose_target(unit: Unit) -> UnitStatus:
+        def choose_target(unit: Unit) -> UnitState:
             targets = []
-            enemy_id = 1 - self.player.id
-            for enemy in self.obs.players[enemy_id]:
+            enemy_id = self.player.id % 2 + 1
+            for enemy in self.obs.players[enemy_id - 1]:
                 if manhattan_distance(unit.location, enemy.location) <= unit.attack_range:
                     targets.append((enemy, unit.attack_damage >= enemy.hp))
 
@@ -331,7 +331,7 @@ class AutoAttack(AttackEnemy):
             return targets[0][0] if targets else None
 
         def target_priority_index(unit_type: str) -> int:
-            priority = ["worker", "ranged", "light", "heavy", "barrack", "base"]
+            priority = ["worker", "ranged", "light", "heavy", "barracks", "base"]
             return priority.index(unit_type) if unit_type in priority else len(priority)
 
         for unit in units.values():

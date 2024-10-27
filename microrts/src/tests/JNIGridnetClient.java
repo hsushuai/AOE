@@ -24,6 +24,7 @@ import rts.PartiallyObservableGameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
 import rts.TraceEntry;
+import rts.Trace;
 import rts.UnitAction;
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
@@ -61,6 +62,7 @@ public class JNIGridnetClient {
     PhysicalGameStateJFrame w;
     JFrame frame;
     public JNIInterface ai1;
+    public Trace trace;
 
     // Storage
     
@@ -139,12 +141,13 @@ public class JNIGridnetClient {
         }
 
         pgs = PhysicalGameState.load(mapPath, utt);
+        trace = new Trace(utt);
 
         // initialize storage
         masks = new int[pgs.getHeight()][pgs.getWidth()][1+6+4+4+4+4+utt.getUnitTypes().size()+maxAttackRadius*maxAttackRadius];
         rewards = new double[rfs.length];
         dones = new boolean[rfs.length];
-        response = new Response(null, null, null, null, null);
+        response = new Response(null, null, null, null);
     }
 
     public byte[] render(boolean screenRender, String theme) throws Exception {
@@ -190,9 +193,13 @@ public class JNIGridnetClient {
         pa2 = ai2.getAction(1 - player, player2gs);
         gs.issueSafe(pa1);
         gs.issueSafe(pa2);
+        
         TraceEntry te  = new TraceEntry(gs.getPhysicalGameState().clone(), gs.getTime());
         te.addPlayerAction(pa1.clone());
         te.addPlayerAction(pa2.clone());
+        if (!pa1.isEmpty() || !pa2.isEmpty()) {
+            trace.addEntry(te);
+        }
 
         // simulate:
         gameover = gs.cycle();
@@ -205,18 +212,12 @@ public class JNIGridnetClient {
             dones[i] = rfs[i].isDone();
             rewards[i] = rfs[i].getReward();
         }
-
-        // FIXME: Partial Obs don't know about the other player's resources
-        int [] resources = new int[2];
-        for (int i = 0; i < 2; i++) {
-            resources[i] = gs.getPlayer(i).getResources();
-        }
+        
         response.set(
             ai1.getObservation(player, player1gs),
             rewards,
             dones,
-            ai1.computeInfo(player, player2gs),
-            resources);
+            ai1.computeInfo(gs, player1gs));
         return response;
     }
 
@@ -258,8 +259,10 @@ public class JNIGridnetClient {
         gs = new GameState(pgs, utt);
         if (partialObs) {
             player1gs = new PartiallyObservableGameState(gs, player);
+            player2gs = new PartiallyObservableGameState(gs, 1 - player);
         } else {
             player1gs = gs;
+            player2gs = gs;
         }
 
         for (int i = 0; i < rewards.length; i++) {
@@ -267,18 +270,22 @@ public class JNIGridnetClient {
             dones[i] = false;
         }
 
-        // FIXME: partial obs?
-        int [] resources = new int[2];
-        for (int i = 0; i < 2; i++) {
-            resources[i] = gs.getPlayer(i).getResources();
-        }
         response.set(
             ai1.getObservation(player, player1gs),
             rewards,
             dones,
-            "{}",
-            resources);
+            ai1.computeInfo(gs, player1gs));
         return response;
+    }
+
+    public String getJSONStringTrace() {
+        try {
+            StringWriter stringWriter = new StringWriter();
+            trace.toJSON(stringWriter);
+            return stringWriter.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void close() throws Exception {

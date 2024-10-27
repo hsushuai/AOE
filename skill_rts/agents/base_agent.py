@@ -15,7 +15,7 @@ class BlueAgent:
         [Attack Enemy](worker, worker)
         [Attack Enemy](worker, worker)
         [Attack Enemy](worker, worker)
-        [Attack Enemy](worker, barrack)
+        [Attack Enemy](worker, barracks)
         [Attack Enemy](worker, base)
         END OF TASK"""
         return tasks
@@ -37,7 +37,7 @@ class RedAgent:
         [Attack Enemy](worker, worker)
         [Attack Enemy](worker, worker)
         [Attack Enemy](worker, worker)
-        [Attack Enemy](worker, barrack)
+        [Attack Enemy](worker, barracks)
         [Attack Enemy](worker, base)
         END OF TASK"""
         return tasks

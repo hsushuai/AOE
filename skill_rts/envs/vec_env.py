@@ -18,7 +18,7 @@ class MicroRTSGridModeVecEnv(gym.Env):
         self,
         num_selfplay_envs,
         num_bot_envs,
-        partial_obs=False,
+        partial_obs=True,
         max_steps=2000,
         render_mode="rgb_array",
         frame_skip=0,
@@ -147,10 +147,25 @@ class MicroRTSGridModeVecEnv(gym.Env):
         # get the unit type table
         self.utt = json.loads(str(self.render_client.sendUTT()))
 
-    def reset(self):
+    def reset(self) -> tuple[np.ndarray, list[dict]]:
+        """
+        Resets the environment to an initial state and returns an initial observation.
+
+        Returns:
+            observation (object): the initial observation.
+            info (optional list): list of a dictionary containing extra information, this is only returned if return_info is set to true
+        """
         responses = self.vec_client.reset([0] * self.num_envs)
         obs = [np.array(ro) for ro in responses.observation]
-        return list(zip(obs, np.array(responses.resources)))
+        
+        infos = []
+        for raw_info in responses.info:
+            info = {
+                "game_state": json.loads(str(raw_info[0])) if raw_info[0] is not None else None,
+                "player_obs": json.loads(str(raw_info[1])) if raw_info[1] is not None else None
+            }
+            infos.append(info)
+        return obs, infos
 
     def step_async(self, actions):
         actions = actions.reshape((self.num_envs, self.width * self.height, -1))
@@ -171,19 +186,17 @@ class MicroRTSGridModeVecEnv(gym.Env):
 
     def step_wait(self):
         responses = self.vec_client.gameStep(self.actions, [0] * self.num_envs)
-        reward, done = np.array(responses.reward), np.array(responses.done)
-        obs = [np.array(ro) for ro in responses.observation]
-        infos = [{"raw_rewards": item} for item in reward]
+        observations, rewards, dones, infos = self._parse_responses(responses)
         # check if it is in evaluation, if not, then change maps
         if len(self.cycle_maps) > 0:
             # check if an environment is done, if done, reset the client, and replace the observation
-            for done_idx, d in enumerate(done[:, 0]):
+            for done_idx, d in enumerate(dones[:, 0]):
                 # bot envs settings
                 if done_idx < self.num_bot_envs:
                     if d:
                         self.vec_client.clients[done_idx].mapPath = next(self.next_map)
                         response = self.vec_client.clients[done_idx].reset(0)
-                        obs[done_idx] = self._encode_obs(np.array(response.observation))
+                        observations[done_idx] = self._encode_obs(np.array(response.observation))
                 # selfplay envs settings
                 else:
                     if d and done_idx % 2 == 0:
@@ -192,17 +205,31 @@ class MicroRTSGridModeVecEnv(gym.Env):
                         self.vec_client.selfPlayClients[done_idx // 2].reset()
                         p0_response = self.vec_client.selfPlayClients[done_idx // 2].getResponse(0)
                         p1_response = self.vec_client.selfPlayClients[done_idx // 2].getResponse(1)
-                        obs[done_idx] = self._encode_obs(np.array(p0_response.observation))
-                        obs[done_idx + 1] = self._encode_obs(np.array(p1_response.observation))
+                        observations[done_idx] = self._encode_obs(np.array(p0_response.observation))
+                        observations[done_idx + 1] = self._encode_obs(np.array(p1_response.observation))
         return (
-            list(zip(obs, np.array(responses.resources))),
-            reward @ self.reward_weight,
-            done[:, 0],
+            observations,
+            rewards @ self.reward_weight,
+            dones[:, 0],
             infos,
         )
 
-    def step(self, ac):
-        self.step_async(ac)
+    def step(self, actions) -> tuple[list[np.ndarray], list[float], list[bool], list[dict]]:
+        """
+        Run one timestep of the environment's dynamics.
+
+        Accepts an action and returns a tuple (observations, rewards, dones, infos) for each player.
+
+        Args:
+            actions (np.ndarray): actions provided by the agents
+
+        Returns:
+            observations (list[np.ndarray]): list of observations from the environment
+            rewards (list[float]): list of rewards received after taking the action
+            done (list[bool]): list of booleans indicating if each episode has ended
+            info (list[dict]): list of dictionaries information containing raw game state and player raw observation
+        """
+        self.step_async(actions)
         return self.step_wait()
 
     def close(self):
@@ -214,6 +241,22 @@ class MicroRTSGridModeVecEnv(gym.Env):
         action_mask = np.array(self.vec_client.getMasks(0))
         # self.source_unit_mask shape: [num_envs, map height * map width * 1]
         self.source_unit_mask = action_mask[:, :, :, 0].reshape(self.num_envs, -1)
+    
+    def get_game_state(self):
+        game_state = self.vec_client.getGameState()
+        return game_state
+    
+    def _parse_responses(self, responses):
+        rewards, dones = np.array(responses.reward), np.array(responses.done)
+        observations = [np.array(ro) for ro in responses.observation]
+        infos = []
+        for raw_info in responses.info:
+            info = {
+                "game_state": json.loads(str(raw_info[0])) if raw_info[0] is not None else None,
+                "player_obs": json.loads(str(raw_info[1])) if raw_info[1] is not None else None
+            }
+            infos.append(info)
+        return observations, rewards, dones, infos
 
 
 class MicroRTSBotVecEnv(MicroRTSGridModeVecEnv):
@@ -297,29 +340,12 @@ class MicroRTSBotVecEnv(MicroRTSGridModeVecEnv):
         # get the unit type table
         self.utt = json.loads(str(self.render_client.sendUTT()))
 
-    def reset(self):
-        responses = self.vec_client.reset([0 for _ in range(self.num_envs)])
-        obs = [np.array(ro) for ro in responses.observation]
-        return list(zip(obs, np.array(responses.resources)))
-
-    def step_async(self, actions):
-        self.actions = JArray(JArray(JArray(JInt)))([JArray(JArray(JInt))([JArray(JInt)([1])])])
-
-    def step(self, actions):
-        self.step_async(actions)
-        return self.step_wait()
-
-    def step_wait(self):
-        responses = self.vec_client.gameStep(self.actions, [0 for _ in range(self.num_envs)])
-        obs, reward, done = (
-            [np.array(ro) for ro in responses.observation],
-            np.array(responses.reward),
-            np.array(responses.done),
-        )
-        infos = [{"raw_rewards": item} for item in reward]
+    def step(self, actions):  # actions not use
+        responses = self.vec_client.gameStep([0] * self.num_envs)
+        observations, rewards, dones, infos = self._parse_responses(responses)
         return (
-            list(zip(obs, np.array(responses.resources))),
-            reward @ self.reward_weight,
-            done[:, 0],
+            observations,
+            rewards @ self.reward_weight,
+            dones[:, 0],
             infos,
         )

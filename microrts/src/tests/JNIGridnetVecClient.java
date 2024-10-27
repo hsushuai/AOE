@@ -76,9 +76,11 @@ public class JNIGridnetVecClient {
     int[][][][] observation;
     double[][] reward;
     boolean[][] done;
-    int[][] resources;
+    String[][] info;
     Response[] rs;
     Responses responses;
+
+    String[] traces;
 
     double[] terminalReward1;
     boolean[] terminalDone1;
@@ -125,6 +127,8 @@ public class JNIGridnetVecClient {
         }
 
         // initialize storage
+        JNIGridnetClient cli = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs);
+        Response _r = cli.reset(0);
         Response r = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
         int s1 = a_num_selfplayenvs + a_num_envs;
         int s2 = r.observation.length; 
@@ -134,7 +138,8 @@ public class JNIGridnetVecClient {
         observation = new int[s1][s2][s3][s4];
         reward = new double[s1][rfs.length];
         done = new boolean[s1][rfs.length];
-        resources = new int[s1][rfs.length];
+        info = new String[s1][3];  // raw game state and raw players observation
+        traces = new String[s1];
         terminalReward1 = new double[rfs.length];
         terminalDone1 = new boolean[rfs.length];
         terminalReward2 = new double[rfs.length];
@@ -178,7 +183,8 @@ public class JNIGridnetVecClient {
         observation = new int[a_ai2s.length][s2][s3][s4];
         reward = new double[a_ai2s.length][rfs.length];
         done = new boolean[a_ai2s.length][rfs.length];
-        resources = new int[a_ai2s.length][rfs.length];
+        info = new String[a_ai2s.length][3];  // raw game state, player 1 state, player 2 state
+        traces = new String[a_ai2s.length];
         envSteps = new int[a_ai2s.length];
         terminalReward1 = new double[rfs.length];
         terminalDone1 = new boolean[rfs.length];
@@ -193,9 +199,9 @@ public class JNIGridnetVecClient {
                 observation[i] = rs[i].observation;
                 reward[i] = rs[i].reward;
                 done[i] = rs[i].done;
-                resources[i] = rs[i].resources;
+                info[i] = rs[i].info;
             }
-            responses.set(observation, reward, done, resources);
+            responses.set(observation, reward, done, info);
             return responses;
         }
         
@@ -213,14 +219,14 @@ public class JNIGridnetVecClient {
             observation[i] = rs[i].observation;
             reward[i] = rs[i].reward;
             done[i] = rs[i].done;
-            resources[i] = rs[i].resources;
+            info[i] = rs[i].info;
         }
         
-        responses.set(observation, reward, done, resources);
+        responses.set(observation, reward, done, info);
         return responses;
     }
 
-    public Responses gameStep(int[][][] action, int[] players) throws Exception {
+    public Responses gameStep(int[] players) throws Exception {
         if (botClients != null) {
             for (int i = 0; i < botClients.length; i++) {
                 rs[i] = botClients[i].gameStep(players[i]);
@@ -234,12 +240,15 @@ public class JNIGridnetVecClient {
                 observation[i] = rs[i].observation;
                 reward[i] = rs[i].reward;
                 done[i] = rs[i].done;
-                resources[i] = rs[i].resources;
+                info[i] = rs[i].info;
             }
-            responses.set(observation, reward, done, resources);
+            responses.set(observation, reward, done, info);
             return responses;
         }
-        
+        throw new IllegalStateException("Bot clients not initialized");
+    }
+
+    public Responses gameStep(int[][][] action, int[] players) throws Exception {        
         for (int i = 0; i < selfPlayClients.length; i++) {
             selfPlayClients[i].gameStep(action[i*2], action[i*2+1]);
             rs[i*2] = selfPlayClients[i].getResponse(0);
@@ -290,10 +299,10 @@ public class JNIGridnetVecClient {
             observation[i] = rs[i].observation;
             reward[i] = rs[i].reward;
             done[i] = rs[i].done;
-            resources[i] = rs[i].resources;
+            info[i] = rs[i].info;
         }
         
-        responses.set(observation, reward, done, resources);
+        responses.set(observation, reward, done, info);
         return responses;
     }
 
@@ -314,6 +323,20 @@ public class JNIGridnetVecClient {
             masks[i] = clients[i-selfPlayClients.length*2].getMasks(player);
         }
         return masks;
+    }
+
+    public String[] getTrace() {
+        if (botClients != null) {
+            for (int i = 0; i < botClients.length; i++) {
+                traces[i] = botClients[i].getJSONStringTrace();
+            }
+            return traces;
+        }
+
+        for (int i = 0; i < selfPlayClients.length; i++) {
+            traces[i] = selfPlayClients[i].getJSONStringTrace();
+        }
+        return traces;
     }
 
     public void close() throws Exception {

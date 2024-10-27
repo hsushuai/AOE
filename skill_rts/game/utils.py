@@ -5,12 +5,12 @@ import numpy as np
 
 
 class PathPlanner:
-    def __init__(self, obs: Observation) -> None:  # noqa: F821
+    def __init__(self, obs: GameState) -> None:  # noqa: F821
         self.height = obs.env.height
         self.width = obs.env.width
         self.valid_map = np.ones((obs.env.height, obs.env.width), dtype=int)
-        self.valid_map[obs.raw_obs[0][1] != 0] = 0
-        self.valid_map[obs.raw_obs[0][1] == 0] = 1
+        for loc, unit in obs.units.items():
+            self.valid_map[loc] = 1 if unit is None else 0
         self.max_dist = float("inf")
 
     def get_neighbors(self, pos: Tuple[int, int], valid=True) -> List[Tuple[str, Tuple[int, int]]]:

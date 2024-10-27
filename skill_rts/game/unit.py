@@ -1,14 +1,14 @@
 import numpy as np
-from skill_rts.game.observation import UnitStatus
+from skill_rts.game.game_state import UnitState
 from skill_rts import logger
 
 ACTION2INDEX = {"noop": 0, "move": 1, "harvest": 2, "return": 3, "produce": 4, "attack": 5}
-UNIT_TYPE2INDEX = {"resource": 0, "base": 1, "barrack": 2, "worker": 3, "light": 4, "heavy": 5, "ranged": 6}
+UNIT_TYPE2INDEX = {"resource": 0, "base": 1, "barracks": 2, "worker": 3, "light": 4, "heavy": 5, "ranged": 6}
 DIRECTION2INDEX = {"north": 0, "east": 1, "south": 2, "west": 3}
 
 
-class Unit(UnitStatus):
-    def __init__(self, unit_status: UnitStatus):
+class Unit(UnitState):
+    def __init__(self, unit_status: UnitState):
         super().__init__(**vars(unit_status))
 
     def noop(self) -> np.ndarray:
@@ -71,7 +71,7 @@ class Unit(UnitStatus):
 
         Args:
             direction: production direction
-            prod_type: type of unit to produce, 'resource', 'base', 'barrack', 'worker', 'light', 'heavy', 'ranged'
+            prod_type: type of unit to produce, 'resource', 'base', 'barracks', 'worker', 'light', 'heavy', 'ranged'
 
         Return: action vector, shape of [7]
         """

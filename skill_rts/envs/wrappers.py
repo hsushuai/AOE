@@ -1,6 +1,6 @@
 from skill_rts.envs.vec_env import MicroRTSGridModeVecEnv, MicroRTSBotVecEnv
 from skill_rts.game.player import Player
-from skill_rts.game.observation import Observation
+from skill_rts.game.game_state import GameState
 from skill_rts.envs.record_video import RecordVideo
 from skill_rts import logger
 
@@ -50,7 +50,7 @@ class MicroRTSLLMEnv:
         self.init_env()
 
         self.timestep = 0
-        self.is_over = True
+        self.game_over = True
     
     def init_env(self):
         reward_weight = np.array([1, 0, 0, 0, 0, 0])
@@ -106,21 +106,21 @@ class MicroRTSLLMEnv:
         logger.set_level(logger.DEBUG)
         logger.set_stream(log_file)
         
-        raw_obs = self.env.reset()
-        self.is_over = False
+        raw_obs, raw_info = self.env.reset()
+        self.game_over = False
 
-        while not self.is_over:
+        while not self.game_over:
             actions = []
             logger.info((f"{'-'*20} step-{self.timestep} {'-'*20}"))
-            for player_id in range(self.num_players):
-                obs = Observation(raw_obs[player_id])
-                player = Player(player_id, obs)
-                tasks = self.llm_agents[player_id].step()
+            for player_id in range(1, self.num_players + 1):
+                gs = GameState(raw_info["game_state"])
+                player = Player(player_id, gs.get_player_obs(player_id))
+                tasks = self.llm_agents[player_id - 1].step()
                 ac = player.step(self._parse_task(tasks))
                 actions.append(ac)
             self.timestep += 1
             raw_obs, payoffs, done, info = self.env.step(np.array(actions))
-            self.is_over = done[0]
+            self.game_over = done[0]
         
         self.payoffs = payoffs
 

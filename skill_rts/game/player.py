@@ -1,23 +1,23 @@
 from skill_rts.game.unit import Unit
-from skill_rts.game.observation import PlayerStatus
+from skill_rts.game.game_state import PlayerState
 from skill_rts.game.utils import PathPlanner
 import skill_rts.game.skill as skills
 import numpy as np
 from skill_rts import logger
 
 
-class Player(PlayerStatus):
+class Player(PlayerState):
     """Player class that represents a player in the environment."""
     
-    def __init__(self, player_id: int, obs: "Observation"):  # noqa: F821
+    def __init__(self, player_id: int, obs: "GameState"):  # noqa: F821
         """
         Initializes the Player instance with the given player ID and observation.
 
         Args:
             player_id (int): the ID of the player
-            obs (Observation): the current observation from the environment
+            obs (GameState): the current observation from the environment
         """
-        player_status = obs.players[player_id]
+        player_status = obs.players[player_id - 1]
         super().__init__(**vars(player_status))
         self.obs = obs
         self.path_planner = PathPlanner(obs)

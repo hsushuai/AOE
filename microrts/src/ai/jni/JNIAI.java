@@ -1,5 +1,6 @@
 package ai.jni;
 
+import java.io.StringWriter;
 import java.util.List;
 
 import ai.core.AI;
@@ -80,9 +81,22 @@ public class JNIAI extends AIWithComputationBudget implements JNIInterface {
     }
 
     @Override
-    public String computeInfo(int player, GameState gs) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+    public String[] computeInfo(GameState gs, GameState playergs) throws Exception {
+        // raw game state, raw player observations
+        String[] info = new String[2];
+        info[0] = getJSONStringGameState(gs);
+        info[1] = getJSONStringGameState(playergs);
+        return info;
+    }
+
+    private String getJSONStringGameState(GameState gs) throws Exception {
+        StringWriter w = new StringWriter();
+        try{
+            gs.toJSON(w);
+            return w.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }
