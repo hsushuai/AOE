@@ -7,7 +7,7 @@ COST = {"worker": 1, "heavy": 2, "light": 2, "ranged": 2, "base": 10, "barracks"
 ATTACK_DAMAGE = {"worker": 1, "heavy": 4, "light": 2, "ranged": 1, "base": 0, "barracks": 0}
 ATTACK_RANGE = {"worker": 1, "heavy": 1, "light": 1, "ranged": 3, "base": 0, "barracks": 0}
 ACTION = {0: "noop", 1: "move", 2: "harvest", 3: "return", 4: "produce", 5: "attack"}
-DIRECTION = {0: "north", 1: "east", 3: "south", 4: "west"}
+DIRECTION = {0: "north", 1: "east", 2: "south", 3: "west"}
 
 
 @dataclass
@@ -18,7 +18,7 @@ class UnitState:
     location: tuple
     resource: int
     hp: int
-    action: str = None
+    action: str = "noop"
     action_params: str | tuple = None
     task: str = None
     task_params: tuple = None
@@ -26,13 +26,29 @@ class UnitState:
     attack_damage: int = None
     attack_range: int = None
 
+    def to_string(self) -> str:
+        if self.action_params is None:
+            params = ""
+        elif isinstance(self.action_params, str):
+            params = f"({self.action_params})"
+        else:
+            params = self.action_params
+        return f"- {self.type}{self.location}, action: {self.action}{params}\n"
+
+
 
 @dataclass
 class EnvState:
     height: int
     width: int
-    resources: Dict[Tuple[int, int], UnitState]
+    resources: dict[tuple, UnitState]
 
+    def to_string(self) -> str:
+        text = f"The Game map is {self.height}x{self.width} grid\n"
+        text += f"Available Mineral Fields: {len(self.resources)}\n"
+        for loc, mine in self.resources.items():
+            text += f"- Mineral{loc}, resources: {mine.resource}\n"
+        return text
 
 @dataclass
 class PlayerState:
@@ -71,6 +87,22 @@ class PlayerState:
     def __getitem__(self, location: Tuple[int, int]) -> UnitState:
         """Returns the UnitState at the specified location."""
         return self.units.get(location)
+    
+    def to_string(self) -> str:
+        text = f"Player {self.id} State:\n"
+        for base in self.bases:
+            text += base.to_string()
+        for barracks in self.barracks:
+            text += barracks.to_string()
+        for worker in self.workers:
+            text += worker.to_string()
+        for light in self.lights:
+            text += light.to_string()
+        for heavy in self.heavys:
+            text += heavy.to_string()
+        for ranged in self.rangeds:
+            text += ranged.to_string()
+        return text
 
 
 class GameState:
@@ -78,8 +110,9 @@ class GameState:
     env: EnvState
     players: List[PlayerState]
     units: Dict[Tuple[int, int], UnitState | None]
+    time: int
 
-    def __init__(self, raw_obs: list[np.ndarray] = None, raw_entry: dict = None):
+    def __init__(self, raw_entry: dict = None):
         """
         Initialize the game state from raw observations or an entry dictionary.
         
@@ -93,17 +126,7 @@ class GameState:
             ValueError: If neither raw_obs nor raw_entry is provided, initialization cannot proceed.
         """
         self.num_players = 2
-        if raw_obs is not None:
-            self._init_from_raw_obs(raw_obs[0])
-        elif raw_entry is not None:
-            self._init_from_raw_entry(raw_entry)
-        else:
-            raise ValueError("Initialization failed: Either 'raw_obs' or 'raw_entry' must be provided.")
-
-    
-    def to_string(self):
-        # TODO: Implement
-        pass
+        self._init_from_raw_entry(raw_entry)
 
     def get_player_obs(self, player_id: int, partial=False):
         """Get player observation in the game."""
@@ -130,26 +153,30 @@ class GameState:
             self._get_owner_units(owner, obs)
     
     def _init_from_raw_entry(self, raw_entry: dict):
+        self.time = raw_entry["time"]
         self.env = EnvState(height=raw_entry["pgs"]["height"], width=raw_entry["pgs"]["width"], resources={})
         self.units = {}
         for i in range(self.env.height):
             for j in range(self.env.width):
                 self.units[(i, j)] = None
         self.players = []
+        self.players.append(PlayerState(0, raw_entry["pgs"]["players"][0]["resources"], {}))
         self.players.append(PlayerState(1, raw_entry["pgs"]["players"][0]["resources"], {}))
-        self.players.append(PlayerState(2, raw_entry["pgs"]["players"][0]["resources"], {}))
         actions = raw_entry["actions"]
-        actions = {a["unitID"]: a["action"] for a in actions}
+        actions = {a.get("ID", a.get("unitID")): a["action"] for a in actions}
         for unit in raw_entry["pgs"]["units"]:
-            loc = (unit["x"], unit["y"])
+            loc = (unit["y"], unit["x"])  # align to vec obs
             a = self._get_action(actions.get(unit["ID"]))
+            unit_type = unit["type"].lower()
             u = UnitState(
                 id=unit["ID"],
-                owner=unit["player"] + 1,
-                type=unit["type"],
+                owner=unit["player"],
+                type=unit_type,
                 location=loc,
                 resource=unit["resources"],
                 hp=unit["hitpoints"],
+                attack_damage=ATTACK_DAMAGE.get(unit_type),
+                attack_range=ATTACK_RANGE.get(unit_type),
                 action=a["type"],
                 action_params=a["parameter"],
             )
@@ -161,7 +188,7 @@ class GameState:
     
     def _get_action(self, action: dict | None):
         if action is None:
-            return {"type": None, "parameter": None}
+            return {"type": "noop", "parameter": None}
         a_t = ACTION.get(action["type"])
         if a_t == "attack":
             return {"type": a_t, "parameter": (action["x"], action["y"])}
@@ -209,7 +236,6 @@ class GameState:
                 hp=int(obs[HP_INDEX][loc]),
                 action=ACTION_MAP[obs[ACTION_INDEX][loc]],
                 resource=int(obs[RESOURCE_INDEX][loc]),
-                cost=COST.get(unit_type),
                 attack_damage=ATTACK_DAMAGE.get(unit_type),
                 attack_range=ATTACK_RANGE.get(unit_type),
                 task=None,
@@ -228,3 +254,10 @@ class GameState:
     def __getitem__(self, location: Tuple[int, int]) -> UnitState:
         """Returns the UnitState at the specified location."""
         return self.units.get(location)
+    
+    def to_string(self) -> str:
+        text = f"Game Time {self.time}\n"
+        text += self.env.to_string()
+        for player in self.players:
+            text += player.to_string()
+        return text

@@ -15,7 +15,7 @@ class RecordVideo(gym.Wrapper):
         name_prefix: str = None,
         record_trigger: Callable[[int], bool] = lambda x: True,
         render_fps = 150,
-        show: bool = True,
+        display: bool = True,
         theme: str="white"
     ):
         super().__init__(env)
@@ -26,7 +26,7 @@ class RecordVideo(gym.Wrapper):
         self.record_trigger = record_trigger
         self.render_mode = "rgb_array"  # only rgb_array mode supported
         self.render_fps = render_fps
-        self.is_show = show
+        self.display = display
         self.theme = theme
 
         self.recording = False
@@ -63,7 +63,7 @@ class RecordVideo(gym.Wrapper):
         return obs, rewards, dones, infos
     
     def render(self, mode: str="rgb_array"):
-        bytes_array = np.array(self.render_client.render(self.is_show, self.theme))
+        bytes_array = np.array(self.render_client.render(self.display, self.theme))
         image = Image.frombytes("RGB", (640, 640), bytes_array)
         return np.array(image)[:, :, ::-1]
     

@@ -1,11 +1,41 @@
-# IDE
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# IDE configurations
 .vscode/
-.pytest_cache/
-**/__pycache__/
 .idea/
 
-# log
-**/**runs**/
+# Pytest cache
+.pytest_cache/
 
-# microrts
-**/microrts.jar
+# Log files
+**/runs/
+
+# MicroRTS jar file
+microrts.jar
+
+# Temporary files and directories
+temp/
+*.tmp
+*.temp
+*.log
+
+# System files
+.DS_Store              # macOS
+Thumbs.db              # Windows
+*.swp                  # Vim swap files
+*.swo                  # Vim backup files
+
+# Other common exclusions
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+
+# Virtual environment directories
+venv/
+env/
+.venv/
+.env/

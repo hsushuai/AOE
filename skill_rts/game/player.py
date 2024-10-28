@@ -17,7 +17,7 @@ class Player(PlayerState):
             player_id (int): the ID of the player
             obs (GameState): the current observation from the environment
         """
-        player_status = obs.players[player_id - 1]
+        player_status = obs.players[player_id]
         super().__init__(**vars(player_status))
         self.obs = obs
         self.path_planner = PathPlanner(obs)

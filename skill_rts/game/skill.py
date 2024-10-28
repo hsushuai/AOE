@@ -272,7 +272,7 @@ class AttackEnemy(Skill):
     def __init__(self, player: "Player", skill_params: tuple):  # noqa: F821
         super().__init__(player, skill_params)
         self.player_id = player.id
-        self.enemy_id = player.id % 2 + 1
+        self.enemy_id = 1 - player.id
         self.enemy_loc: tuple = None
         
     def execute_step(self):
@@ -288,7 +288,7 @@ class AttackEnemy(Skill):
     def assign_to_unit(self):
         unit_type, enemy_type = self.params
         unit_locs = [unit.location for unit in self.player if unit.type == unit_type and unit.task is None]
-        enemy_locs = [unit.location for unit in self.obs.players[self.enemy_id - 1] if unit.type == enemy_type]
+        enemy_locs = [unit.location for unit in self.obs.players[self.enemy_id] if unit.type == enemy_type]
 
         if unit_locs and enemy_locs:
             nearest_loc, enemy_loc = min(
@@ -322,8 +322,8 @@ class AutoAttack(AttackEnemy):
         """
         def choose_target(unit: Unit) -> UnitState:
             targets = []
-            enemy_id = self.player.id % 2 + 1
-            for enemy in self.obs.players[enemy_id - 1]:
+            enemy_id = 1 - self.player_id
+            for enemy in self.obs.players[enemy_id]:
                 if manhattan_distance(unit.location, enemy.location) <= unit.attack_range:
                     targets.append((enemy, unit.attack_damage >= enemy.hp))
 

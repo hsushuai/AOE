@@ -127,8 +127,6 @@ public class JNIGridnetVecClient {
         }
 
         // initialize storage
-        JNIGridnetClient cli = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs);
-        Response _r = cli.reset(0);
         Response r = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
         int s1 = a_num_selfplayenvs + a_num_envs;
         int s2 = r.observation.length; 
@@ -325,7 +323,7 @@ public class JNIGridnetVecClient {
         return masks;
     }
 
-    public String[] getTrace() {
+    public String[] getTrace(int[] players) throws Exception {
         if (botClients != null) {
             for (int i = 0; i < botClients.length; i++) {
                 traces[i] = botClients[i].getJSONStringTrace();
@@ -335,6 +333,10 @@ public class JNIGridnetVecClient {
 
         for (int i = 0; i < selfPlayClients.length; i++) {
             traces[i] = selfPlayClients[i].getJSONStringTrace();
+        }
+
+        for (int i = selfPlayClients.length * 2; i < players.length; i++) {
+            traces[i] = clients[i].getJSONStringTrace();
         }
         return traces;
     }

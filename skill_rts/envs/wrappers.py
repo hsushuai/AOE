@@ -1,6 +1,7 @@
 from skill_rts.envs.vec_env import MicroRTSGridModeVecEnv, MicroRTSBotVecEnv
 from skill_rts.game.player import Player
 from skill_rts.game.game_state import GameState
+from skill_rts.game.trajectory import Trajectory
 from skill_rts.envs.record_video import RecordVideo
 from skill_rts import logger
 
@@ -17,7 +18,7 @@ class MicroRTSLLMEnv:
         map_paths: list=["maps/8x8/basesWorkers8x8.xml"],
         record_video: bool=False,
         run_dir: str="runs",
-        show_video: bool=False,
+        display: bool=False,
         theme: str="white"
     ):
         """
@@ -29,7 +30,7 @@ class MicroRTSLLMEnv:
             map_paths (list, optional): List of paths to map files for setting up different scenarios.
             record_video (bool, optional): Flag indicating whether to record gameplay video. Default is False.
             run_dir (str, optional): Directory path for saving run log and video recordings. Default is "runs".
-            show_video (bool, optional): Flag indicating whether to display video of the gameplay. Default is False.
+            display (bool, optional): Flag indicating whether to display video of the gameplay. Default is False.
             theme (str, optional): Theme of the game interface; possible values include "white" and "black". Default is "white".
         """
         self.llm_agents = []
@@ -43,13 +44,13 @@ class MicroRTSLLMEnv:
         if os.path.isdir(run_dir):
             logger.warn(f"Overwriting existing log at '{run_dir}' folder (try specifying a different `run_dir`)")
         os.makedirs(self.run_dir, exist_ok=True)
-        self.show_video = show_video
+        self.display = display
         self.theme = theme
 
         self.set_agent(agents)
         self.init_env()
 
-        self.timestep = 0
+        self.time = 0
         self.game_over = True
     
     def init_env(self):
@@ -86,7 +87,7 @@ class MicroRTSLLMEnv:
             raise ValueError("Couldn't initialize environment base on the given `agents`.")
         
         if self.record_video:
-            self.env = RecordVideo(self.env, self.run_dir, show=self.show_video, theme=self.theme)
+            self.env = RecordVideo(self.env, self.run_dir, display=self.display, theme=self.theme)
     
     def set_agent(self, agents: list):
         assert len(agents) == 2, f"Length of `agents` must be 2, but got a length of {len(agents)}."
@@ -99,7 +100,7 @@ class MicroRTSLLMEnv:
             else:  # java bot
                 self.bot_agents.append(agent)
     
-    def run(self):
+    def run(self) -> tuple[list, Trajectory]:
         """Run a complete game."""
         
         log_file = open(os.path.join(self.run_dir, "run.log"), "w")
@@ -111,15 +112,15 @@ class MicroRTSLLMEnv:
 
         while not self.game_over:
             actions = []
-            logger.info((f"{'-'*20} step-{self.timestep} {'-'*20}"))
-            for player_id in range(1, self.num_players + 1):
-                gs = GameState(raw_info["game_state"])
+            logger.info((f"{'-'*20} step-{self.time} {'-'*20}"))
+            for player_id in range(self.num_players):
+                gs = GameState(raw_info[player_id]["game_state"])
                 player = Player(player_id, gs.get_player_obs(player_id))
-                tasks = self.llm_agents[player_id - 1].step()
+                tasks = self.llm_agents[player_id].step()
                 ac = player.step(self._parse_task(tasks))
                 actions.append(ac)
-            self.timestep += 1
-            raw_obs, payoffs, done, info = self.env.step(np.array(actions))
+            self.time += 1
+            raw_obs, payoffs, done, raw_info = self.env.step(np.array(actions))
             self.game_over = done[0]
         
         self.payoffs = payoffs
@@ -127,7 +128,13 @@ class MicroRTSLLMEnv:
         self.env.close()
         log_file.close()
         
-        return payoffs
+        return payoffs, self.get_traj()
+    
+    def get_traj(self):
+        if self.time == 0:
+            return None
+        else:
+            return Trajectory(self.env.get_trajectories()[0])
     
     def _parse_task(self, text: str) -> list:
         import ast

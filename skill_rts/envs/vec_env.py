@@ -18,7 +18,7 @@ class MicroRTSGridModeVecEnv(gym.Env):
         self,
         num_selfplay_envs,
         num_bot_envs,
-        partial_obs=True,
+        partial_obs=False,
         max_steps=2000,
         render_mode="rgb_array",
         frame_skip=0,
@@ -242,9 +242,11 @@ class MicroRTSGridModeVecEnv(gym.Env):
         # self.source_unit_mask shape: [num_envs, map height * map width * 1]
         self.source_unit_mask = action_mask[:, :, :, 0].reshape(self.num_envs, -1)
     
-    def get_game_state(self):
-        game_state = self.vec_client.getGameState()
-        return game_state
+    def get_trajectories(self) -> list[dict] | None:
+        try:
+            return [json.loads(str(trace)) for trace in self.vec_client.getTrace([0] * self.num_envs)]
+        except ValueError:
+            return None
     
     def _parse_responses(self, responses):
         rewards, dones = np.array(responses.reward), np.array(responses.done)
