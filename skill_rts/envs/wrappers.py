@@ -5,8 +5,16 @@ from skill_rts.game.trajectory import Trajectory
 from skill_rts.envs.record_video import RecordVideo
 from skill_rts import logger
 
+import gym
 import os
 import numpy as np
+
+import jpype
+import jpype.imports
+import numpy as np
+from jpype.imports import registerDomain
+from jpype.types import JArray, JInt
+import xml.etree.ElementTree as ET
 
 
 class MicroRTSLLMEnv:
@@ -115,7 +123,7 @@ class MicroRTSLLMEnv:
             logger.info((f"{'-'*20} step-{self.time} {'-'*20}"))
             for player_id in range(self.num_players):
                 gs = GameState(raw_info[player_id]["game_state"])
-                player = Player(player_id, gs.get_player_obs(player_id))
+                player = Player(player_id, GameState(player_id))
                 tasks = self.llm_agents[player_id].step()
                 ac = player.step(self._parse_task(tasks))
                 actions.append(ac)
@@ -168,4 +176,3 @@ class MicroRTSLLMEnv:
         for task, params in zip(task_list, params_list):
             logger.info(f"{task}{params}")
         return list(zip(task_list, params_list))
-    

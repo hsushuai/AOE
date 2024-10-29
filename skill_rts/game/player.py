@@ -61,3 +61,7 @@ class Player(PlayerState):
                 if skill_class.name == skill_name:
                     return skill_class(self, skill_params)
         return None
+    
+    def update_obs(self, pre_obs, cur_obs):
+        self.pre_obs = pre_obs
+        self.obs = cur_obs

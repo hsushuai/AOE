@@ -11,6 +11,7 @@ __pycache__/
 
 # Log files
 **/runs/
+**/wandb/
 
 # MicroRTS jar file
 microrts.jar

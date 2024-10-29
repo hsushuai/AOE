@@ -74,7 +74,7 @@ class MicroRTSGridModeVecEnv:
             ), "if multiple maps are provided, they should be provided for each environment"
         self.reward_weight = reward_weight
 
-        self.microrts_path = os.path.join(os.getcwd(), "microrts")
+        self.microrts_path = os.path.join(gym_microrts.__path__[0], "microrts")
 
         # prepare training maps
         self.cycle_maps = list(map(lambda i: os.path.join(self.microrts_path, i), cycle_maps))
@@ -145,11 +145,11 @@ class MicroRTSGridModeVecEnv:
 
         # computed properties
         # [num_planes_hp(5), num_planes_resources(5), num_planes_player(3),
-        # num_planes_unit_type(z), num_planes_unit_action(6)]
+        # num_planes_unit_type(z), num_planes_unit_action(6), num_planes_terrain(2)]
 
-        self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6]
+        self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6, 2]
         if partial_obs:
-            self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6, 2]
+            self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6, 2, 1, 1]  # 2 extra for visibility
         self.observation_space = gym.spaces.Box(
             low=0.0, high=1.0, shape=(self.height, self.width, sum(self.num_planes)), dtype=np.int32
         )
@@ -276,7 +276,7 @@ class MicroRTSGridModeVecEnv:
     def close(self):
         if jpype._jpype.isStarted():
             self.vec_client.close()
-            # jpype.shutdownJVM()
+            jpype.shutdownJVM()
 
     def get_action_mask(self):
         """
@@ -384,11 +384,11 @@ class MicroRTSBotVecEnv(MicroRTSGridModeVecEnv):
 
         # computed properties
         # [num_planes_hp(5), num_planes_resources(5), num_planes_player(5),
-        # num_planes_unit_type(z), num_planes_unit_action(6)]
+        # num_planes_unit_type(z), num_planes_unit_action(6), num_planes_terrain(2)]
 
-        self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6]
+        self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6, 2]
         if partial_obs:
-            self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6, 2]
+            self.num_planes = [5, 5, 3, len(self.utt["unitTypes"]) + 1, 6, 2, 2]  # 2 extra for visibility
         self.observation_space = gym.spaces.Discrete(2)
         self.action_space = gym.spaces.Discrete(2)
 

@@ -15,6 +15,7 @@ class Skill(ABC):
     
     1. `assign_to_unit`: Assigns the skill to a specific unit based on the provided criteria.
     2.`execute_step`: Defines the actions to be performed when the skill is executed.
+    3. `is_completed`: Determine if a skill has been completed based on the current and previous game states.
     """
     # skill name will be used to instantiate the skill and must be unique
     name: str = ""
@@ -26,8 +27,8 @@ class Skill(ABC):
     def __init__(self, player: "Player", skill_params: tuple):  # noqa: F821
         """
         Args:
-            player (Player): The player that owns the unit executing the skill.
-            skill_params (tuple): A tuple containing parameters specific to the skill.
+            player (Player): player that owns the unit executing the skill
+            skill_params (tuple): parameters specific to the skill
         """
         self.player = player
         self.params = skill_params
@@ -65,6 +66,18 @@ class Skill(ABC):
         
         Returns:
             bool: True if the skill is assigned to a unit.
+        """
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
+        """Determine if a skill has been completed based on the current and previous game states.
+
+        Args:
+            params (tuple): parameters specific to the skill
+            pre_gs (GameState): game state from the previous time step
+            cur_gs (GameState): current game state to evaluate
         """
         pass
 
@@ -120,6 +133,11 @@ class DeployUnit(Skill):
                 self.unit = self.player[nearest_loc]
                 return True
         return False
+    
+    @staticmethod
+    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
+        # continue skill
+        return False
 
 
 class BuildBuilding(Skill):
@@ -159,6 +177,12 @@ class BuildBuilding(Skill):
                 self.player[nearest_loc].task_params = self.params
                 self.unit = self.player[nearest_loc]
                 return True
+        return False
+    
+    @staticmethod
+    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
+        if cur_gs[params[1]] is not None and cur_gs[params[1]].type == params[0]:
+            return True
         return False
 
 
@@ -209,6 +233,11 @@ class HarvestMineral(Skill):
             self.unit = self.player[nearest_loc]
             return True
         return False
+    
+    @staticmethod
+    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
+        # continue skill
+        return False
 
 
 class ProduceUnit(Skill):
@@ -253,6 +282,10 @@ class ProduceUnit(Skill):
                 self.unit = valid_unit
                 return True
         return False
+    
+    @staticmethod
+    def is_completed(params: tuple, player_id: int, pre_gs: GameState, cur_gs: GameState) -> bool:
+        ...
 
 
 class AttackEnemy(Skill):

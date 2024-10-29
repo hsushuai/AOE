@@ -166,6 +166,50 @@ public class JNIBotClient {
         return response;
     }
 
+    public Response gameStep() throws Exception {
+        int player = 0;
+        if (partialObs) {
+            player1gs = new PartiallyObservableGameState(gs, player);
+            player2gs = new PartiallyObservableGameState(gs, 1 - player);
+        } else {
+            player1gs = gs;
+            player2gs = gs;
+        }
+
+        pa1 = ai1.getAction(player, gs);
+        pa2 = ai2.getAction(1 - player, gs);
+
+        gs.issueSafe(pa1);
+        gs.issueSafe(pa2);
+        
+        TraceEntry te  = new TraceEntry(gs.getPhysicalGameState().clone(), gs.getTime());
+        te.addPlayerAction(pa1.clone());
+        te.addPlayerAction(pa2.clone());
+        te.addPlayerAction(pa2.clone());
+        if (!pa1.isEmpty() || !pa2.isEmpty()) {
+            trace.addEntry(te);
+        }
+
+        // simulate:
+        gameover = gs.cycle();
+        if (gameover) {
+            ai1.gameOver(gs.winner());
+            ai2.gameOver(gs.winner());
+        }
+
+        for (int i = 0; i < rewards.length; i++) {
+            rfs[i].computeReward(player, 1 - player, te, gs);
+            dones[i] = rfs[i].isDone();
+            rewards[i] = rfs[i].getReward();
+        }
+        response.set(
+            gs.getVectorObservation(player),
+            rewards,
+            dones,
+            new String[]{null, null});
+        return response;
+    }
+
     public String sendUTT() throws Exception {
         Writer w = new StringWriter();
         utt.toJSON(w);

@@ -127,13 +127,6 @@ class GameState:
         """
         self.num_players = 2
         self._init_from_raw_entry(raw_entry)
-
-    def get_player_obs(self, player_id: int, partial=False):
-        """Get player observation in the game."""
-        if not partial:
-            return self
-        else:
-            raise NotImplementedError("Partial observation mode is not implemented.")
     
     def _init_from_raw_obs(self, raw_obs):
         obs, players_resource = raw_obs[0], raw_obs[1]
