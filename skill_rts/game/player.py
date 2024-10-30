@@ -1,5 +1,5 @@
 from skill_rts.game.unit import Unit
-from skill_rts.game.game_state import PlayerState
+from skill_rts.game.game_state import PlayerState, GameState
 from skill_rts.game.utils import PathPlanner
 import skill_rts.game.skill as skills
 import numpy as np
@@ -9,33 +9,32 @@ from skill_rts import logger
 class Player(PlayerState):
     """Player class that mapping task plan to action executed in the environment."""
     
-    def __init__(self, player_id: int, obs: "GameState"):  # noqa: F821
+    def __init__(self, player_id: int, obs: GameState):
         """
         Initializes the Player instance with the given player ID and observation.
 
         Args:
             player_id (int): the ID of the player
-            obs (GameState): the current observation from the environment
+            obs (GameState): the observation of the game state
         """
-        player_status = obs.players[player_id]
-        super().__init__(**vars(player_status))
-        self.obs = obs
-        self.path_planner = PathPlanner(obs)
-        self.units = {loc: Unit(unit_status) for loc, unit_status in self.units.items()}
+        self.id = player_id
         self.auto_attack = True  # auto attack enemy in range
         self.tasks = None
         self._is_task_updated = False
+        self.obs = None
+        self.update_obs(obs)
 
-    def step(self) -> np.ndarray:
+    def step(self) -> np.ndarray:  # noqa: F821
         """
         Executes a series of tasks for the player and returns the action vectors.
 
         Args:
-            tasks (list): a list of tasks to be executed, each containing a skill name and its parameters
 
         Returns:
             np.ndarray: an array representing the action vectors of the player's actions
         """
+        if not self._is_task_updated:
+            self._is_task_updated = True
         act_vecs = np.zeros((self.obs.env.height, self.obs.env.width, 7), dtype=int)
         
         # Execute auto-attack first if enabled
@@ -47,9 +46,12 @@ class Player(PlayerState):
                     act_vecs[auto_attack.unit.location] = act_vec
         
         # Execute other tasks
-        for task in self.tasks:
+        for task in self.tasks[:]:
             skill_name, skill_params = task
-            skill = self._get_skill(skill_name, skill_params)
+            skill = self._get_skill(skill_name, skill_params)(self, skill_params)
+            if skill is None:
+                self.tasks.remove(task)
+                continue
             act_vec = skill.step()
             if act_vec is not None:
                 act_vecs[skill.unit.location] = act_vec
@@ -59,22 +61,30 @@ class Player(PlayerState):
         self.tasks = self._parse_tasks(tasks)
         self._is_task_updated = True
     
-    def _update_tasks(self):
-        for 
+    def update_tasks(self, metric):
+        kills = {unit_type: len(units) for unit_type, units in metric.unit_killed[self.id].items()}
+        prods = {unit_type: len(units) for unit_type, units in metric.unit_produced[self.id].items()}
+        for task in self.tasks:
+            skill = self._get_skill(task[0], task[1])
+            if skill is not None and skill.is_completed(kills=kills, prods=prods, obs=self.obs, params=task[1]):
+                self.tasks.remove(task)
 
     def _get_skill(self, skill_name, skill_params) -> skills.Skill | None:
         """Retrieves the skill class corresponding to the given skill name."""
         for skill_class in vars(skills).values():
             if isinstance(skill_class, type) and issubclass(skill_class, skills.Skill):
                 if skill_class.name == skill_name:
-                    return skill_class(self, skill_params)
+                    return skill_class
         return None
     
-    def update_obs(self, pre_obs, cur_obs):
-        self.pre_obs = pre_obs
-        self.obs = cur_obs
+    def update_obs(self, obs: GameState):
+        self.obs = obs
+        player_state = obs.players[self.id]
+        super().__init__(**vars(player_state))
+        self.path_planner = PathPlanner(self.obs)
+        self.units = {loc: Unit(unit_status) for loc, unit_status in self.units.items()}
 
-    def _parse_task(self, text: str) -> list:
+    def _parse_tasks(self, text: str) -> list:
         import ast
         import re
 

@@ -25,6 +25,11 @@ class UnitState:
     cost: int = None
     attack_damage: int = None
     attack_range: int = None
+    
+    def __eq__(self, other):
+        if isinstance(other, UnitState):
+            return self.id == other.id
+        return False
 
     def to_string(self) -> str:
         if self.action_params is None:
@@ -49,6 +54,9 @@ class EnvState:
         for loc, mine in self.resources.items():
             text += f"- Mineral{loc}, resources: {mine.resource}\n"
         return text
+    
+    def __getitem__(self, key):
+        return self.resources.get(key)
 
 @dataclass
 class PlayerState:
@@ -57,15 +65,15 @@ class PlayerState:
     units: dict[tuple[int, int], UnitState]
 
     @property
-    def workers(self) -> list[UnitState]:
+    def worker(self) -> list[UnitState]:
         return [UnitState for UnitState in self.units.values() if UnitState.type == "worker"]
 
     @property
-    def bases(self) -> list[UnitState]:
+    def base(self) -> list[UnitState]:
         return [UnitState for UnitState in self.units.values() if UnitState.type == "base"]
 
     @property
-    def lights(self) -> list[UnitState]:
+    def light(self) -> list[UnitState]:
         return [UnitState for UnitState in self.units.values() if UnitState.type == "light"]
 
     @property
@@ -73,11 +81,11 @@ class PlayerState:
         return [UnitState for UnitState in self.units.values() if UnitState.type == "barracks"]
 
     @property
-    def rangeds(self) -> list[UnitState]:
+    def ranged(self) -> list[UnitState]:
         return [UnitState for UnitState in self.units.values() if UnitState.type == "ranged"]
 
     @property
-    def heavys(self) -> list[UnitState]:
+    def heavy(self) -> list[UnitState]:
         return [UnitState for UnitState in self.units.values() if UnitState.type == "heavy"]
     
     def __iter__(self) -> Iterator[UnitState]:
@@ -90,17 +98,17 @@ class PlayerState:
     
     def to_string(self) -> str:
         text = f"Player {self.id} State:\n"
-        for base in self.bases:
+        for base in self.base:
             text += base.to_string()
         for barracks in self.barracks:
             text += barracks.to_string()
-        for worker in self.workers:
+        for worker in self.worker:
             text += worker.to_string()
-        for light in self.lights:
+        for light in self.light:
             text += light.to_string()
-        for heavy in self.heavys:
+        for heavy in self.heavy:
             text += heavy.to_string()
-        for ranged in self.rangeds:
+        for ranged in self.ranged:
             text += ranged.to_string()
         return text
 
@@ -154,7 +162,7 @@ class GameState:
                 self.units[(i, j)] = None
         self.players = []
         self.players.append(PlayerState(0, raw_entry["pgs"]["players"][0]["resources"], {}))
-        self.players.append(PlayerState(1, raw_entry["pgs"]["players"][0]["resources"], {}))
+        self.players.append(PlayerState(1, raw_entry["pgs"]["players"][1]["resources"], {}))
         actions = raw_entry["actions"]
         actions = {a.get("ID", a.get("unitID")): a["action"] for a in actions}
         for unit in raw_entry["pgs"]["units"]:
@@ -168,6 +176,7 @@ class GameState:
                 location=loc,
                 resource=unit["resources"],
                 hp=unit["hitpoints"],
+                cost=COST.get(unit_type),
                 attack_damage=ATTACK_DAMAGE.get(unit_type),
                 attack_range=ATTACK_RANGE.get(unit_type),
                 action=a["type"],
@@ -231,6 +240,7 @@ class GameState:
                 resource=int(obs[RESOURCE_INDEX][loc]),
                 attack_damage=ATTACK_DAMAGE.get(unit_type),
                 attack_range=ATTACK_RANGE.get(unit_type),
+                cost=COST.get(unit_type),
                 task=None,
                 task_params=None,
             )

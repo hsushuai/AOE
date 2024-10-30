@@ -69,9 +69,9 @@ class Skill(ABC):
         """
         pass
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def is_completed(**kwargs) -> bool:
+    def is_completed(cls, **kwargs) -> bool:
         """Determine if a skill has been completed based on the current and previous game states."""
         pass
 
@@ -128,8 +128,8 @@ class DeployUnit(Skill):
                 return True
         return False
     
-    @staticmethod
-    def is_completed(**kwargs) -> bool:
+    @classmethod
+    def is_completed(cls, **kwargs) -> bool:
         # continue skill
         return False
 
@@ -164,7 +164,7 @@ class BuildBuilding(Skill):
         building_cost = {"base": 10, "barracks": 5}
         building_type, building_loc = self.params
         if self.obs.get(building_loc) is None and building_cost[building_type] <= self.player.resource:
-            candidates = [unit.location for unit in self.player.workers if unit.task is None]
+            candidates = [unit.location for unit in self.player.worker if unit.task is None]
             if candidates:
                 nearest_loc = self.path_planner.get_manhattan_nearest(building_loc, candidates)
                 self.player[nearest_loc].task = "[Build Building]"
@@ -173,9 +173,11 @@ class BuildBuilding(Skill):
                 return True
         return False
     
-    @staticmethod
-    def is_completed(cur_gs: GameState, params: tuple, **kwargs) -> bool:
-        if cur_gs[params[1]] is not None and cur_gs[params[1]].type == params[0]:
+    @classmethod
+    def is_completed(cls, prods, params, **kwargs) -> bool:
+        if prods[params[0]] > 0:
+            prods[params[0]] -= 1
+            logger.info(f"Completed {cls.name}{params}")
             return True
         return False
 
@@ -204,7 +206,7 @@ class HarvestMineral(Skill):
             tgt_loc = self.path_planner.get_path_nearest(self.unit.location, tgt_locs)
             return self.move_to_loc(tgt_loc)
         else:
-            bases_locs = [base.location for base in self.player.bases]
+            bases_locs = [base.location for base in self.player.base]
             if len(bases_locs) == 0:
                 return self.unit.noop()
             base_loc = self.path_planner.get_manhattan_nearest(self.unit.location, bases_locs)
@@ -214,11 +216,11 @@ class HarvestMineral(Skill):
     
     def assign_to_unit(self):
         mine_loc = self.params
-        if len(self.player.bases) == 0:
+        if len(self.player.base) == 0:
             return False
-        candidates = [unit.location for unit in self.player.workers if unit.resource > 0 and unit.task is None]
+        candidates = [unit.location for unit in self.player.worker if unit.resource > 0 and unit.task is None]
         if not candidates and self.obs.env.resources.get(mine_loc) is not None:
-            candidates = [unit.location for unit in self.player.workers if unit.task is None]
+            candidates = [unit.location for unit in self.player.worker if unit.task is None]
         
         if candidates:
             nearest_loc = self.path_planner.get_manhattan_nearest(mine_loc, candidates)
@@ -228,9 +230,11 @@ class HarvestMineral(Skill):
             return True
         return False
     
-    @staticmethod
-    def is_completed(**kwargs) -> bool:
-        # continue skill
+    @classmethod
+    def is_completed(cls, obs, params, **kwargs) -> bool:
+        if obs.env[params] is None:
+            logger.info(f"Completed {cls.name}{params}")
+            return True
         return False
 
 
@@ -262,7 +266,7 @@ class ProduceUnit(Skill):
         unit_cost = {"worker": 1, "light": 2, "heavy": 2, "ranged": 2}
         prod_type, direction = self.params
         if unit_cost[prod_type] <= self.player.resource:
-            units = self.player.bases if prod_type == "worker" else self.player.barracks
+            units = self.player.base if prod_type == "worker" else self.player.barracks
             valid_unit = None
             for unit in units:
                 neighbors = self.path_planner.get_neighbors(unit.location)
@@ -277,9 +281,11 @@ class ProduceUnit(Skill):
                 return True
         return False
     
-    @staticmethod
-    def is_completed(pre_gs: GameState, cur_gs: GameState, params: tuple, player_id: int, **kwargs) -> bool:
-        if len(getattr(cur_gs.players[player_id], f"{params[0]}s")) > len(getattr(pre_gs.players[player_id], f"{params[0]}s")):
+    @classmethod
+    def is_completed(cls, prods, params, **kwargs) -> bool:
+        if prods[params[0]] > 0:
+            prods[params[0]] -= 1
+            logger.info(f"Completed {cls.name}{params}")
             return True
         return False
 
@@ -331,9 +337,11 @@ class AttackEnemy(Skill):
             return True
         return False
     
-    @staticmethod
-    def is_completed(pre_gs: GameState, cur_gs: GameState, player_id: int, params: tuple, **kwargs) -> bool:
-        if len(getattr(cur_gs.players[1 - player_id], f"{params[1]}s")) < len(getattr(pre_gs.players[1 - player_id], f"{params[1]}s")):
+    @classmethod
+    def is_completed(cls, kills, params, **kwargs) -> bool:
+        if kills[params[0]] > 0:
+            kills[params[0]] -= 1
+            logger.info(f"Completed {cls.name}{params}")
             return True
         return False
 
@@ -381,5 +389,5 @@ class AutoAttack(AttackEnemy):
         return False
     
     @staticmethod
-    def is_completed(**kwargs) -> bool:
+    def is_completed(*args, **kwargs) -> bool:
         return False
