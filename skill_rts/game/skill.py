@@ -15,7 +15,7 @@ class Skill(ABC):
     
     1. `assign_to_unit`: Assigns the skill to a specific unit based on the provided criteria.
     2.`execute_step`: Defines the actions to be performed when the skill is executed.
-    3. `is_completed`: Determine if a skill has been completed based on the current and previous game states.
+    3. `is_completed`: Determine if a skill has been completed.
     """
     # skill name will be used to instantiate the skill and must be unique
     name: str = ""
@@ -71,14 +71,8 @@ class Skill(ABC):
 
     @staticmethod
     @abstractmethod
-    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
-        """Determine if a skill has been completed based on the current and previous game states.
-
-        Args:
-            params (tuple): parameters specific to the skill
-            pre_gs (GameState): game state from the previous time step
-            cur_gs (GameState): current game state to evaluate
-        """
+    def is_completed(**kwargs) -> bool:
+        """Determine if a skill has been completed based on the current and previous game states."""
         pass
 
     def move_to_loc(self, tgt_loc: tuple) -> np.ndarray:
@@ -124,7 +118,7 @@ class DeployUnit(Skill):
     
     def assign_to_unit(self):
         unit_type, tgt_loc = self.params
-        if self.obs.units.get(tgt_loc) is None:
+        if self.obs.get(tgt_loc) is None:
             candidates = [unit.location for unit in self.player if unit.type == unit_type and unit.task is None]
             if candidates:
                 nearest_loc = self.path_planner.get_manhattan_nearest(tgt_loc, candidates)
@@ -135,7 +129,7 @@ class DeployUnit(Skill):
         return False
     
     @staticmethod
-    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
+    def is_completed(**kwargs) -> bool:
         # continue skill
         return False
 
@@ -169,7 +163,7 @@ class BuildBuilding(Skill):
     def assign_to_unit(self):
         building_cost = {"base": 10, "barracks": 5}
         building_type, building_loc = self.params
-        if self.obs.units.get(building_loc) is None and building_cost[building_type] <= self.player.resource:
+        if self.obs.get(building_loc) is None and building_cost[building_type] <= self.player.resource:
             candidates = [unit.location for unit in self.player.workers if unit.task is None]
             if candidates:
                 nearest_loc = self.path_planner.get_manhattan_nearest(building_loc, candidates)
@@ -180,7 +174,7 @@ class BuildBuilding(Skill):
         return False
     
     @staticmethod
-    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
+    def is_completed(cur_gs: GameState, params: tuple, **kwargs) -> bool:
         if cur_gs[params[1]] is not None and cur_gs[params[1]].type == params[0]:
             return True
         return False
@@ -235,7 +229,7 @@ class HarvestMineral(Skill):
         return False
     
     @staticmethod
-    def is_completed(params: tuple, pre_gs: GameState, cur_gs: GameState) -> bool:
+    def is_completed(**kwargs) -> bool:
         # continue skill
         return False
 
@@ -257,10 +251,10 @@ class ProduceUnit(Skill):
     def execute_step(self):
         prod_type, direction = self.params
         loc = get_neighbor(self.unit.location, direction)
-        if self.obs.units[loc] is not None:
+        if self.obs[loc] is not None:
             neighbors = self.path_planner.get_neighbors(self.unit.location)
             for _, loc in neighbors:
-                if self.obs.units[loc] is not None:
+                if self.obs[loc] is not None:
                     break
         return self.unit.produce(get_direction(self.unit.location, loc), prod_type)
     
@@ -284,8 +278,10 @@ class ProduceUnit(Skill):
         return False
     
     @staticmethod
-    def is_completed(params: tuple, player_id: int, pre_gs: GameState, cur_gs: GameState) -> bool:
-        ...
+    def is_completed(pre_gs: GameState, cur_gs: GameState, params: tuple, player_id: int, **kwargs) -> bool:
+        if len(getattr(cur_gs.players[player_id], f"{params[0]}s")) > len(getattr(pre_gs.players[player_id], f"{params[0]}s")):
+            return True
+        return False
 
 
 class AttackEnemy(Skill):
@@ -334,6 +330,12 @@ class AttackEnemy(Skill):
             self.enemy_loc = enemy_loc
             return True
         return False
+    
+    @staticmethod
+    def is_completed(pre_gs: GameState, cur_gs: GameState, player_id: int, params: tuple, **kwargs) -> bool:
+        if len(getattr(cur_gs.players[1 - player_id], f"{params[1]}s")) < len(getattr(pre_gs.players[1 - player_id], f"{params[1]}s")):
+            return True
+        return False
 
 
 class AutoAttack(AttackEnemy):
@@ -376,4 +378,8 @@ class AutoAttack(AttackEnemy):
                     self.unit = unit
                     self.enemy_loc = target.location
                     return True
+        return False
+    
+    @staticmethod
+    def is_completed(**kwargs) -> bool:
         return False
