@@ -1,3 +1,3 @@
-# Adaptive Opponent Exploitation: Multi-Style Strategy Integration Improves LLM's Planning Ability
+# ACE: Adaptive Competitor Exploration with Integrated Multi-Style Strategies for Improved Planning in Large Language Models
 
 ![Framework](misc/framework.png)

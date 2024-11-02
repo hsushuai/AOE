@@ -17,6 +17,10 @@ from jpype.imports import registerDomain
 from jpype.types import JArray, JInt
 import xml.etree.ElementTree as ET
 
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 class MicroRTSLLMEnv(gym.Env):
     """Wrapper Environment for MicroRTS."""
@@ -144,7 +148,7 @@ class MicroRTSLLMEnv(gym.Env):
         
         for player in self.players:
             if self.time % self.interval == 0:
-                tasks = self.llm_agents[player.id].step()
+                tasks = self.llm_agents[player.id].step(player.obs.to_string())
                 player.set_tasks(tasks)
             ac = player.step()
             actions.append(ac)
@@ -153,8 +157,8 @@ class MicroRTSLLMEnv(gym.Env):
         
         self.metric.update(GameState(raw_info[0]["game_state"]))
         for player, info in zip(self.players, raw_info):
-            player.update_obs(GameState(info["player_obs"]))
-            player.update_tasks(self.metric)
+            self.gs = GameState(info["game_state"])
+            player.update_obs(self.gs)
         
         self.game_over = done[0]
         self.time += 1

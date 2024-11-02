@@ -124,12 +124,17 @@ def guidedRojoA3N(utt):
     return GuidedRojoA3N(utt)
 
 
-ALL_AIS = [
-    randomBiasedAI,
-    randomAI,
-    passiveAI,
-    workerRushAI,
-    lightRushAI,
-    coacAI,
-    naiveMCTSAI,
-]
+def get_agent(name: str):
+    return ALL_AIS[name]
+
+
+ALL_AIS = {
+    "randomAI": randomAI,
+    "randomBiasedAI": randomBiasedAI,
+    "passiveAI": passiveAI,
+    "workerRushAI": workerRushAI,
+    "lightRushAI": lightRushAI,
+    "coacAI": coacAI,
+    "naiveMCTSAI": naiveMCTSAI,
+    "mayari": mayari,
+}

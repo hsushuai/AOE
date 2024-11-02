@@ -95,6 +95,22 @@ class Skill(ABC):
         if direction is None:  # no way
             return self.unit.noop()
         return self.unit.move(direction)
+    
+    @staticmethod
+    def params_validate(params) -> bool:
+        """
+        Validate the parameters for the skill.
+
+        Args:
+            params (any): The parameters for the skill.
+
+        Returns:
+            bool: True if the parameters are valid, False otherwise.
+
+        This method checks if the parameters dictionary contains the required keys and if 
+        the values for those keys are of the expected types.
+        """
+        pass
 
 
 class DeployUnit(Skill):
@@ -118,7 +134,7 @@ class DeployUnit(Skill):
     
     def assign_to_unit(self):
         unit_type, tgt_loc = self.params
-        if self.obs.get(tgt_loc) is None:
+        if self.obs[tgt_loc] is None:
             candidates = [unit.location for unit in self.player if unit.type == unit_type and unit.task is None]
             if candidates:
                 nearest_loc = self.path_planner.get_manhattan_nearest(tgt_loc, candidates)
@@ -132,7 +148,16 @@ class DeployUnit(Skill):
     def is_completed(cls, **kwargs) -> bool:
         # continue skill
         return False
-
+    
+    @staticmethod
+    def params_validate(params):
+        if isinstance(params, tuple) and len(params) == 2:
+            unit_type, tgt_loc = params
+            valid = isinstance(unit_type, str)
+            valid &= unit_type in ["worker", "light", "heavy", "ranged"]
+            valid &= isinstance(tgt_loc, tuple) and len(tgt_loc) == 2
+            return valid
+        return False
 
 class BuildBuilding(Skill):
     """
@@ -150,7 +175,7 @@ class BuildBuilding(Skill):
     name = "[Build Building]"
     
     def execute_step(self):
-        building_type, building_loc = self.params
+        building_type, building_loc, _ = self.params
         if manhattan_distance(self.unit.location, building_loc) == 1:
             return self.unit.produce(get_direction(self.unit.location, building_loc), building_type)
         neighbors = self.path_planner.get_neighbors(self.unit.location)
@@ -161,9 +186,19 @@ class BuildBuilding(Skill):
         return self.unit.noop()
     
     def assign_to_unit(self):
-        building_cost = {"base": 10, "barracks": 5}
-        building_type, building_loc = self.params
-        if self.obs.get(building_loc) is None and building_cost[building_type] <= self.player.resource:
+        building_type, building_loc, trigger = self.params
+        trigger = eval(f"lambda resource: {trigger}")
+
+        is_build_now = False
+        neighbors = self.path_planner.get_neighbors(building_loc, valid=False)
+        for direction, loc in neighbors:
+            if self.obs[loc] is not None and self.obs[loc].action == "produce":
+                is_build_now = True
+                break
+        
+        if not trigger(self.player.resource) or not is_build_now:
+            return False
+        if self.obs[building_loc] is None:
             candidates = [unit.location for unit in self.player.worker if unit.task is None]
             if candidates:
                 nearest_loc = self.path_planner.get_manhattan_nearest(building_loc, candidates)
@@ -174,11 +209,33 @@ class BuildBuilding(Skill):
         return False
     
     @classmethod
-    def is_completed(cls, prods, params, **kwargs) -> bool:
-        if prods[params[0]] > 0:
-            prods[params[0]] -= 1
+    def is_completed(cls, params, obs, **kwargs) -> bool:
+        if obs[params[1]] is not None and obs[params[1]].type == params[0]:
             logger.info(f"Completed {cls.name}{params}")
             return True
+        return False
+    
+    @staticmethod
+    def params_validate(params):
+        BUILDING_TYPES = {"bases", "barracks"}
+        
+        if isinstance(params, tuple) and len(params) == 3:
+            building_type, building_loc, trigger = params
+            
+            if (isinstance(building_type, str) and building_type in BUILDING_TYPES and
+                    isinstance(building_loc, tuple) and len(building_loc) == 2 and
+                    isinstance(trigger, str)):
+                
+                if trigger in {"True", "False"}:
+                    return True
+                
+                try:
+                    resource = 0  # Placeholder  # noqa: F841
+                    eval(trigger)
+                    return "resource" in trigger
+                except Exception:
+                    return False
+        
         return False
 
 
@@ -236,6 +293,12 @@ class HarvestMineral(Skill):
             logger.info(f"Completed {cls.name}{params}")
             return True
         return False
+    
+    @staticmethod
+    def params_validate(params):
+        if isinstance(params, tuple) and len(params) == 2:
+            return isinstance(params[0], int) and isinstance(params[1], int)
+        return False
 
 
 class ProduceUnit(Skill):
@@ -253,14 +316,17 @@ class ProduceUnit(Skill):
     name = "[Produce Unit]"
 
     def execute_step(self):
+        import random
+
         prod_type, direction = self.params
         loc = get_neighbor(self.unit.location, direction)
         if self.obs[loc] is not None:
             neighbors = self.path_planner.get_neighbors(self.unit.location)
-            for _, loc in neighbors:
-                if self.obs[loc] is not None:
-                    break
-        return self.unit.produce(get_direction(self.unit.location, loc), prod_type)
+            available_directions = [d for d, l in neighbors if self.obs[l] is None]
+            if len(available_directions) > 0:
+                random.shuffle(available_directions)
+                direction = available_directions[0]
+        return self.unit.produce(direction, prod_type)
     
     def assign_to_unit(self):
         unit_cost = {"worker": 1, "light": 2, "heavy": 2, "ranged": 2}
@@ -287,6 +353,16 @@ class ProduceUnit(Skill):
             prods[params[0]] -= 1
             logger.info(f"Completed {cls.name}{params}")
             return True
+        return False
+    
+    @staticmethod
+    def params_validate(params):
+        if isinstance(params, tuple) and len(params) == 2:
+            prod_type, direction = params
+            valid = isinstance(prod_type, str) and isinstance(direction, str)
+            valid &= prod_type in ["worker", "light", "ranged", "heavy"]
+            valid &= direction in ["south", "east", "north", "west"]
+            return valid
         return False
 
 
@@ -337,10 +413,20 @@ class AttackEnemy(Skill):
             return True
         return False
     
+    @staticmethod
+    def params_validate(params):
+        if isinstance(params, tuple) and len(params) == 2:
+            unit_type, enemy_type = params
+            valid = isinstance(unit_type, str) and isinstance(enemy_type, str)
+            valid &= unit_type in ["worker", "light", "ranged", "heavy"]
+            valid &= enemy_type in ["worker", "light", "ranged", "heavy", "base", "barracks"]
+            return valid
+        return False
+    
     @classmethod
     def is_completed(cls, kills, params, **kwargs) -> bool:
-        if kills[params[0]] > 0:
-            kills[params[0]] -= 1
+        if kills[params[1]] > 0:
+            kills[params[1]] -= 1
             logger.info(f"Completed {cls.name}{params}")
             return True
         return False

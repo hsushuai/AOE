@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List, Tuple, Optional
 from collections import deque
 import numpy as np
+import random
 
 
 class PathPlanner:
@@ -20,6 +21,7 @@ class PathPlanner:
             ("south", (1, 0)),
             ("west", (0, -1)),
         ]
+        random.shuffle(directions)  # shuffle directions to make pathfinding less deterministic
         neighbors = []
         for dir_name, (dx, dy) in directions:
             new_x, new_y = pos[0] + dx, pos[1] + dy
