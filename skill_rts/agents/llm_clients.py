@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from skill_rts import logger
 
 class LLM(ABC):
     """Base class for LLM"""
@@ -8,10 +9,13 @@ class LLM(ABC):
         self.max_tokens = max_tokens
         self.client = None
 
-    def __call__(self, prompt: str) -> str:
+    def __call__(self, prompt: str) -> str | None:
         if self.is_excessive_token(prompt):
             raise ValueError("The prompt exceeds the maximum input token length limit.")
-        return self.call(prompt)
+        try:
+            return self.call(prompt)
+        except Exception as e:
+            logger.error(f"Error calling LLM: {e}")
 
     def is_excessive_token(self, prompt: str) -> bool:
         pass
@@ -55,7 +59,22 @@ class GLM(LLM):
         )
         return response.choices[0].message.content
 
+class ChatGPT(LLM):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def call(self, prompt: str) -> str:
+        print(prompt)
+        response = []
+        while True:
+            line = input()
+            if line == "":
+                break
+            response.append(line)
+        return "\n".join(response)
+
 
 if __name__ == "__main__":
-    llm = Qwen("Qwen2-72B-Instruct", 0, 1024)
+    # llm = GLM("glm-4-flash", 0, 1024)
+    llm = Qwen("Qwen2.5-72B-Instruct", 0, 1024)
     print(llm("who are you"))

@@ -58,17 +58,30 @@ OPPONENT: |
 
 STRATEGY: |
   
-  ## Your Strategy
-  Here is your strategy for this game, which you should strictly follow: 
-  - Economic strategy: 2 worker mining
-  - Barracks strategy: resource >= 6 (build a barracks when resources >= 6)
-  - Arms strategy: Ranged and Worker Rush (when there is no barracks, prioritize worker; when there is a barracks, prioritize ranged and worker)
-  - Aggressiveness: True (aggressive)
-  - Attack strategy: When aggression is True, use the arms specified by the arms strategy to prioritize attacking enemy
-  - Defensive strategy: When aggression is False, prioritize deploying defensive areas (3, 3) - (3, 5)
+  The following is a detailed strategy you should strictly follow:
+  
+  ## Strategy
+  - Economic Features: 2  # Two workers for mineral harvesting
+  - Barracks Features: resource >= 7  # Build barracks when resources reach 7 or more
+  - Military Features: Ranged and Worker  # Combination of ranged and worker units
+  - Aggressiveness Feature: True  # Aggressive play
+  - Aggression Features: Ranged > Worker  # Prioritize attacking enemy ranged units over workers
+  - Defense Features: None  # Aggressive strategy, no defense areas
 
-  When the Aggressiveness is True, you should attack enemy more frequently. When the Aggressiveness is False, you should focus on deploying defensive areas.
-  You only allowed to produce the Arms strategy specified unit type.
+  ## Description
+  You should:
+  - Allocate two workers for mineral harvesting to support ongoing economic growth.
+  - Construct barracks once resources exceed 7.
+  - Keep producing your military (ranged and worker) more units is better.
+  - Only produce ranged and worker units.
+  - Prioritize attacking enemy ranged units over workers.
+  - Send both workers and ranged units to attack, rather than just using a single type.
+  - Omit designated defense areas; do not deploy units, just go attacking.
+
+  You should not:
+  - Do not build additional barracks.
+  - Do not produce any other units.
+  - Do not plan deploy task.
 
 START: |
   

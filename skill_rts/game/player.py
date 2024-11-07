@@ -80,6 +80,7 @@ class TaskManager:
         self.obs = player.obs
         # used for update tasks, a better way is to use action trace which is not implemented yet
         self._metric = Metric(player.obs)
+        self.temp_pending = []  # when building a worker harvest, pending remain harvest task
     
     def update(self):
         self._metric.update(self.obs)
@@ -89,11 +90,13 @@ class TaskManager:
         if "[Build Building]" in self.task_list:
             index = self.task_list.index("[Build Building]")
             condition = self.params_list[index][2]
-            if eval(condition) and self.task_list.count("[Harvest Mineral]") > 1:
-                if self.task_list[-1] != "[Harvest Mineral]":
-                    index = self.task_list.index("[Harvest Mineral]")
-                    self.task_list.append(self.task_list.pop(index))
-                    self.params_list.append(self.params_list.pop(index))
+            if eval(condition) and self.task_list.count("[Harvest Mineral]") > 1 and len(self.player.barracks) == 0:
+                harvest_idxs = [i for i, task in enumerate(self.task_list) if task == "[Harvest Mineral]"]
+                self.temp_pending = [(self.task_list.pop(i), self.params_list.pop(i)) for i in harvest_idxs[1:]]
+            if len(self.player.barracks) > 0:
+                for i, (task, params) in enumerate(self.temp_pending):
+                    self.task_list.insert(i, task)
+                    self.params_list.insert(i, params)
         for task, params in zip(self.task_list, self.params_list):
             skill = Player.get_skill(task)
             if skill is not None and skill.is_completed(kills=kills, prods=prods, obs=self.obs, params=params):

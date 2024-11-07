@@ -13,7 +13,7 @@ DISABLED = 50
 min_level = WARN
 
 # Initialize global log stream to stdout
-log_stream: TextIO = sys.stdout  
+log_stream: TextIO = sys.stdout
 
 # Set up warnings
 warnings.simplefilter("once", DeprecationWarning)
@@ -35,12 +35,12 @@ def is_tty(stream: TextIO) -> bool:
 def debug(msg: str, *args: object):
     if min_level <= DEBUG:
         message = f"DEBUG: {msg % args}"
-        print(colorize(message, "cyan") if is_tty(log_stream) else message, file=log_stream)
+        print(colorize(message, "cyan") if is_tty(log_stream) else message, file=log_stream, flush=True)
 
 def info(msg: str, *args: object):
     if min_level <= INFO:
         message = f"{msg % args}"
-        print(colorize(message, "green") if is_tty(log_stream) else message, file=log_stream)
+        print(colorize(message, "green") if is_tty(log_stream) else message, file=log_stream, flush=True)
 
 def warn(
     msg: str,
@@ -62,7 +62,7 @@ def deprecation(msg: str, *args: object):
 def error(msg: str, *args: object):
     if min_level <= ERROR:
         message = f"ERROR: {msg % args}"
-        print(colorize(message, "red") if is_tty(log_stream) else message, file=log_stream)
+        print(colorize(message, "red") if is_tty(log_stream) else message, file=log_stream, flush=True)
 
 # Color codes for terminal output
 color2num = dict(

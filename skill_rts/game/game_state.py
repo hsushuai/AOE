@@ -193,7 +193,7 @@ class GameState:
             return {"type": "noop", "parameter": None}
         a_t = ACTION.get(action["type"])
         if a_t == "attack":
-            return {"type": a_t, "parameter": (action["x"], action["y"])}
+            return {"type": a_t, "parameter": (action["y"], action["x"])}  # align with vec obs coordinate
         elif a_t in ["harvest", "move", "return"]:
             return {"type": a_t, "parameter": DIRECTION[action["parameter"]]}
         elif a_t == "produce":

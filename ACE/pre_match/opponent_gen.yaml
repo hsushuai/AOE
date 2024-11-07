@@ -1,9 +1,11 @@
-INSTRUCTION: |
-  You are an RTS game master tasked with designing a robust strategy based on the provided parameterized framework.
+OPPONENT_INSTRUCTION: |
+  You are an RTS game master tasked with designing a robust and diverse strategy based on the provided parameterized framework.
+
+RESPONSE_INSTRUCTION: |
+  You are an RTS game master tasked with designing a robust and winning strategy based on the provided parameterized framework.
 
 MANUAL: |
-  
-  ## Game Manual
+  # Game Manual
   Here are the core rules and mechanics you need to follow: 
   This is a 2-player grid-based game where all units occupy 1x1 tiles. Each player controls units and can create more by spending a single resource type, which acts as money. The grid position coordinates range from 0 to grid size minus 1.
 
@@ -16,30 +18,7 @@ MANUAL: |
   - Heavy Unit: 4 HP, costs 2 resources, takes 120 time units to build. Can [Attack Enemy] (4 damage).
   - Ranged Unit: 1 HP, costs 2 resources, takes 100 time units to build. Can [Attack Enemy] from 3 distance (1 damage, range 3).
 
-  ## Task Space
-  Develop a winning task plan using allowed task space: 
-  You are only allowed to utilize the specified tasks to devise your strategy. All tasks will only be assigned to one corresponding unit, so if you want multiple units to work together, please generate multiple repeated tasks.
-  Each task comprises a task name (enclosed in square brackets, e.g. "[Harvest Mineral]") and task parameters (enclosed in parentheses, e.g. "(0, 0)"). 
-  Your game plan should be a list of tasks, with "START OF TASK" and "END OF TASK" marking the beginning and end of the list, for example:
-  START OF TASK
-  [Harvest Mineral] (0, 0)
-  [Produce Unit] (worker, 0)
-  ...
-  END OF TASK
-
-  Here are the available tasks and their descriptions:
-  - [Harvest Mineral] (x, y): Assign one worker to harvest resources from the mineral field located at (x, y).
-  - [Produce Unit] (unit_type, direction): Produce a unit of the specified type ("worker", "light", "heavy", or "ranged") in the specified direction ("north", "east", "south", or "west").
-  - [Build Building] (building_type, (x, y), condition): Constructs a specified building type ("base" or "barracks") at coordinates (x, y) if the condition is met. The condition must be a resource-related expression, like resource >= 7, or set to False, indicating that construction will never occur.
-  - [Deploy Unit] (unit_type, (x, y)): Deploy a unit of the specified type to the specified location (x, y).
-  - [Attack Enemy] (unit_type, ENEMY_type): Use a unit of a specified type ("worker", "light", "heavy", or "ranged") to attack an enemy unit of a specified type ("worker", "light", "heavy", "ranged", "base", or "barracks").
-
-  Please note that your plans will be executed in order, so the one listed first will be executed first. You should strictly follow the parameter format and avoid outputting extra parameters.
-  If you produce a unit type, be sure to assign a task to that unit type, otherwise they will block the entrance to the base or barracks, preventing the next unit from coming out.
-  Please pay attention to the actual location of your current base. If you need to harvest resources, please go to the nearest mine location.
-
-INTRODUCTION: |
-  
+STRATEGY_SPACE: |
   # Parameterized Strategy
   A strategy consists of several dimensions defined by specific parameters:
 
@@ -49,7 +28,7 @@ INTRODUCTION: |
 
   2. **Barracks Feature** determines when to build barracks.  You can construct barracks when resources are greater than or equal to a specific threshold (N), or not build them at all (False).
     - Parameter: Timing of construction (resource quantity)
-    - Feature Space: {{resource >= N, False}}
+    - Feature Space: {{resource >= N, False}} where N is an integer between 5 and 10.
 
   3. **Military Feature** outlines the strategy for combining different unit types used for attack or defense, specifying which units to produce.
     - Parameter: Combination of unit types
@@ -57,7 +36,7 @@ INTRODUCTION: |
 
   4. **Aggressiveness Feature** indicates whether the player's strategy is inclined toward aggressive play (attacking) or defensive play (holding ground).
   - Parameter: Aggressiveness
-  - Feature Space: {{True, False}  # {Aggressive, Defensive}}
+  - Feature Space: {{True, False}}  # {{Aggressive, Defensive}}
 
   5. **Aggression Features** define the target priority during an attack if the Aggressiveness Feature is set to True, focusing the military on attacking specific enemy unit types.
     - Parameter: Priority attack target
@@ -66,12 +45,13 @@ INTRODUCTION: |
   6. **Defense Features** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
     - Parameter: Defense area, defined by top left and bottom right coordinates
     - Feature Space: {{(x1, y1), (x2, y2)}}
+  
+  You need to fully consider the strategic rationality of the features combined together. For example, if Military contains heavy, light or ranged units, you need to build barracks early to produce these advanced types of units.
 
 EXAMPLES: |
-  
   # Example
   Here is a parameterized strategy example for your reference. You have to output the same format as the example:
-
+  (START OF EXAMPLE)
   ## Strategy
   - Economic Features: 2  # Two workers for mineral harvesting
   - Barracks Features: resource >= 7  # Build barracks when resources reach 7 or more
@@ -94,9 +74,9 @@ EXAMPLES: |
   - Do not build additional barracks.
   - Do not produce any other units.
   - Do not plan deploy task.
+  (END OF EXAMPLE)
 
 basesWorkers8x8_MAP: |
-  
   # Map Initialization Sate
   The Game map is 8x8 grid
   Available Mineral Fields: 2
@@ -110,19 +90,16 @@ basesWorkers8x8_MAP: |
   - worker(6, 6), action: noop
 
 EXIST_STRATEGY: |
-  
   # Existing Strategy
   There are already existing strategies as follows, which you should not repeated:
   {exist_strategy}
 
 OPPONENT: |
- 
   # Opponent Features
   Based on the past battle history, the characteristics of the opponent are analyzed as follows:
   {opponent}
 
 TIPS: |
-  
   # Tips for Developing a Strategy:
   1. Analyze the weaknesses of your opponent.
   2. Consider the relationships and constraints between unit types.
@@ -130,6 +107,22 @@ TIPS: |
   4. Evaluate the coherence of the overall strategy composed of different features.
   5. Do not output any irrelevant content.
 
-START: |
-  
-  Approach your task step by step.
+OPPONENT_START: |
+  Now you are in the **player 1** side. Approach your task step by step.
+
+OPPONENT_TEMPLATE: |
+  ${OPPONENT_INSTRUCTION}
+  ${MANUAL}
+  ${STRATEGY_SPACE}
+  ${EXIST_STRATEGY}
+  ${basesWorkers8x8_MAP}
+  ${EXAMPLES}
+  ${OPPONENT_START}
+
+RESPONSE_TEMPLATE: |
+  ${OPPONENT_INSTRUCTION}
+  ${MANUAL}
+  ${STRATEGY_SPACE}
+  ${basesWorkers8x8_MAP}
+  ${EXAMPLES}
+  ${OPPONENT_START}

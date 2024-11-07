@@ -189,14 +189,14 @@ class BuildBuilding(Skill):
         building_type, building_loc, trigger = self.params
         trigger = eval(f"lambda resource: {trigger}")
 
-        is_build_now = False
+        is_building = False
         neighbors = self.path_planner.get_neighbors(building_loc, valid=False)
         for direction, loc in neighbors:
             if self.obs[loc] is not None and self.obs[loc].action == "produce":
-                is_build_now = True
+                is_building = True
                 break
         
-        if not trigger(self.player.resource) or not is_build_now:
+        if not trigger(self.player.resource) and not is_building:
             return False
         if self.obs[building_loc] is None:
             candidates = [unit.location for unit in self.player.worker if unit.task is None]
@@ -316,15 +316,12 @@ class ProduceUnit(Skill):
     name = "[Produce Unit]"
 
     def execute_step(self):
-        import random
-
         prod_type, direction = self.params
         loc = get_neighbor(self.unit.location, direction)
         if self.obs[loc] is not None:
             neighbors = self.path_planner.get_neighbors(self.unit.location)
             available_directions = [d for d, l in neighbors if self.obs[l] is None]
             if len(available_directions) > 0:
-                random.shuffle(available_directions)
                 direction = available_directions[0]
         return self.unit.produce(direction, prod_type)
     
@@ -398,7 +395,7 @@ class AttackEnemy(Skill):
     
     def assign_to_unit(self):
         unit_type, enemy_type = self.params
-        unit_locs = [unit.location for unit in self.player if unit.type == unit_type and unit.task is None]
+        unit_locs = [unit.location for unit in getattr(self.player, unit_type) if unit.task is None]
         enemy_locs = [unit.location for unit in self.obs.players[self.enemy_id] if unit.type == enemy_type]
 
         if unit_locs and enemy_locs:

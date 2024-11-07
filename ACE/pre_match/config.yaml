@@ -1,0 +1,13 @@
+env:
+  map_path: maps/8x8/basesWorkers8x8.xml
+  max_steps: 2000
+  interval: 100
+  record_video: true
+  display: false
+
+llm:
+  model: Qwen2.5-72B-Instruct
+  temperature: 0.7
+  max_tokens: 8192
+
+num_generations: 20

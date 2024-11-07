@@ -1,9 +1,9 @@
-from ACE.configs.templates import zero_shot, few_shot
-from ACE.clients import Qwen, GLM, ChatGPT
+from ACE.configs.templates import zero_shot, few_shot, few_shot_w_strategy
+from skill_rts.agents.llm_clients import Qwen, GLM, ChatGPT
 from skill_rts import logger
 
 
-class LLMAgent:
+class AceAgent:
     def __init__(
         self, 
         model: str, 
@@ -35,7 +35,8 @@ class LLMAgent:
     def _get_prompt_template(self) -> str:
         return {
             "zero-shot": zero_shot,
-            "few-shot": few_shot
+            "few-shot": few_shot,
+            "few-shot-w-strategy": few_shot_w_strategy
         }[self.prompt]
     
     def step(self, obs: str) -> str:
@@ -63,5 +64,5 @@ class LLMAgent:
     def _get_shot(self):
         import yaml
 
-        with open(f"ACE/configs/templates/{self.map}.yaml") as f:
+        with open(f"ACE/configs/templates/planning_{self.map}.yaml") as f:
             return yaml.safe_load(f)["EXAMPLES"][self.player_id]

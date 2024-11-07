@@ -176,3 +176,46 @@ class Metric:
         metrics["resource_harvested"] = self.resource_harvested
 
         json.dump(metrics, file_stream, indent=4)
+    
+    def to_string(self) -> str:
+        texts = ["Player 0: \n", "Player 1: \n"]
+
+        # Units Produced
+        for i, player in enumerate(self.unit_produced):
+            texts[i] += "  Units Produced: \n    "
+            for unit_type, units in player.items():
+                texts[i] += f"{unit_type}: {len(units)}; "
+            texts[i] += "\n"
+        
+        # Units Lost
+        for i, player in enumerate(self.unit_lost):
+            texts[i] += "  Units Lost: \n    "
+            for unit_type, units in player.items():
+                texts[i] += f"{unit_type}: {len(units)}; "
+            texts[i] += "\n"
+
+        # Units Killed
+        for i, player in enumerate(self.unit_killed):
+            texts[i] += "  Units Killed: \n    "
+            for unit_type, units in player.items():
+                texts[i] += f"{unit_type}: {len(units)}; "
+            texts[i] += "\n"
+        
+        # Damage Taken
+        for i, player in enumerate(self.damage_taken):
+            texts[i] += f"  Damage Taken: {self.damage_taken[i]}\n"
+        
+        # Damage Dealt
+        for i, player in enumerate(self.damage_dealt):
+            texts[i] += f"  Damage Dealt: {self.damage_dealt[i]}\n"
+        
+        # Resource Harvested
+        for i, player in enumerate(self.resource_harvested):
+            texts[i] += f"  Resource Harvested: {self.resource_harvested[i]}\n"
+        
+        # Resource Spent
+        for i, player in enumerate(self.resource_spent):
+            texts[i] += f"  Resource Spent: {self.resource_spent[i]}\n"
+        
+        return "".join(texts)
+

@@ -11,7 +11,7 @@ llm:
 
 players:
   - model: Qwen2.5-72B-Instruct
-    prompt: few-shot
+    prompt: few-shot-w-strategy
     temperature: ${llm.temperature}
     max_tokens: ${llm.max_tokens}
 

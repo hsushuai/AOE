@@ -10,7 +10,7 @@ __pycache__/
 .pytest_cache/
 
 # Log files
-**/runs/
+**/**runs**
 **/wandb/
 
 # MicroRTS jar file
@@ -39,6 +39,11 @@ build/
 venv/
 env/
 .venv/
-.env/
+.env
 
+# data files
+data/
+
+# others
 TODO.md
+ACE/pre_match/diversity.ipynb
