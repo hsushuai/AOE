@@ -10,7 +10,7 @@ logger.set_level(logger.INFO)
 
 MAX_GENERATIONS = int(1e9)
 
-def parse_args(config_path: str = "/root/desc/skill-rts/ACE/pre_match/config.yaml"):
+def parse_args(config_path: str = "ace/configs/pre_match/gen_opponent.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -38,7 +38,7 @@ def parse_args(config_path: str = "/root/desc/skill-rts/ACE/pre_match/config.yam
 
 
 def get_prompt_template(map):
-    with open("ACE/pre_match/opponent_gen.yaml") as f:
+    with open("ace/pre_match/template.yaml") as f:
         template = yaml.safe_load(f)
     
     OPPONENT_INSTRUCTION = template["OPPONENT_INSTRUCTION"] + "\n"
@@ -47,8 +47,9 @@ def get_prompt_template(map):
     EXIST_STRATEGY = template["EXIST_STRATEGY"] + "\n"
     MAP = template[f"{map}_MAP"] + "\n"
     EXAMPLES = template["EXAMPLES"] + "\n"
+    OPPONENT_TIPS = template["OPPONENT_TIPS"] + "\n"
     OPPONENT_START = template["OPPONENT_START"]
-    return OPPONENT_INSTRUCTION + MANUAL + STRATEGY_SPACE + EXIST_STRATEGY + MAP + EXAMPLES + OPPONENT_START
+    return OPPONENT_INSTRUCTION + MANUAL + STRATEGY_SPACE + EXIST_STRATEGY + MAP + EXAMPLES + OPPONENT_TIPS + OPPONENT_START
 
 
 def save_opponent(response):
@@ -60,8 +61,12 @@ def save_opponent(response):
         "raw_response": response
     }
 
+    strategy_dir = "ace/data/opponent"
+    if not os.path.exists(strategy_dir):
+        os.makedirs(strategy_dir, exist_ok=True)
+    
     for i in range(1, MAX_GENERATIONS):
-        filename = f"ACE/data/opponent_strategy_{i}.json"
+        filename = f"{strategy_dir}/opponent_strategy_{i}.json"
         if not os.path.exists(filename):
             break
     
@@ -72,7 +77,7 @@ def save_opponent(response):
 def load_existing_strategy():
     strategies = []
     for i in range(1, MAX_GENERATIONS):
-        filename = f"ACE/data/opponent_strategy_{i}.json"
+        filename = f"ace/data/opponent/opponent_strategy_{i}.json"
         if not os.path.exists(filename):
             break
         with open(filename, "r") as f:
@@ -83,18 +88,19 @@ def load_existing_strategy():
 def display_existing_strategy():
     strategies = []
     for i in range(1, MAX_GENERATIONS):
-        filename = f"ACE/data/opponent_strategy_{i}.json"
+        filename = f"ace/data/opponent/opponent_strategy_{i}.json"
         if not os.path.exists(filename):
             break
         with open(filename, "r") as f:
             strategies.append(json.load(f)["raw_response"])
-    
-    logger.info(f"Loaded {len(strategies)} existing strategies")
-    with open("temp/strategy.txt", "w") as f:
+    filename = "temp/strategy.txt"
+    with open(filename, "w") as f:
         f.write("\n\n".join(strategies))
+    logger.info(f"Loaded {len(strategies)} existing strategies, saved to {filename}")
 
 
 def main():
+    logger.info("Generating opponent strategy...")
     # Initialize
     cfg = parse_args()
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
@@ -109,10 +115,9 @@ def main():
         if response is not None:
             save_opponent(response)
             logger.info(f"Saved opponent strategy {i + 1}")
+    logger.info("🥳 Done!")
 
 
 if __name__ == "__main__":
-    # logger.info("Generating opponent strategy...")
-    # main()
-    # logger.info("🥳 Done!")
+    main()
     display_existing_strategy()

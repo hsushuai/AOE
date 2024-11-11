@@ -243,10 +243,8 @@ class MicroRTSGridModeVecEnv(gym.Env):
         self.source_unit_mask = action_mask[:, :, :, 0].reshape(self.num_envs, -1)
     
     def get_trajectories(self) -> list[dict] | None:
-        try:
-            return [json.loads(str(trace)) for trace in self.vec_client.getTrace([0] * self.num_envs)]
-        except ValueError:
-            return None
+        traces = self.vec_client.getTrace([0] * self.num_envs)
+        return json.loads(str(traces[0]))
     
     def _parse_responses(self, responses):
         rewards, dones = np.array(responses.reward), np.array(responses.done)

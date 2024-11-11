@@ -135,7 +135,7 @@ class Metric:
             players.append(player.resource - self._init_resources[player.id] + player_spent)
         return players
 
-    def to_json(self, file_stream):
+    def to_json(self, file_path):
         import json
 
         metrics = {
@@ -175,7 +175,8 @@ class Metric:
         # Resource Harvested
         metrics["resource_harvested"] = self.resource_harvested
 
-        json.dump(metrics, file_stream, indent=4)
+        with open(file_path, "w") as f:
+            json.dump(metrics, f, indent=4)
     
     def to_string(self) -> str:
         texts = ["Player 0: \n", "Player 1: \n"]

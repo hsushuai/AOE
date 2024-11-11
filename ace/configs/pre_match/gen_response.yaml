@@ -1,0 +1,18 @@
+env:
+  map_path: maps/8x8/basesWorkers8x8.xml
+  max_steps: 2000
+  interval: 100
+  record_video: true
+  display: false
+
+agents:
+  - model: Qwen2.5-72B-Instruct
+    temperature: 0
+    max_tokens: 8192
+  - model: Qwen2.5-72B-Instruct
+    temperature: 0
+    max_tokens: 8192
+    prompt: few-shot-w-strategy
+    strategy: ace/data/opponent/opponent_strategy_1.json
+
+max_iterations: 10

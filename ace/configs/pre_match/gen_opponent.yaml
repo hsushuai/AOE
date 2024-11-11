@@ -10,4 +10,4 @@ llm:
   temperature: 0.7
   max_tokens: 8192
 
-num_generations: 20
+num_generations: 50

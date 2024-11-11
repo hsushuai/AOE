@@ -2,7 +2,7 @@ import argparse
 from omegaconf import OmegaConf
 
 
-def config(config_path: str = "/root/desc/skill-rts/ACE/configs/config.yaml"):
+def config(config_path: str = "/root/desc/skill-rts/ace/configs/config.yaml"):
 
     cfg = OmegaConf.load(config_path)
 

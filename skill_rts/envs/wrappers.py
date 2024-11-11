@@ -57,8 +57,6 @@ class MicroRTSLLMEnv(gym.Env):
         self.interval = interval
         self.record_video = record_video
         self.run_dir = run_dir
-        if os.path.isdir(run_dir):
-            logger.warn(f"Overwriting existing log at '{run_dir}' folder (try specifying a different `run_dir`)")
         os.makedirs(self.run_dir, exist_ok=True)
         self.display = display
         self.theme = theme
@@ -76,7 +74,7 @@ class MicroRTSLLMEnv(gym.Env):
                 ai1s=[self.bot_agents[0]],
                 ai2s=[self.bot_agents[1]],
                 max_steps=self.max_steps,
-                map_paths=[self.map_paths],
+                map_paths=[self.map_path],
                 reward_weight=reward_weight,
                 autobuild=False
             )
@@ -95,7 +93,7 @@ class MicroRTSLLMEnv(gym.Env):
                 num_selfplay_envs=2,
                 num_bot_envs=0,
                 max_steps=self.max_steps,
-                map_paths=[self.map_paths],
+                map_paths=[self.map_path],
                 reward_weight=reward_weight,
                 autobuild=False
             )
@@ -207,4 +205,4 @@ class MicroRTSLLMEnv(gym.Env):
         if self.time == 0:
             return None
         else:
-            return Trajectory(self.env.get_trajectories()[0])
+            return Trajectory(self.env.get_trajectories())

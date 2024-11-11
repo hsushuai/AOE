@@ -1,7 +1,7 @@
 from skill_rts.envs import MicroRTSLLMEnv
 from skill_rts.agents import bot_agent
-from ACE.agent.agent import AceAgent
-from ACE.configs.config import cfg
+from ace.agent.agent import AceAgent
+from ace.configs.config import cfg
 from skill_rts import logger
 
 logger.set_level(logger.DEBUG)

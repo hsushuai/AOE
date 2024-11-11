@@ -10,7 +10,7 @@ ERROR = 40
 DISABLED = 50
 
 # Default logging level
-min_level = WARN
+min_level = INFO
 
 # Initialize global log stream to stdout
 log_stream: TextIO = sys.stdout

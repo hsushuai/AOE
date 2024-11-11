@@ -3,7 +3,7 @@ INSTRUCTION: |
 
 INTRODUCTION: |
   
-  ## Game Manual
+  # Game Manual
   Here are the core rules and mechanics you need to follow: 
   This is a 2-player grid-based game where all units occupy 1x1 tiles. Each player controls units and can create more by spending a single resource type, which acts as money. The grid position coordinates range from 0 to grid size minus 1.
 
@@ -16,7 +16,7 @@ INTRODUCTION: |
   - Heavy Unit: 4 HP, costs 2 resources, takes 120 time units to build. Can [Attack Enemy] (4 damage).
   - Ranged Unit: 1 HP, costs 2 resources, takes 100 time units to build. Can [Attack Enemy] from 3 distance (1 damage, range 3).
 
-  ## Task Space
+  # Task Space
   Develop a winning task plan using allowed task space: 
   You are only allowed to utilize the specified tasks to devise your strategy. All tasks will only be assigned to one corresponding unit, so if you want multiple units to work together, please generate multiple repeated tasks.
   Each task comprises a task name (enclosed in square brackets, e.g. "[Harvest Mineral]") and task parameters (enclosed in parentheses, e.g. "(0, 0)"). 
@@ -40,52 +40,31 @@ INTRODUCTION: |
 
 EXAMPLES: |
   
-  ## Examples
+  # Examples
   You can refer to the following examples for guidance: 
   {examples}
 
 TIPS: |
   
-  ## Tips
+  # Tips
   Here are some valuable suggestions that you should definitely consider: 
   {tips}
 
 OPPONENT: |
   
-  ## Opponent Profile
+  # Opponent Profile
   Based on previous encounters, here is a summary of the opponent strategy and tactics: 
   {opponent}
 
 STRATEGY: |
   
+  # Strategy
   The following is a detailed strategy you should strictly follow:
-  
-  ## Strategy
-  - Economic Features: 2  # Two workers for mineral harvesting
-  - Barracks Features: resource >= 7  # Build barracks when resources reach 7 or more
-  - Military Features: Ranged and Worker  # Combination of ranged and worker units
-  - Aggressiveness Feature: True  # Aggressive play
-  - Aggression Features: Ranged > Worker  # Prioritize attacking enemy ranged units over workers
-  - Defense Features: None  # Aggressive strategy, no defense areas
-
-  ## Description
-  You should:
-  - Allocate two workers for mineral harvesting to support ongoing economic growth.
-  - Construct barracks once resources exceed 7.
-  - Keep producing your military (ranged and worker) more units is better.
-  - Only produce ranged and worker units.
-  - Prioritize attacking enemy ranged units over workers.
-  - Send both workers and ranged units to attack, rather than just using a single type.
-  - Omit designated defense areas; do not deploy units, just go attacking.
-
-  You should not:
-  - Do not build additional barracks.
-  - Do not produce any other units.
-  - Do not plan deploy task.
+  {strategy}
 
 START: |
   
-  ## Battlefield Situation
+  # Battlefield Situation
   Here is the description of the **current situation**: 
   {observation}
 
