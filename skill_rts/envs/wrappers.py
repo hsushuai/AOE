@@ -124,7 +124,7 @@ class MicroRTSLLMEnv(gym.Env):
         """
         return self.env.reset()
     
-    def _prepare_run(self) -> None:
+    def prepare_run(self) -> None:
         self.log_file = open(os.path.join(self.run_dir, "run.log"), "w")
         logger.set_level(logger.DEBUG)
         logger.set_stream(self.log_file)
@@ -140,7 +140,7 @@ class MicroRTSLLMEnv(gym.Env):
         for player_id in range(self.num_players):
             self.players.append(Player(player_id, GameState(raw_info[player_id]["player_obs"])))
     
-    def _step_run(self):
+    def step_run(self):
         actions = []
         logger.info((f"{'-'*20} step-{self.time} {'-'*20}"))
         
@@ -184,13 +184,13 @@ class MicroRTSLLMEnv(gym.Env):
             payoffs (list): list of payoffs for each player
             traj (Trajectory): trajectory of the game
         """
-        self._prepare_run()
+        self.prepare_run()
         while not self.game_over:
-            self._step_run()
-        self._end_run()
+            self.step_run()
+        self.end_run()
         return self.payoffs, self.get_traj()
     
-    def _end_run(self):
+    def end_run(self):
         self.env.close()
         self.log_file.close()
 

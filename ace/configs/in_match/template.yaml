@@ -1,0 +1,160 @@
+RECOGNIZE_INSTRUCTION: |
+  You are an RTS game master tasked with analyzing and recognizing opponent strategy based on the game trajectory and provided parameterized framework.
+
+RESPONSE_INSTRUCTION: |
+  You are an RTS game master tasked with designing a robust and winning strategy based on the provided parameterized framework.
+
+MANUAL: |
+  # Game Manual
+  Here are the core rules and mechanics you need to follow: 
+  This is a 2-player grid-based game where all units occupy 1x1 tiles. Each player controls units and can create more by spending a single resource type, which acts as money. The grid position coordinates range from 0 to grid size minus 1.
+
+  Here is the game units description:
+  - Resource: A non-player unit that provides resources.
+  - Base: 10 HP, costs 10 resources, and takes 250 time units to build. Can produce Workers.
+  - Barracks: 4 HP, costs 5 resources, and takes 200 time units to build. Can produce Light, Heavy, or Ranged units.
+  - Worker: 1 HP, costs 1 resource, takes 50 time units to build. Can [Attack Enemy](1 damage), and harvest mineral.
+  - Light Unit: 4 HP, costs 2 resources, takes 80 time units to build. Can [Attack Enemy] (2 damage).
+  - Heavy Unit: 4 HP, costs 2 resources, takes 120 time units to build. Can [Attack Enemy] (4 damage).
+  - Ranged Unit: 1 HP, costs 2 resources, takes 100 time units to build. Can [Attack Enemy] from 3 distance (1 damage, range 3).
+
+STRATEGY_SPACE: |
+  # Parameterized Strategy
+  A strategy consists of several dimensions defined by specific parameters:
+
+  1. **Economic Feature** focuses on how many workers to harvest in the game.
+    - Parameter: Number of harvesting workers
+    - Feature Space: {{1, 2}}
+
+  2. **Barracks Feature** determines when to build barracks.  You can construct barracks when resources are greater than or equal to a specific threshold (N), or not build them at all (False).
+    - Parameter: Timing of construction (resource quantity)
+    - Feature Space: {{resource >= N, False}}, where 5 <= N <= 10
+
+  3. **Military Feature** outlines the strategy for combining different unit types used for attack or defense, specifying which units to produce.
+    - Parameter: Combination of unit types, including Worker, Heavy, Light, Ranged.
+    - Feature Space: {{Worker, Ranged and Worker, Ranged and Light and Worker, ...}}
+
+  4. **Aggression Feature** indicates whether the player's strategy is inclined toward aggressive play (attacking) or defensive play (holding ground).
+  - Parameter: Aggression
+  - Feature Space: {{True, False}}  # {{Aggressive, Defensive}}
+
+  5. **Attack Feature** define the target priority during an attack if the Aggressiveness Feature is set to True, focusing the military on attacking specific enemy unit types.
+    - Parameter: Priority attack target, including Worker, Heavy, Light, Ranged, Base, Barracks.
+    - Feature Space: {{Ranged > Worker, Base > Barracks > Worker, ...}}
+  
+  6. **Defense Feature** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
+    - Parameter: Defense area, defined by top left and bottom right coordinates
+    - Feature Space: {{(x1, y1), (x2, y2)}}
+  
+  You need to fully consider the strategic rationality of the features combined together. For example, if Military contains heavy, light or ranged units, you need to build barracks early to produce these advanced types of units.
+
+
+RECOGNIZE_EXAMPLES: |
+  # Example
+  Here is a parameterized strategy example for your reference. You have to output the same format as the example:
+  (START OF EXAMPLE)
+  ## Strategy
+  - Economic Feature: 2
+  - Barracks Feature: resource >= 7
+  - Military Feature: Ranged and Worker
+  - Aggression Feature: True
+  - Attack Feature: Ranged > Worker
+  - Defense Feature: None
+  (END OF EXAMPLE)
+
+EXAMPLES: |
+  # Example
+  Here is a parameterized strategy example for your reference. You have to output the same format as the example:
+  (START OF EXAMPLE)
+  ## Strategy
+  - Economic Feature: 2
+  - Barracks Feature: resource >= 7
+  - Military Feature: Ranged and Worker
+  - Aggression Feature: True
+  - Attack Feature: Ranged > Worker
+  - Defense Feature: None
+
+  ## Description
+  You should:
+  - Allocate two workers for mineral harvesting to support ongoing economic growth.
+  - Construct barracks once resources exceed 7.
+  - Keep producing your military (ranged and worker) more units is better.
+  - Only produce ranged and worker units.
+  - Prioritize attacking enemy ranged units over workers.
+  - Send both workers and ranged units to attack, rather than just using a single type.
+  - Omit designated defense areas; do not deploy units, just go attacking.
+
+  You should not:
+  - Do not build additional barracks.
+  - Do not produce any other units.
+  - Do not plan deploy task.
+  (END OF EXAMPLE)
+
+basesWorkers8x8_MAP: |
+  # Map Initialization Sate
+  The Game map is 8x8 grid
+  Available Mineral Fields: 2
+  - Mineral(0, 0), resources: 20
+  - Mineral(7, 7), resources: 20
+  Player 0 State:
+  - base(1, 2), action: noop
+  - worker(1, 1), action: noop
+  Player 1 State:
+  - base(6, 5), action: noop
+  - worker(6, 6), action: noop
+
+EXIST_STRATEGY: |
+  # Existing Strategy
+  There are already existing strategies as follows, which you should not repeated:
+  {exist_strategy}
+
+TRAJECTORY: |
+  # Trajectory
+  Until the current game track summary features is as follows:
+  {trajectory}
+
+OPPONENT: |
+  # Opponent Features
+  Based on the past battle history, the characteristics of the opponent are analyzed as follows:
+  {opponent}
+
+RESPONSE_TIPS: |
+  # Tips for Developing a Strategy:
+  1. Analyze the weaknesses of your opponent.
+  2. Consider the relationships and constraints between unit types.
+  3. Ensure that the strategy parameters are valid.
+  4. Evaluate the coherence of the overall strategy composed of different features.
+  5. Do not output any irrelevant content.
+
+OPPONENT_TIPS: |
+  # Tips for Developing a Strategy:
+  1. Try single unit type military strategy.
+  2. Try barracks strategy without build barracks.
+  3. Actually attack priority is not important for strategy diversity.
+  4. Evaluate the coherence of the overall strategy composed of different features.
+  5. Do not output any irrelevant content.
+
+RESPONSE_START: |
+  Now you are in the **player 0** side. Approach your task step by step.
+
+RECOGNIZE_START: |
+  Now analyze the **player 1** strategy following the example format.
+
+RECOGNIZE_TEMPLATE: |
+  ${RECOGNIZE_INSTRUCTION}
+  ${MANUAL}
+  ${STRATEGY_SPACE}
+  ${TRAJECTORY}
+  ${basesWorkers8x8_MAP}
+  ${RECOGNIZE_EXAMPLES}
+  ${RECOGNIZE_START}
+
+RESPONSE_TEMPLATE: |
+  ${RESPONSE_INSTRUCTION}
+  ${MANUAL}
+  ${STRATEGY_SPACE}
+  ${basesWorkers8x8_MAP}
+  ${OPPONENT}
+  ${EXAMPLES}
+  ${RESPONSE_TIPS}
+  ${RESPONSE_START}

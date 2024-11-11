@@ -13,11 +13,11 @@ class TrajectoryFeature:
         position_features = self.get_position_features()
         features = [
             {
-                "economic": economic_features[i],
-                "barracks": barracks_features[i],
-                "military": military_features[i],
-                "attack": attack_features[i],
-                "position": position_features[i],
+                "economic(num of workers to harvest)": economic_features[i],
+                "barracks(build_time, player resources, location)": barracks_features[i],
+                "military(num of military units)": military_features[i],
+                "attack(attack location, type of victim)": attack_features[i],
+                "position(location, occurrence count)": position_features[i],
             } for i in range(2)
         ]
         return features
@@ -75,16 +75,21 @@ class TrajectoryFeature:
                     else:
                         position_features[unit.owner][unit.location] += 1
         return position_features
+    
+    def to_string(self):
+        features = self.get_features()
+        text = ""
+        for i, feat in enumerate(features):
+            text += f"**Player {i}**:\n"
+            for k, v in feat.items():
+                text += f"{k}: {v}\n"
+        return text
 
 
 if __name__ == "__main__":
     # Example usage
-    trajectory = Trajectory.load("runs/trajectory.json")
+    trajectory = Trajectory.load("runs/raw_traj.json")
     with open("runs/trajectory.txt", "w") as f:
         f.write(trajectory.to_string())
     features = TrajectoryFeature(trajectory)
-    for i, player in enumerate(features.get_features()):
-        print(f"\n**Player {i}**")
-        for key, value in player.items():
-            print(f"{key}: {value}")
-    print("\n")
+    print(features.to_string())

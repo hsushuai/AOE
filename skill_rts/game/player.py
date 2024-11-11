@@ -93,6 +93,10 @@ class TaskManager:
             if eval(condition) and self.task_list.count("[Harvest Mineral]") > 1 and len(self.player.barracks) == 0:
                 harvest_idxs = [i for i, task in enumerate(self.task_list) if task == "[Harvest Mineral]"]
                 self.temp_pending = [(self.task_list.pop(i), self.params_list.pop(i)) for i in harvest_idxs[1:]]
+            elif len(self.temp_pending) > 0:
+                for task, params in self.temp_pending:
+                    self.task_list.insert(0, task)
+                    self.params_list.insert(0, params)
             if len(self.player.barracks) > 0:
                 for i, (task, params) in enumerate(self.temp_pending):
                     self.task_list.insert(i, task)

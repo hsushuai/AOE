@@ -108,7 +108,7 @@ def extract_strategies_to_csv():
     import os
     import json
 
-    text = "index, economic, barracks, military, aggression, attack, defense\n"
+    text = "index,economic,barracks,military,aggression,attack,defense\n"
     for i in range(int(1e9)):
         filename = f"ace/data/opponent_strategy_{i + 1}.json"
         if not os.path.exists(filename):
@@ -118,11 +118,11 @@ def extract_strategies_to_csv():
         strategy = Strategy(raw_strategy)
 
         text += f"{i}, "
-        text += f"{strategy.economic}, "
-        text += f"{strategy.barracks}, "
-        text += f"{strategy.military}, "
-        text += f"{strategy.aggression}, "
-        text += f"{strategy.attack}, "
+        text += f"{strategy.economic},"
+        text += f"{strategy.barracks},"
+        text += f"{strategy.military},"
+        text += f"{strategy.aggression},"
+        text += f"{strategy.attack},"
         text += f'"{strategy.defense}"\n'
     with open("temp/strategy.csv", "w") as f:
         f.write(text)
