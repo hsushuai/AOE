@@ -154,6 +154,7 @@ def main():
         # Save the results
         trajectory.to_json(f"{run_dir}/raw_traj.json")
         metric.to_json(f"{run_dir}/metric.json")
+        print("\r" + " " * 50 + "\r", end="", flush=True)
         print(f"Opponent {opponent_name} | Iteration {i} | Payoffs: {payoffs}")
         i += 1
 

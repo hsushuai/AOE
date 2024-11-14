@@ -1,0 +1,211 @@
+import argparse
+from omegaconf import OmegaConf
+import yaml
+import json
+import os
+from skill_rts.agents.llm_clients import Qwen
+from skill_rts import logger
+from ace.strategy import Strategy
+import numpy as np
+
+logger.set_level(logger.INFO)
+
+MAX_GENERATIONS = int(1e9)
+BASE_DIR = "ace/data/strategies"
+
+
+def parse_args(config_path: str = "ace/configs/pre_match/gen_strategy.yaml"):
+
+    cfg = OmegaConf.load(config_path)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--map_path", type=str, help="Path to the map file")
+    parser.add_argument("--model", type=str, help="Model name")
+    parser.add_argument("--temperature", type=float, help="Temperature for LLM")
+    parser.add_argument("--max_tokens", type=int, help="Maximum tokens for LLM")
+    parser.add_argument("--num_generations", type=int, help="Number of generations for LLM")
+
+    args = parser.parse_args()
+
+    if args.map_path is not None:
+        cfg.env.map_path = args.map_path
+    if args.model is not None:
+        cfg.llm.model = args.model
+    if args.temperature is not None:
+        cfg.llm.temperature = args.temperature
+    if args.max_tokens is not None:
+        cfg.llm.max_tokens = args.max_tokens
+    if args.num_generations is not None:
+        cfg.num_generations = args.num_generations
+    
+    return cfg
+
+
+def get_prompt_template(map):
+    with open("ace/configs/pre_match/template.yaml") as f:
+        template = yaml.safe_load(f)
+    
+    INSTRUCTION = template["INSTRUCTION"] + "\n"
+    MANUAL = template["MANUAL"] + "\n"
+    STRATEGY_SPACE = template["STRATEGY_SPACE"] + "\n"
+    EXIST_STRATEGY = template["EXIST_STRATEGY"] + "\n"
+    MAP = template[f"{map}_MAP"] + "\n"
+    EXAMPLES = template["EXAMPLES"] + "\n"
+    TIPS = template["TIPS"] + "\n"
+    START = template["START"]
+    return INSTRUCTION + MANUAL + STRATEGY_SPACE + EXIST_STRATEGY + MAP + EXAMPLES + TIPS + START
+
+
+def save_strategy(strategy: Strategy):
+    if not os.path.exists(BASE_DIR):
+        os.makedirs(BASE_DIR, exist_ok=True)
+    
+    for i in range(1, MAX_GENERATIONS):
+        filename = f"{BASE_DIR}/strategy_{i}.json"
+        if not os.path.exists(filename):
+            break
+    strategy.to_json(filename)
+
+
+def extract_strategies_to_csv():
+    import pandas as pd
+
+    strategies = []
+    for i in range(1, MAX_GENERATIONS):
+        filename = f"{BASE_DIR}/strategy_{i}.json"
+        if not os.path.exists(filename):
+            break
+        strategy = Strategy.load_from_json(filename)
+        
+        strategies.append({
+            "index": i,
+            "economic": strategy.economic,
+            "barracks": strategy.barracks,
+            "military": strategy.military,
+            "aggression": strategy.aggression,
+            "attack": strategy.attack,
+            "defense": strategy.defense,
+            "strategy": strategy.strategy,
+            "description": strategy.description
+        })
+    
+    df = pd.DataFrame(strategies)
+    
+    output_filename = f"{BASE_DIR}/strategies.csv"
+    df.to_csv(output_filename, index=False)
+    
+    logger.info(f"Extracted {i - 1} strategies to {output_filename}")
+
+
+def analyze_diversity():
+    from scipy.spatial.distance import pdist
+    import matplotlib.pyplot as plt
+    from sklearn.decomposition import PCA
+    from sklearn.manifold import TSNE
+
+    # Load data
+    batch_feats = []
+    batch_one_hot_feats = []
+    for i in range(int(1e9)):
+        filename = f"{BASE_DIR}/strategy_{i + 1}.json"
+        if not os.path.exists(filename):
+            break
+        with open(filename) as f:
+            raw_strategy = json.load(f)["raw_response"]
+        strategy = Strategy.load_from_raw(raw_strategy)
+        
+        batch_feats.append(strategy.feats)
+        batch_one_hot_feats.append(strategy.one_hot_feats)
+   
+    batch_feats = np.array(batch_feats)
+    batch_one_hot_feats = np.array(batch_one_hot_feats)
+
+    # repeated rows
+    _, unique_indices, counts = np.unique(batch_feats, axis=0, return_index=True, return_counts=True)
+    duplicate_rows_mask = counts > 1
+    duplicate_rows = batch_feats[unique_indices[duplicate_rows_mask]]
+    duplicate_indices = []
+    for row in duplicate_rows:
+        indices = np.where((batch_feats == row).all(axis=1))[0]
+        duplicate_indices.append(indices)
+
+    logger.info(f"Loaded {batch_feats.shape[0]} strategies")
+    logger.info(f"Dimension of encoded features: {batch_feats.shape[1]}")
+    logger.info(f"Dimension of one-hot features: {batch_one_hot_feats.shape[1]}")
+    logger.info("Index of duplicate rows:")
+    for indices in duplicate_indices:
+        print(indices)
+
+    # Calculate average distance
+    ham_dists = pdist(batch_one_hot_feats, metric='hamming')
+    eu_dists = pdist(batch_one_hot_feats, metric='euclidean')
+
+    avg_ham_dist = np.mean(ham_dists)
+    avg_eu_dis = np.mean(eu_dists)
+    max_ham_dist = np.max(ham_dists)
+    max_eu_dis = np.max(eu_dists)
+    min_ham_dist = np.min(ham_dists)
+    min_eu_dis = np.min(eu_dists)
+
+    logger.info(f"Average Hamming distance: {avg_ham_dist}")
+    logger.info(f"Average Euclidean distance: {avg_eu_dis}")
+    logger.info(f"Max Hamming distance: {max_ham_dist}")
+    logger.info(f"Max Euclidean distance: {max_eu_dis}")
+    logger.info(f"Min Hamming distance: {min_ham_dist}")
+    logger.info(f"Min Euclidean distance: {min_eu_dis}")
+
+    # PCA
+    pca = PCA(n_components=2)
+    strategy_2d_pca = pca.fit_transform(batch_one_hot_feats)
+
+    # or t-SNE (suitable for high-dimensional data)
+    tsne = TSNE(n_components=2, perplexity=30, random_state=0)
+    strategy_2d_tsne = tsne.fit_transform(batch_one_hot_feats)
+
+    # Plot the strategy distribution map
+    fig, axes = plt.subplots(1, 2, figsize=(20, 8))
+    axes[0].scatter(strategy_2d_pca[:, 0], strategy_2d_pca[:, 1], alpha=0.7)
+    axes[0].set_title("Strategy Distribution Map (PCA Dimensionality Reduction)")
+    axes[0].set_xlabel("PCA Dimension 1")
+    axes[0].set_ylabel("PCA Dimension 2")
+
+    axes[1].scatter(strategy_2d_tsne[:, 0], strategy_2d_tsne[:, 1], alpha=0.7)
+    axes[1].set_title("Strategy Distribution Map (t-SNE Dimensionality Reduction)")
+    axes[1].set_xlabel("t-SNE Dimension 1")
+    axes[1].set_ylabel("t-SNE Dimension 2")
+
+    plt.tight_layout()
+    # plt.grid(True)
+    filename = "temp/strategy_distribution_map.png"
+    plt.savefig(filename, dpi=300)
+    logger.info(f"Strategy distribution map saved to {filename}")
+
+
+def gen_strategies():
+    logger.info("Generating strategy...")
+    # Initialize
+    cfg = parse_args()
+    map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
+    prompt_template = get_prompt_template(map_name)
+    llm_client = Qwen(cfg.llm.model, cfg.llm.temperature, cfg.llm.max_tokens)
+    exist_strategies = []
+
+    # Generate strategies
+    i = 1
+    while i <= cfg.num_generations:
+        exist_strategies_text = [strategy.strategy for strategy in exist_strategies]
+        prompt = prompt_template.format(exist_strategy="\n".join(exist_strategies_text))
+        response = llm_client(prompt)
+        strategy = Strategy.load_from_raw(response)
+        if strategy is not None and strategy not in exist_strategies:
+            save_strategy(strategy)
+            exist_strategies.append(strategy)
+            logger.info(f"Saved strategy {i}")
+            i += 1
+    logger.info("🥳 Done!")
+
+
+if __name__ == "__main__":
+    # gen_strategies()
+    # analyze_diversity()
+    extract_strategies_to_csv()

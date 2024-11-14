@@ -15,7 +15,7 @@ players:
     temperature: ${llm.temperature}
     max_tokens: ${llm.max_tokens}
 
-  - model: coacAI
+  - model: Qwen2.5-72B-Instruct
     prompt: zero-shot
     temperature: ${llm.temperature}
     max_tokens: ${llm.max_tokens}

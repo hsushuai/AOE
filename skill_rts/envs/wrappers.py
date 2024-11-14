@@ -5,18 +5,9 @@ from skill_rts.game.metric import Metric
 from skill_rts.game.trajectory import Trajectory
 from skill_rts.envs.record_video import RecordVideo
 from skill_rts import logger
-
 import gym
 import os
 import numpy as np
-
-import jpype
-import jpype.imports
-import numpy as np
-from jpype.imports import registerDomain
-from jpype.types import JArray, JInt
-import xml.etree.ElementTree as ET
-
 import warnings
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -33,6 +24,7 @@ class MicroRTSLLMEnv(gym.Env):
         record_video: bool=False,
         run_dir: str="runs",
         display: bool=False,
+        payoff_weights: list=[0.1, 0.1],  # alpha, beta
         theme: str="white"
     ):
         """
@@ -46,6 +38,7 @@ class MicroRTSLLMEnv(gym.Env):
             record_video (bool, optional): Flag indicating whether to record gameplay video. Default is False.
             run_dir (str, optional): Directory path for saving run log and video recordings. Default is "runs".
             display (bool, optional): Flag indicating whether to display video of the gameplay. Default is False.
+            payoff_weights (list, optional): List of weights for calculating the payoff. Default is [0.1, 0.1].
             theme (str, optional): Theme of the game interface; possible values include "white" and "black". Default is "white".
         """
         self.llm_agents = []
@@ -59,6 +52,7 @@ class MicroRTSLLMEnv(gym.Env):
         self.run_dir = run_dir
         os.makedirs(self.run_dir, exist_ok=True)
         self.display = display
+        self.payoff_weights = payoff_weights
         self.theme = theme
 
         self.set_agent(agents)
@@ -126,7 +120,7 @@ class MicroRTSLLMEnv(gym.Env):
     
     def prepare_run(self) -> None:
         self.log_file = open(os.path.join(self.run_dir, "run.log"), "w")
-        logger.set_level(logger.DEBUG)
+        logger.set_level(logger.INFO)
         logger.set_stream(self.log_file)
         
         raw_obs, raw_info = self.reset()
@@ -151,7 +145,7 @@ class MicroRTSLLMEnv(gym.Env):
             ac = player.step()
             actions.append(ac)
         
-        raw_obs, self.payoffs, done, raw_info = self.step(np.array(actions))
+        raw_obs, self._raw_payoffs, done, raw_info = self.step(np.array(actions))
         
         self.metric.update(GameState(raw_info[0]["game_state"]))
         for player, info in zip(self.players, raw_info):
@@ -187,19 +181,36 @@ class MicroRTSLLMEnv(gym.Env):
         self.prepare_run()
         while not self.game_over:
             self.step_run()
+            print("\r" + " " * 50 + "\r", end="", flush=True)
+            print(f"\rRunning step {self.time}", end="", flush=True)
+        print("\r" + " " * 50 + "\r", end="", flush=True)
+        
         self.end_run()
+        self._set_winner()
+        self._calculate_payoffs()
         return self.payoffs, self.get_traj()
+    
+    def _calculate_payoffs(self):
+        """Calculate the payoffs for each player."""
+        # 10 * win_loss + alpha * damage_dealt + beta * resource_balance
+        alpha, beta = self.payoff_weights
+
+        resource_balance = list(map(lambda x, y: x - y, self.metric.resource_spent, self.metric.resource_harvested))
+        self.payoffs = list(map(lambda x, y, z: 10 * x + alpha * y + beta * z, self.metric.win_loss, self.metric.damage_dealt, resource_balance))
+    
+    def _set_winner(self):
+        """Set the winner of the game."""
+        if self._raw_payoffs[0] > 0:
+            self.winner = 0  # player 0 win
+        elif self._raw_payoffs[0] < 0:
+            self.winner = 1  # player 1 win
+        else:
+            self.winner = -1  # draw
+        self.metric.set_winner(self.winner)
     
     def end_run(self):
         self.env.close()
         self.log_file.close()
-
-        if self.payoffs[0] > 0:
-            self.winner = 0  # player 0 win
-        elif self.payoffs[0] < 0:
-            self.winner = 1  # player 1 win
-        else:
-            self.winner = -1  # draw
     
     def get_traj(self):
         if self.time == 0:

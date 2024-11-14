@@ -11,7 +11,7 @@ from skill_rts.agents import bot_agent
 from tqdm.rich import tqdm
 
 
-def parse_args(config_path: str = "ace/configs/pre_match/gen_response.yaml"):
+def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -84,7 +84,7 @@ def main():
     cfg = parse_args()
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
     # opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
-    opponent_name = "WorkerRush"
+    opponent_name = "Mayari"
     runs_dir = f"in_match_runs/{opponent_name}"
 
     llm_client = Qwen(**cfg.agents[0])
@@ -93,6 +93,7 @@ def main():
 
     payoffs = [-1, 1]
     trajectory, metric = None, None
+    exist_strategies = []
     i = 0
     
     # Generate response strategy until winning
@@ -102,7 +103,7 @@ def main():
         debug_file = open(f"{run_dir}/debug.log", "w")
 
         # Recognize opponent strategy
-        print("\rRecognizing opponent strategy", end="", flush=True)
+        print("\rRecognizing opponent strategy...", end="", flush=True)
         traj_feats = TrajectoryFeature(trajectory) if trajectory is not None else None
         trajectory = traj_feats.to_string() if hasattr(traj_feats, "to_string") else ""
         metric = metric.to_string() if hasattr(metric, "to_string") else ""
@@ -113,17 +114,15 @@ def main():
         print(f"Recognized Opponent strategy:\n{opponent_strategy}", file=debug_file, flush=True)
         
         # Generate response strategy
-        print("\r" + " " * 30 + "\r", end="", flush=True)
-        print("\rGenerating response strategy", end="", flush=True)
-        response_prompt = response_template.format(opponent=opponent_strategy)
+        print("\r" + " " * 50 + "\r", end="", flush=True)
+        print("\rGenerating response strategy...", end="", flush=True)
+        response_prompt = response_template.format(opponent=opponent_strategy, exist_strategy="\n".join(exist_strategies))
         response = llm_client(response_prompt)
-        _, strategy_path = save_strategy(response, run_dir)
+        strategy, strategy_path = save_strategy(response, run_dir)
         print(f"Generated prompt:\n{response_prompt}", file=debug_file, flush=True)
         print(f"Generated Response strategy:\n{response}", file=debug_file, flush=True)
 
         # Run the game
-        print("\r" + " " * 30 + "\r", end="", flush=True)
-        print("\rRunning the game", end="", flush=True)
         agent = AceAgent(
             player_id=0,
             map_name=map_name,
@@ -131,14 +130,15 @@ def main():
             prompt="few-shot-w-strategy",
             **cfg.agents[0]
         )
-        env = MicroRTSLLMEnv([agent, bot_agent.workerRushAI], **cfg.env, run_dir=run_dir)
+        env = MicroRTSLLMEnv([agent, bot_agent.mayari], **cfg.env, run_dir=run_dir)
         payoffs, trajectory = env.run()
         metric = env.metric
 
         # Save the results
-        print("\r" + " " * 30 + "\r", end="", flush=True)
         trajectory.to_json(f"{run_dir}/raw_traj.json")
         metric.to_json(f"{run_dir}/metric.json")
+        exist_strategies.append(strategy)
+        print("\r" + " " * 50 + "\r", end="", flush=True)
         print(f"Opponent {opponent_name} | Iteration {i} | Payoffs: {payoffs}")
         i += 1
         debug_file.close()

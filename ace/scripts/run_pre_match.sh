@@ -3,8 +3,13 @@
 # Generate opponent
 # python ace/pre_match/gen_opponent.py
 
-# Generate response strategies
-for i in {1..50}; do
-    opponent_file="ace/data/opponent/opponent_strategy_${i}.json"
-    python ace/pre_match/gen_response.py --opponent_strategy "$opponent_file"
+# Battle
+for i in {1..100}; do
+    for j in {1..100}; do
+        if [ "$i" -ge "$j" ]; then
+            strategy="ace/data/strategies/strategy_${i}.json"
+            opponent="ace/data/opponents/strategy_${j}.json"
+            python "ace/pre_match/battle.py" --opponent "$opponent" --strategy "$strategy"
+        fi
+    done
 done

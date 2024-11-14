@@ -9,6 +9,9 @@ class Metric:
         self.unit_produced = [{unit_type: [] for unit_type in self._unit_types} for _ in range(2)]
         self.unit_lost = [{unit_type: [] for unit_type in self._unit_types} for _ in range(2)]
         self.damage_taken = [0, 0]
+        
+        self.win_loss = [None, None]
+        self.winner = None
 
     def update(self, game_state):
         self._pre_gs = self._gs
@@ -134,6 +137,15 @@ class Metric:
         for player, player_spent in zip(self._gs.players, self.resource_spent):
             players.append(player.resource - self._init_resources[player.id] + player_spent)
         return players
+    
+    def set_winner(self, winner):
+        self.winner = winner
+        if winner == 0:
+            self.win_loss = [1, -1]
+        elif winner == 1:
+            self.win_loss = [-1, 1]
+        else:
+            self.win_loss = [0, 0]
 
     def to_json(self, file_path):
         import json
@@ -145,7 +157,9 @@ class Metric:
             "damage_taken": [],
             "damage_dealt": [],
             "resource_spent": [],
-            "resource_harvested": []
+            "resource_harvested": [],
+            "win_loss": self.win_loss,
+            "game_time": self.game_time
         }
 
         # Units Produced
@@ -217,6 +231,10 @@ class Metric:
         # Resource Spent
         for i, player in enumerate(self.resource_spent):
             texts[i] += f"  Resource Spent: {self.resource_spent[i]}\n"
+        
+        # winner
+        for i, player in enumerate(self.win_loss):
+            texts[i] += f"  Winner: player {self.winner}\n"
         
         return "".join(texts)
 

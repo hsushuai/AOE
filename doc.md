@@ -105,6 +105,18 @@
 [Produce Unit](worker, south)
 ```
 
+### Payoff 设计
+
+> 目标：评估方案质量
+
+```markdown
+- 资源平衡：消耗 - 收集
+- 伤害输出
+- win/lose/draw：10/-10/0
+```
+
+$$\text{payoff} = \text{win\_loss} + \alpha \cdot \text{damage\_dealt} + \beta \cdot \text{resources\_balance}\text{, where } \text{resources\_balance} = \text{resources\_spent} - \text{resources\_harvested}$$
+
 ### 轨迹特征提取
 
 ```markdown

@@ -68,6 +68,14 @@ START: |
   Here is the description of the **current situation**: 
   {observation}
 
+  # Tips
+  Here are some valuable suggestions that you should definitely consider: 
+  - If your military strategy includes 'Worker', continue to create more workers and send them to attack or defend strategies.
+  - One mineral mine can be harvested by two workers at the same time. Please give priority to harvesting resources that are close to you.
+  - If your strategy focus on defending, you should strike back when the time is right.
+  - The location of barracks should be in the edge of the map.
+  - Your task plan should long enough to win the game.
+
   You are now **player {player_id}**. Please create a task plan to win the game over the next 100 steps based on the current situation. 
   Keep in mind that you should also anticipate future scenarios, as your opponent will continue to play. If you adopt an aggressive strategy, you'll need to incorporate more attack tasks to counter their newly produced units.
   Output only the task plan in the specified format, without any extra content.

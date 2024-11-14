@@ -1,8 +1,5 @@
-OPPONENT_INSTRUCTION: |
+INSTRUCTION: |
   You are an RTS game master tasked with designing a robust and diverse strategy based on the provided parameterized framework.
-
-RESPONSE_INSTRUCTION: |
-  You are an RTS game master tasked with designing a robust and winning strategy based on the provided parameterized framework.
 
 MANUAL: |
   # Game Manual
@@ -76,6 +73,30 @@ EXAMPLES: |
   - Do not plan deploy task.
   (END OF EXAMPLE)
 
+  (START OF EXAMPLE)
+  ## Strategy
+  - Economic Feature: 2
+  - Barracks Feature: resource >= 6
+  - Military Feature: Ranged and Worker
+  - Aggression Feature: False
+  - Attack Feature: None
+  - Defense Feature: (3, 1), (3, 4)
+
+  ## Description
+  You should:
+  - Allocate two workers for mineral harvesting to support ongoing economic growth.
+  - Construct barracks once resources exceed 6.
+  - Keep producing your military (ranged and worker) more units is better.
+  - Only produce ranged and worker units.
+  - Deploy both workers and ranged units to defense areas, rather than just using a single type.
+  - Deploy the military to the area between the upper left corner (3,1) and the lower right corner (3,4).
+
+  You should not:
+  - Do not build additional barracks.
+  - Do not produce any other units.
+  - Do not active attack in the early stage.
+  (END OF EXAMPLE)
+
 basesWorkers8x8_MAP: |
   # Map Initialization Sate
   The Game map is 8x8 grid
@@ -94,31 +115,7 @@ EXIST_STRATEGY: |
   There are already existing strategies as follows, which you should not repeated:
   {exist_strategy}
 
-
-METRICS: |
-  # Metric
-  The evaluation metric for the existing strategy are as follows:
-  {metric}
-
-TRAJECTORY: |
-  # Trajectory
-  The trajectory of the existing strategy is as follows:
-  {trajectory}
-
-OPPONENT: |
-  # Opponent Features
-  Based on the past battle history, the characteristics of the opponent are analyzed as follows:
-  {opponent}
-
-RESPONSE_TIPS: |
-  # Tips for Developing a Strategy:
-  1. Analyze the weaknesses of your opponent.
-  2. Consider the relationships and constraints between unit types.
-  3. Ensure that the strategy parameters are valid.
-  4. Evaluate the coherence of the overall strategy composed of different features.
-  5. Do not output any irrelevant content.
-
-OPPONENT_TIPS: |
+TIPS: |
   # Tips for Developing a Strategy:
   1. Try single unit type military strategy.
   2. Try barracks strategy without build barracks.
@@ -126,25 +123,5 @@ OPPONENT_TIPS: |
   4. Evaluate the coherence of the overall strategy composed of different features.
   5. Do not output any irrelevant content.
 
-OPPONENT_START: |
-  Now you are in the **player 1** side. Approach your task step by step.
-
-RESPONSE_START: |
+START: |
   Now you are in the **player 0** side. Approach your task step by step.
-
-OPPONENT_TEMPLATE: |
-  ${OPPONENT_INSTRUCTION}
-  ${MANUAL}
-  ${STRATEGY_SPACE}
-  ${EXIST_STRATEGY}
-  ${basesWorkers8x8_MAP}
-  ${EXAMPLES}
-  ${OPPONENT_START}
-
-RESPONSE_TEMPLATE: |
-  ${OPPONENT_INSTRUCTION}
-  ${MANUAL}
-  ${STRATEGY_SPACE}
-  ${basesWorkers8x8_MAP}
-  ${EXAMPLES}
-  ${OPPONENT_START}

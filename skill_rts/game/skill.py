@@ -192,7 +192,7 @@ class BuildBuilding(Skill):
         is_building = False
         neighbors = self.path_planner.get_neighbors(building_loc, valid=False)
         for direction, loc in neighbors:
-            if self.obs[loc] is not None and self.obs[loc].action == "produce":
+            if self.obs[loc] is not None and self.obs[loc].type == "worker" and self.obs[loc].action == "produce":
                 is_building = True
                 break
         
@@ -201,10 +201,19 @@ class BuildBuilding(Skill):
         if self.obs[building_loc] is None:
             candidates = [unit.location for unit in self.player.worker if unit.task is None]
             if candidates:
-                nearest_loc = self.path_planner.get_manhattan_nearest(building_loc, candidates)
-                self.player[nearest_loc].task = "[Build Building]"
-                self.player[nearest_loc].task_params = self.params
-                self.unit = self.player[nearest_loc]
+                # let harvested worker to build
+                best_unit_loc = None
+                min_len = float("inf")
+                for loc in candidates:
+                    fake_mine_loc = (0, 0) if self.player.id == 0 else (self.obs.env.height - 1, self.obs.env.width - 1)
+                    path_len1 = manhattan_distance(fake_mine_loc, loc)
+                    path_len2 = manhattan_distance(building_loc, loc)
+                    if path_len1 + path_len2 < min_len:
+                        min_len = path_len1 + path_len2
+                        best_unit_loc = loc
+                self.player[best_unit_loc].task = "[Build Building]"
+                self.player[best_unit_loc].task_params = self.params
+                self.unit = self.player[best_unit_loc]
                 return True
         return False
     

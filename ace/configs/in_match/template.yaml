@@ -105,7 +105,7 @@ basesWorkers8x8_MAP: |
 
 EXIST_STRATEGY: |
   # Existing Strategy
-  There are already existing strategies as follows, which you should not repeated:
+  There are already existing loosed strategies as follows, which you should not repeated:
   {exist_strategy}
 
 TRAJECTORY: |
@@ -125,14 +125,7 @@ RESPONSE_TIPS: |
   3. Ensure that the strategy parameters are valid.
   4. Evaluate the coherence of the overall strategy composed of different features.
   5. Do not output any irrelevant content.
-
-OPPONENT_TIPS: |
-  # Tips for Developing a Strategy:
-  1. Try single unit type military strategy.
-  2. Try barracks strategy without build barracks.
-  3. Actually attack priority is not important for strategy diversity.
-  4. Evaluate the coherence of the overall strategy composed of different features.
-  5. Do not output any irrelevant content.
+  6. Prioritize attacking the enemy's manpower, i.e. DO NOT ATTACK BUILDING FIRST, if your strategy is aggressive.
 
 RESPONSE_START: |
   Now you are in the **player 0** side. Approach your task step by step.
@@ -155,6 +148,7 @@ RESPONSE_TEMPLATE: |
   ${STRATEGY_SPACE}
   ${basesWorkers8x8_MAP}
   ${OPPONENT}
+  ${EXIST_STRATEGY}
   ${EXAMPLES}
   ${RESPONSE_TIPS}
   ${RESPONSE_START}

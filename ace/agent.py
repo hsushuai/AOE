@@ -67,9 +67,10 @@ class AceAgent:
             return self.prompt_template.format(observation=self.obs, player_id=self.player_id, examples=self._get_shot(), strategy=self._get_strategy())
     
     def _get_shot(self):
-        with open(f"ace/configs/templates/planning_{self.map_name}.yaml") as f:
+        with open(f"ace/configs/templates/example_{self.map_name}.yaml") as f:
             return yaml.safe_load(f)["EXAMPLES"][self.player_id]
     
     def _get_strategy(self):
         with open(self.strategy) as f:
-            return yaml.safe_load(f)["raw_response"]
+            strategy = yaml.safe_load(f)
+        return strategy["strategy"] + strategy["description"]
