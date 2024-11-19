@@ -43,6 +43,7 @@ env/
 
 # data files
 data/
+results/
 
 # others
 TODO.md

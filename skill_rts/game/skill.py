@@ -178,7 +178,7 @@ class BuildBuilding(Skill):
         building_type, building_loc, _ = self.params
         if manhattan_distance(self.unit.location, building_loc) == 1:
             return self.unit.produce(get_direction(self.unit.location, building_loc), building_type)
-        neighbors = self.path_planner.get_neighbors(self.unit.location)
+        neighbors = self.path_planner.get_neighbors(building_loc)
         tgt_locs = [loc for direction, loc in neighbors]
         if len(tgt_locs) > 0:
             tgt_loc = self.path_planner.get_path_nearest(self.unit.location, tgt_locs)

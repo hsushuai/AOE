@@ -119,9 +119,11 @@ TIPS: |
   # Tips for Developing a Strategy:
   1. Try single unit type military strategy.
   2. Try barracks strategy without build barracks.
-  3. Actually attack priority is not important for strategy diversity.
-  4. Evaluate the coherence of the overall strategy composed of different features.
-  5. Do not output any irrelevant content.
+  3. If your military strategy includes one of the following (ranged, heavy, light), your economic strategy can only be 2, that is, two workers mining together, because these military strategies are more expensive.
+  4. If your military strategy does not include any of the (ranged, heavy, light) options, your barracks strategy must be False, since you do not need to use the barracks, so you do not need to build it.
+  5. Actually attack priority is not important for strategy diversity.
+  6. Evaluate the coherence of the overall strategy composed of different features.
+  7. Do not output any irrelevant content.
 
 START: |
   Now you are in the **player 0** side. Approach your task step by step.

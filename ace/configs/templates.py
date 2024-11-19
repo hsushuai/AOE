@@ -7,7 +7,6 @@ with open("ace/configs/templates/template_planning.yaml") as f:
 INSTRUCTION = base["INSTRUCTION"]
 INTRODUCTION = base["INTRODUCTION"]
 EXAMPLES = base["EXAMPLES"]
-TIPS = base["TIPS"]
 OPPONENT = base["OPPONENT"]
 STRATEGY = base["STRATEGY"]
 START = base["START"]

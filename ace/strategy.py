@@ -46,7 +46,7 @@ class Strategy:
 
         self.economic = int(self.economic)
         if "resource" in self.barracks:
-            self.barracks = self.barracks.split(">= ")[1]
+            self.barracks = int(self.barracks.split(">= ")[1])
         else:
             self.barracks = False
         self.aggression = eval(self.aggression)
@@ -62,10 +62,15 @@ class Strategy:
         feats.append(self.economic)
         
         # barracks
-        if "resource" in self.barracks:
-            feats.append(int(self.barracks.split(">= ")[1]))
+        if isinstance(self.barracks, str):
+            if "resource" in self.barracks:
+                feats.append(self.barracks.split(">= ")[1])
+            else:
+                feats.append(-1)
+        elif isinstance(self.barracks, int):
+            feats.append(self.barracks)
         else:
-            feats.append(-1)
+            feats.append(-1)        
         
         # military
         military_feat = [self.UNIT2IDX[unit_type.lower()] for unit_type in self.military.split(" and ")]
@@ -77,7 +82,7 @@ class Strategy:
         feats.append(aggression_feat)
         
         # attack
-        if ">" in self.attack:
+        if isinstance(self.attack, str) and ">" in self.attack:
             attack_feat = [self.UNIT2IDX[unit_type.lower()] for unit_type in self.attack.split(" > ")]
         else:
             attack_feat = []
@@ -173,4 +178,3 @@ class Strategy:
         instance.attack = structure["attack"]
         instance.defense = structure["defense"]
         return instance
-    

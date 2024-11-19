@@ -196,7 +196,7 @@ class MicroRTSLLMEnv(gym.Env):
         alpha, beta = self.payoff_weights
 
         resource_balance = list(map(lambda x, y: x - y, self.metric.resource_spent, self.metric.resource_harvested))
-        self.payoffs = list(map(lambda x, y, z: 10 * x + alpha * y + beta * z, self.metric.win_loss, self.metric.damage_dealt, resource_balance))
+        self.payoffs = list(map(lambda x, y, z: round(10 * x + alpha * y + beta * z, 2), self.metric.win_loss, self.metric.damage_dealt, resource_balance))
     
     def _set_winner(self):
         """Set the winner of the game."""

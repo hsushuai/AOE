@@ -11,10 +11,10 @@ import numpy as np
 logger.set_level(logger.INFO)
 
 MAX_GENERATIONS = int(1e9)
-BASE_DIR = "ace/data/strategies"
+BASE_DIR = "ace/data/new_strategies"
 
 
-def parse_args(config_path: str = "ace/configs/pre_match/gen_strategy.yaml"):
+def parse_args(config_path: str = "ace/pre_match/configs/gen_strategy.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -42,7 +42,7 @@ def parse_args(config_path: str = "ace/configs/pre_match/gen_strategy.yaml"):
 
 
 def get_prompt_template(map):
-    with open("ace/configs/pre_match/template.yaml") as f:
+    with open("ace/pre_match/configs/template.yaml") as f:
         template = yaml.safe_load(f)
     
     INSTRUCTION = template["INSTRUCTION"] + "\n"
@@ -110,9 +110,7 @@ def analyze_diversity():
         filename = f"{BASE_DIR}/strategy_{i + 1}.json"
         if not os.path.exists(filename):
             break
-        with open(filename) as f:
-            raw_strategy = json.load(f)["raw_response"]
-        strategy = Strategy.load_from_raw(raw_strategy)
+        strategy = Strategy.load_from_json(filename)
         
         batch_feats.append(strategy.feats)
         batch_one_hot_feats.append(strategy.one_hot_feats)
@@ -153,6 +151,8 @@ def analyze_diversity():
     logger.info(f"Max Euclidean distance: {max_eu_dis}")
     logger.info(f"Min Hamming distance: {min_ham_dist}")
     logger.info(f"Min Euclidean distance: {min_eu_dis}")
+
+    os.environ["QT_QPA_PLATFORM"] = "offscreen"
 
     # PCA
     pca = PCA(n_components=2)
@@ -207,5 +207,5 @@ def gen_strategies():
 
 if __name__ == "__main__":
     # gen_strategies()
-    # analyze_diversity()
+    analyze_diversity()
     extract_strategies_to_csv()

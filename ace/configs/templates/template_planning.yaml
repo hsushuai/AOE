@@ -31,7 +31,7 @@ INTRODUCTION: |
   - [Harvest Mineral] (x, y): Assign one worker to harvest resources from the mineral field located at (x, y).
   - [Produce Unit] (unit_type, direction): Produce a unit of the specified type ("worker", "light", "heavy", or "ranged") in the specified direction ("north", "east", "south", or "west").
   - [Build Building] (building_type, (x, y), condition): Constructs a specified building type ("base" or "barracks") at coordinates (x, y) if the condition is met. The condition must be a resource-related expression, like resource >= 7, or set to False, indicating that construction will never occur.
-  - [Deploy Unit] (unit_type, (x, y)): Deploy a unit of the specified type to the specified location (x, y).
+  - [Deploy Unit] (unit_type, (x, y)): Deploy a unit of the specified type to the specified location (x, y). One location can only have one unit deployed.
   - [Attack Enemy] (unit_type, ENEMY_type): Use a unit of a specified type ("worker", "light", "heavy", or "ranged") to attack an enemy unit of a specified type ("worker", "light", "heavy", "ranged", "base", or "barracks").
 
   Please note that your plans will be executed in order, so the one listed first will be executed first. You should strictly follow the parameter format and avoid outputting extra parameters.
@@ -43,12 +43,6 @@ EXAMPLES: |
   # Examples
   You can refer to the following examples for guidance: 
   {examples}
-
-TIPS: |
-  
-  # Tips
-  Here are some valuable suggestions that you should definitely consider: 
-  {tips}
 
 OPPONENT: |
   
@@ -72,10 +66,10 @@ START: |
   Here are some valuable suggestions that you should definitely consider: 
   - If your military strategy includes 'Worker', continue to create more workers and send them to attack or defend strategies.
   - One mineral mine can be harvested by two workers at the same time. Please give priority to harvesting resources that are close to you.
-  - If your strategy focus on defending, you should strike back when the time is right.
+  - If the Aggression Feature in your strategy is False, you should strike back when the time is right.
+  - If the Aggression Feature in your strategy is True, DO NOT plan deploy unit tasks.
   - The location of barracks should be in the edge of the map.
-  - Your task plan should long enough to win the game.
 
-  You are now **player {player_id}**. Please create a task plan to win the game over the next 100 steps based on the current situation. 
+  You are now **player {player_id}**. Please create a task plan to win the game based on the current situation. 
   Keep in mind that you should also anticipate future scenarios, as your opponent will continue to play. If you adopt an aggressive strategy, you'll need to incorporate more attack tasks to counter their newly produced units.
   Output only the task plan in the specified format, without any extra content.

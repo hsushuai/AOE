@@ -32,6 +32,7 @@ class Qwen(LLM):
 
         super().__init__(model, temperature, max_tokens)
         self.client = OpenAI(base_url=os.getenv("QWEN_API_BASE"), api_key=os.getenv("QWEN_API_KEY"))
+        # openai.Model.list()
     
     def call(self, prompt: str) -> str:
         response = self.client.chat.completions.create(

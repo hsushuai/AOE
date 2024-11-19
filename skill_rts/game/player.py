@@ -80,7 +80,8 @@ class TaskManager:
         self.obs = player.obs
         # used for update tasks, a better way is to use action trace which is not implemented yet
         self._metric = Metric(player.obs)
-        self.temp_pending = []  # when building a worker harvest, pending remain harvest task
+        self.harvest_pending = []  # pending a harvest task for building barracks
+        self.produce_pending = []  # if build barracks resource condition is 5, pending all produce task
     
     def update(self):
         self._metric.update(self.obs)
@@ -92,21 +93,35 @@ class TaskManager:
             condition = self.params_list[index][2]
             if eval(condition) and self.task_list.count("[Harvest Mineral]") > 1 and len(self.player.barracks) == 0:
                 harvest_idxs = [i for i, task in enumerate(self.task_list) if task == "[Harvest Mineral]"]
-                self.temp_pending = [(self.task_list.pop(i), self.params_list.pop(i)) for i in harvest_idxs[1:]]
-            elif len(self.temp_pending) > 0:
-                for task, params in self.temp_pending:
+                # one harvest task is used to build barracks
+                self.harvest_pending = [(self.task_list[i], self.params_list[i]) for i in harvest_idxs[1:]]
+                for i in sorted(harvest_idxs[1:], reverse=True):
+                    self.task_list.pop(i)
+                    self.params_list.pop(i)
+            elif len(self.harvest_pending) > 0 or len(self.player.barracks) > 0:
+                for task, params in self.harvest_pending:
                     self.task_list.insert(0, task)
                     self.params_list.insert(0, params)
-            if len(self.player.barracks) > 0:
-                for i, (task, params) in enumerate(self.temp_pending):
-                    self.task_list.insert(i, task)
-                    self.params_list.insert(i, params)
+
+            if "5" in condition:  # pending all spend resources task
+                spend_idxs = [i for i, task in enumerate(self.task_list) if task == "[Produce Unit]"]
+                self.produce_pending = [(self.task_list[i], self.params_list[i]) for i in spend_idxs]
+                for i in sorted(spend_idxs, reverse=True):
+                    self.task_list.pop(i)
+                    self.params_list.pop(i)
+            elif len(self.produce_pending) > 0 or len(self.player.barracks) > 0:
+                for task, params in self.produce_pending:
+                    self.task_list.insert(0, task)
+                    self.params_list.insert(0, params)
         for task, params in zip(self.task_list, self.params_list):
             skill = Player.get_skill(task)
             if skill is not None and skill.is_completed(kills=kills, prods=prods, obs=self.obs, params=params):
                 self.completed_tasks.append((task, params))
                 self.task_list.remove(task)
                 self.params_list.remove(params)
+    
+    def _pend_produce_task(self):
+        ...
     
     @property
     def tasks(self):
