@@ -12,7 +12,7 @@ class Strategy:
         "base": 4,
         "barracks": 5,
     }
-    map_size: tuple = (8, 8)  # default is  8x8 map
+    _map_size: tuple = (8, 8)  # default is  8x8 map
 
     def __init__(self, strategy: str, description: str):
         self.strategy = strategy
@@ -92,7 +92,7 @@ class Strategy:
         # defense
         if self.defense is not None:
             locs = self.defense
-            defense_feat = list(map(lambda loc: loc[0] * self.map_size[0] + loc[1], locs))
+            defense_feat = list(map(lambda loc: loc[0] * self._map_size[0] + loc[1], locs))
         else:
             defense_feat = [-1, -1]
         feats.extend(defense_feat)
@@ -105,36 +105,35 @@ class Strategy:
     
     @property
     def one_hot_feats(self) -> np.ndarray:
-        feats_size = 1 + 6 + 4 + 1 + 6 * 6 + self.map_size[0] * self.map_size[1]
+        feats_size = 1 + 1 + 4 + 1 + 6 * 6 + self._map_size[0] * self._map_size[1]
         one_hot_feats = np.zeros((feats_size), dtype=int)
 
         # economic
-        one_hot_feats[0] = self.feats[0] - 1
+        one_hot_feats[0] = self.feats[0]
 
         # barracks
-        if self.feats[1] != -1:
-            one_hot_feats[self.feats[1] - 5 + 1] = 1
+        one_hot_feats[1] = self.feats[1]
         
         # military
         military_feat = np.sort(self.feats[2:6])
         military_feat = military_feat[np.where(military_feat != -1)]
-        one_hot_feats[military_feat + 7] = 1
+        one_hot_feats[military_feat + 2] = 1
 
         # aggression
-        one_hot_feats[11] = self.feats[6]
+        one_hot_feats[6] = self.feats[6]
 
         # attack
         attack_feat = self.feats[7:13]
         attack_feat = attack_feat[np.where(attack_feat != -1)]
         for i, feat in enumerate(attack_feat):
-            one_hot_feats[feat + 12 + i * 6] = 1
+            one_hot_feats[feat + 7 + i * 6] = 1
         
         # defense
         defense_feat = self.feats[13:]
-        left_upper, right_lower = tuple(map(lambda x: (x // self.map_size[0], x % self.map_size[0]), defense_feat))
+        left_upper, right_lower = tuple(map(lambda x: (x // self._map_size[0], x % self._map_size[0]), defense_feat))
         for x in range(left_upper[0], right_lower[0] + 1):
             for y in range(left_upper[1], right_lower[1] + 1):
-                one_hot_feats[x * self.map_size[0] + y + 48] = 1
+                one_hot_feats[x * self._map_size[0] + y + 43] = 1
 
         return one_hot_feats
     

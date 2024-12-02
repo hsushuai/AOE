@@ -11,7 +11,7 @@ import numpy as np
 logger.set_level(logger.INFO)
 
 MAX_GENERATIONS = int(1e9)
-BASE_DIR = "ace/data/new_strategies"
+BASE_DIR = "ace/data/strategies"
 
 
 def parse_args(config_path: str = "ace/pre_match/configs/gen_strategy.yaml"):
@@ -102,6 +102,7 @@ def analyze_diversity():
     import matplotlib.pyplot as plt
     from sklearn.decomposition import PCA
     from sklearn.manifold import TSNE
+    import seaborn as sns
 
     # Load data
     batch_feats = []
@@ -153,21 +154,17 @@ def analyze_diversity():
     logger.info(f"Min Euclidean distance: {min_eu_dis}")
 
     os.environ["QT_QPA_PLATFORM"] = "offscreen"
-
-    # PCA
-    pca = PCA(n_components=2)
-    strategy_2d_pca = pca.fit_transform(batch_one_hot_feats)
-
-    # or t-SNE (suitable for high-dimensional data)
+    
+    # t-SNE
     tsne = TSNE(n_components=2, perplexity=30, random_state=0)
     strategy_2d_tsne = tsne.fit_transform(batch_one_hot_feats)
 
     # Plot the strategy distribution map
     fig, axes = plt.subplots(1, 2, figsize=(20, 8))
-    axes[0].scatter(strategy_2d_pca[:, 0], strategy_2d_pca[:, 1], alpha=0.7)
-    axes[0].set_title("Strategy Distribution Map (PCA Dimensionality Reduction)")
-    axes[0].set_xlabel("PCA Dimension 1")
-    axes[0].set_ylabel("PCA Dimension 2")
+    sns.histplot(eu_dists, bins=100, kde=True, ax=axes[0], alpha=0.7)
+    axes[0].set_title("Strategy Euclidean Distance Distribution")
+    axes[0].set_xlabel("Distance")
+    axes[0].set_ylabel("Frequency")
 
     axes[1].scatter(strategy_2d_tsne[:, 0], strategy_2d_tsne[:, 1], alpha=0.7)
     axes[1].set_title("Strategy Distribution Map (t-SNE Dimensionality Reduction)")
@@ -208,4 +205,4 @@ def gen_strategies():
 if __name__ == "__main__":
     # gen_strategies()
     analyze_diversity()
-    extract_strategies_to_csv()
+    # extract_strategies_to_csv()

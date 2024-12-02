@@ -181,9 +181,9 @@ class MicroRTSLLMEnv(gym.Env):
         self.prepare_run()
         while not self.game_over:
             self.step_run()
-            print("\r" + " " * 50 + "\r", end="", flush=True)
-            print(f"\rRunning step {self.time}", end="", flush=True)
-        print("\r" + " " * 50 + "\r", end="", flush=True)
+        #     print("\r" + " " * 50 + "\r", end="", flush=True)
+        #     print(f"\rRunning step {self.time}", end="", flush=True)
+        # print("\r" + " " * 50 + "\r", end="", flush=True)
         
         self.end_run()
         self._set_winner()

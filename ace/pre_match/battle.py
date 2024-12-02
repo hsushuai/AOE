@@ -125,7 +125,7 @@ def run():
     # Save the results
     trajectory.to_json(f"{run_dir}/raw_traj.json")
     metric.to_json(f"{run_dir}/metric.json")
-    print(f"{strategy_name} vs {opponent_name} | Payoffs: {payoffs} | Runtime: {(end_time - start_time)/60:.2f}min")
+    print(f"{strategy_name} vs {opponent_name} | Payoffs: {payoffs} | Runtime: {(end_time - start_time)/60:.2f}min, {env.time} steps")
 
 
 if __name__ == "__main__":

@@ -31,7 +31,10 @@ class Qwen(LLM):
         import os
 
         super().__init__(model, temperature, max_tokens)
-        self.client = OpenAI(base_url=os.getenv("QWEN_API_BASE"), api_key=os.getenv("QWEN_API_KEY"))
+        if "qwen" in model:  # deploy on localhost
+            self.client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+        else:
+            self.client = OpenAI(base_url=os.getenv("QWEN_API_BASE"), api_key=os.getenv("QWEN_API_KEY"))
         # openai.Model.list()
     
     def call(self, prompt: str) -> str:
@@ -77,5 +80,5 @@ class ChatGPT(LLM):
 
 if __name__ == "__main__":
     # llm = GLM("glm-4-flash", 0, 1024)
-    llm = Qwen("Qwen2.5-72B-Instruct", 0, 1024)
+    llm = Qwen("qwen2.5:72b-instruct-q4_K_M", 0, 1024)
     print(llm("who are you"))

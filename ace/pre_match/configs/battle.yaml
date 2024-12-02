@@ -7,16 +7,16 @@ env:
 
 agents:
   - player_id: 0
-    model: Qwen2.5-72B-Instruct
+    model: qwen2.5:7b  # Qwen2.5-72B-Instruct
     temperature: 0
     max_tokens: 8192
     prompt: few-shot-w-strategy
-    strategy: ace/data/train/strategies/strategy_3.json
+    strategy: ace/data/strategies/strategy_1.json
   - player_id: 1
-    model: Qwen2.5-72B-Instruct
+    model: qwen2.5:7b  # Qwen2.5-72B-Instruct
     temperature: 0
     max_tokens: 8192
     prompt: few-shot-w-strategy
-    strategy: ace/data/opponents/strategy_22.json
+    strategy: ace/data/opponents/strategy_2.json
 
 best_of_n: 1
