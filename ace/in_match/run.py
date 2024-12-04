@@ -1,14 +1,11 @@
 import argparse
 from omegaconf import OmegaConf
-import yaml
-import json
 import os
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from skill_rts.agents.llm_clients import Qwen
-from ace.agent  import AceAgent
+from ace.agent  import Planner, Recognizer
 from ace.traj_feat import TrajectoryFeature
+from ace.strategy  import Strategy
 from skill_rts.agents import bot_agent
-from tqdm.rich import tqdm
 
 
 def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
@@ -43,106 +40,46 @@ def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
     return cfg
 
 
-def get_prompt_template(map_name):
-    template = OmegaConf.load("ace/configs/in_match/template.yaml")
-    recognize_template = template["RECOGNIZE_TEMPLATE"]
-    response_template = template["RESPONSE_TEMPLATE"]
-    return recognize_template, response_template
-
-
-def get_agents(cfg):
-    map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
-    agents = [
-        AceAgent(**cfg.agents[0], player_id=0, map_name=map_name), 
-        AceAgent(**cfg.agents[1], player_id=1, map_name=map_name)
-    ]
-    return agents
-
-
-def save_strategy(response, file_dir):
-    strategy = response.split("## Description")[0]
-    description = "## Description" + response.split("## Description")[1]
-    structure = {
-        "strategy": strategy,
-        "description": description,
-        "raw_response": response
-    }
-
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir, exist_ok=True)
-
-    file_path = f"{file_dir}/response_strategy.json"
-
-    with open(file_path, "w") as f:
-        json.dump(structure, f, indent=4)
-    
-    return strategy, file_path
-
-
 def main():
-    # Initialize
+    # ====================
+    #      Initialize
+    # ====================
     cfg = parse_args()
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
-    # opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
-    opponent_name = "Mayari"
-    runs_dir = f"in_match_runs/{opponent_name}"
 
-    llm_client = Qwen(**cfg.agents[0])
-    recognize_template, response_template = get_prompt_template(map_name)
-    opponent_agent = AceAgent(**cfg.agents[1], player_id=1, map_name=map_name)
-
-    payoffs = [-1, 1]
-    trajectory, metric = None, None
-    exist_strategies = []
-    i = 0
+    if cfg.agents[1].model in bot_agent.ALL_AIS:
+        opponent_agent = bot_agent.ALL_AIS[cfg.agents[1].model]
+        opponent_name = cfg.agents[1].model
+    else:
+        opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
+        opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
     
-    # Generate response strategy until winning
-    while payoffs[0] <= 0 and cfg.max_iterations > i:
-        run_dir = f"{runs_dir}/iter_{i}"
-        os.makedirs(run_dir, exist_ok=True)
-        debug_file = open(f"{run_dir}/debug.log", "w")
+    run_dir = f"in_match_runs/{opponent_name}"
+    os.makedirs(run_dir, exist_ok=True)
 
-        # Recognize opponent strategy
-        print("\rRecognizing opponent strategy...", end="", flush=True)
-        traj_feats = TrajectoryFeature(trajectory) if trajectory is not None else None
-        trajectory = traj_feats.to_string() if hasattr(traj_feats, "to_string") else ""
-        metric = metric.to_string() if hasattr(metric, "to_string") else ""
-        recognize_prompt = recognize_template.format(trajectory=trajectory)
-        opponent_strategy = llm_client(recognize_prompt)
-        
-        print(f"Recognized prompt:\n{recognize_prompt}", file=debug_file, flush=True)
-        print(f"Recognized Opponent strategy:\n{opponent_strategy}", file=debug_file, flush=True)
-        
-        # Generate response strategy
-        print("\r" + " " * 50 + "\r", end="", flush=True)
-        print("\rGenerating response strategy...", end="", flush=True)
-        response_prompt = response_template.format(opponent=opponent_strategy, exist_strategy="\n".join(exist_strategies))
-        response = llm_client(response_prompt)
-        strategy, strategy_path = save_strategy(response, run_dir)
-        print(f"Generated prompt:\n{response_prompt}", file=debug_file, flush=True)
-        print(f"Generated Response strategy:\n{response}", file=debug_file, flush=True)
+    # Run the game
+    agent = Planner(
+        player_id=0,
+        map_name=map_name,
+        strategy="none",
+        prompt="few-shot-w-strategy",
+        **cfg.agents[0]
+    )
+    env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env, run_dir=run_dir)
+    payoffs, trajectory = env.run()
+    metric = env.metric
 
-        # Run the game
-        agent = AceAgent(
-            player_id=0,
-            map_name=map_name,
-            strategy=strategy_path,
-            prompt="few-shot-w-strategy",
-            **cfg.agents[0]
-        )
-        env = MicroRTSLLMEnv([agent, bot_agent.mayari], **cfg.env, run_dir=run_dir)
-        payoffs, trajectory = env.run()
-        metric = env.metric
-
-        # Save the results
-        trajectory.to_json(f"{run_dir}/raw_traj.json")
-        metric.to_json(f"{run_dir}/metric.json")
-        exist_strategies.append(strategy)
-        print("\r" + " " * 50 + "\r", end="", flush=True)
-        print(f"Opponent {opponent_name} | Iteration {i} | Payoffs: {payoffs}")
-        i += 1
-        debug_file.close()
+    # Save the results
+    trajectory.to_json(f"{run_dir}/traj.json")
+    metric.to_json(f"{run_dir}/metric.json")
+    print(f"Opponent {opponent_name} |  Payoffs: {payoffs} | Game Time: {env.time}")
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    strategy = Strategy.load_from_json("ace/data/strategies/strategy_2.json")
+    print(strategy.feats)
+    print(strategy.one_hot_feats)
+    decoded_strategy = Strategy.decode(strategy.one_hot_feats)
+    print(decoded_strategy.feats)
+    print(decoded_strategy.one_hot_feats)

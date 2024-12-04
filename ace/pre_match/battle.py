@@ -3,14 +3,16 @@ from omegaconf import OmegaConf
 import os
 import re
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from ace.agent  import AceAgent
+from ace.agent  import Planner
 from ace.strategy import Strategy
+import json
+import pandas as pd
 import time
 
-BASE_DIR = "ace/data/strategies"
+DATA_DIR = "ace/data"
 
 
-def parse_args(config_path: str = "ace/pre_match/configs/battle.yaml"):
+def parse_args(config_path: str = "ace/pre_match/config/battle.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -56,7 +58,7 @@ def gen_opponent(map_name: str) -> str:
     width, height = int(width) - 1, int(height) - 1
 
     for i in range(1, int(1e9)):
-        filename = f"{BASE_DIR}/strategy_{i}.json"
+        filename = f"{DATA_DIR}/strategies/strategy_{i}.json"
         if not os.path.exists(filename):
             break
         strategy = Strategy.load_from_json(filename)
@@ -70,37 +72,74 @@ def gen_opponent(map_name: str) -> str:
                 except Exception as e:
                     print(f"Failed to convert strategy {i}:\n{e}")
         print(f"Converted strategy {i}")
-        strategy.to_json(os.path.join(os.path.dirname(BASE_DIR), "opponents", f"strategy_{i}.json"))
+        strategy.to_json(f"{DATA_DIR}/opponents/strategy_{i}.json", map_name)
 
 
 def train_test_split(train_size=0.6):
+    """Train for seen opponents, test for unseen opponents"""
     import numpy as np
     import shutil
 
-    num_strategies = len([_ for _ in os.listdir(BASE_DIR) if _.endswith(".json")])
+    num_strategies = len([_ for _ in os.listdir(f"{DATA_DIR}/strategies") if _.endswith(".json")])
     print(f"Number of strategies: {num_strategies}")
+    np.random.seed(520)
     train_indices = np.random.choice(range(1, num_strategies + 1), size=int(num_strategies * train_size), replace=False)
     test_indices = np.setdiff1d(np.arange(1, num_strategies + 1), train_indices)
     print(f"Number of training strategies: {len(train_indices)}")
     print(f"Number of testing strategies: {len(test_indices)}")
 
-    opponents_dir = os.path.join(os.path.dirname(BASE_DIR), "opponents")
-    train_strategy_dir = "ace/data/train/strategies"
-    train_opponent_dir = "ace/data/train/opponents"
-    test_dir = "ace/data/test"
+    train_strategy_dir = f"{DATA_DIR}/train/strategies"
+    train_opponent_dir = f"{DATA_DIR}/train/opponents"
+    test_strategy_dir = f"{DATA_DIR}/test/strategies"
+    test_opponent_dir = f"{DATA_DIR}/test/opponents"
     if not os.path.exists(train_strategy_dir):
         os.makedirs(train_strategy_dir)
     if not os.path.exists(train_opponent_dir):
         os.makedirs(train_opponent_dir)
-    if not os.path.exists(test_dir):
-        os.makedirs(test_dir)
+    if not os.path.exists(test_strategy_dir):
+        os.makedirs(test_strategy_dir)
+    if not os.path.exists(test_opponent_dir):
+        os.makedirs(test_opponent_dir)
     
     for i in train_indices:
-        shutil.copy(f"{BASE_DIR}/strategy_{i}.json", f"{train_strategy_dir}/strategy_{i}.json")
-        shutil.copy(f"{opponents_dir}/strategy_{i}.json", f"{train_opponent_dir}/strategy_{i}.json")
+        shutil.copy(f"{DATA_DIR}/strategies/strategy_{i}.json", f"{train_strategy_dir}/strategy_{i}.json")
+        shutil.copy(f"{DATA_DIR}/opponents/strategy_{i}.json", f"{train_opponent_dir}/strategy_{i}.json")
 
     for i in test_indices:
-        shutil.copy(f"{opponents_dir}/strategy_{i}.json", f"{test_dir}/strategy_{i}.json")
+        shutil.copy(f"{DATA_DIR}/strategies/strategy_{i}.json", f"{test_strategy_dir}/strategy_{i}.json")
+        shutil.copy(f"{DATA_DIR}/opponents/strategy_{i}.json", f"{test_opponent_dir}/strategy_{i}.json")
+
+
+def extract_battle_results():
+    runs_dir = "runs/pre_match_runs"
+    df = pd.DataFrame()
+    runs = os.listdir(runs_dir)
+    runs = sorted(runs, key=lambda x: int(x.split("_")[0]) * 100 + int(x.split("_")[1]))
+    for run_name in runs:
+        strategy = run_name.split("_")[0]
+        opponent = run_name.split("_")[1]
+        run_dir = os.path.join(runs_dir, run_name)
+        with open(os.path.join(run_dir, "metric.json")) as f:
+            metric = json.load(f)
+        payoffs = list(
+            map(
+                lambda win_loss,
+                damage_dealt,
+                resource_spent,
+                resource_harvested: win_loss * 10
+                + damage_dealt * 0.1
+                + (resource_spent - resource_harvested) * 0.1,
+                metric["win_loss"],
+                metric["damage_dealt"],
+                metric["resource_spent"],
+                metric["resource_harvested"],
+            )
+        )
+        df.loc[strategy, opponent] = payoffs[0]
+        df.loc[opponent, strategy] = payoffs[1]
+    df = df.fillna(0)
+    df = df.sort_index(key=lambda x: x.astype(int))
+    df.to_excel("ace/data/payoff/payoff_matrix.csv")
 
 
 def run():
@@ -114,7 +153,7 @@ def run():
     # Run the game
     agents = []
     for agent_cfg in cfg.agents:
-        agents.append(AceAgent(**agent_cfg, map_name=map_name))
+        agents.append(Planner(**agent_cfg, map_name=map_name))
 
     env = MicroRTSLLMEnv(agents, **cfg.env, run_dir=run_dir)
     start_time = time.time()
@@ -132,3 +171,4 @@ if __name__ == "__main__":
     # gen_opponent("basesWorkers8x8")
     # train_test_split()
     run()
+    # extract_battle_results()

@@ -1,5 +1,3 @@
-__all__ = ["randomBiasedAI", "randomAI"]
-
 def randomBiasedAI(utt):
     from ai import RandomBiasedAI
 
@@ -131,10 +129,16 @@ def get_agent(name: str):
 ALL_AIS = {
     "randomAI": randomAI,
     "randomBiasedAI": randomBiasedAI,
+    "guidedRojoA3N": guidedRojoA3N,
     "passiveAI": passiveAI,
     "workerRushAI": workerRushAI,
     "lightRushAI": lightRushAI,
     "coacAI": coacAI,
+    "mixedBot": mixedBot,
+    "rojo": rojo,
+    "izanagi": izanagi,
+    "tiamat": tiamat,
+    "droplet": droplet,
     "naiveMCTSAI": naiveMCTSAI,
     "mayari": mayari,
 }

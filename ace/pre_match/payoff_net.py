@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import json
+import random
 from ace.strategy import Strategy
 
 from sklearn.linear_model import SGDClassifier
@@ -84,12 +85,17 @@ def load_data(file_path="ace/data/payoff/payoff_data.csv"):
 
 
 def fit_payoff_model():
+    same_seeds(520)
+    OUTPUT_DIM = 2
     data = load_data()
     strategy = np.stack(data["strategy"].values)
     opponent = np.stack(data["opponent"].values)
     X = np.concatenate((strategy, opponent), axis=1)
-    y = data["win_loss"].values
-    print(X.shape, y.shape)
+    y = data["win_loss"].values + 1  # -1, 0, 1 -> 0, 1, 2 for CrossEntropyLoss which requires label >= 0
+    if OUTPUT_DIM == 2:
+        y[np.where(y < 2)] = 0
+        y[np.where(y == 2)] = 1
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     sgd_model1 = SGDClassifier(
         max_iter=8000,
@@ -150,23 +156,24 @@ def fit_payoff_model():
         n_jobs=-1,
     )
 
-    ensemble.fit(X, y)
+    ensemble.fit(X_train, y_train)
     joblib.dump(ensemble, "ace/data/payoff/ensemble_model.pkl")
     loaded_ensemble = joblib.load("ace/data/payoff/ensemble_model.pkl")
     
-    y_pred = loaded_ensemble.predict(X)
-    print("Accuracy:", accuracy_score(y, y_pred))
+    # test
+    y_pred = loaded_ensemble.predict(X_test)
+    print("Accuracy:", accuracy_score(y_test, y_pred))
 
     # plot confusion matrix
     os.environ["QT_QPA_PLATFORM"] = "offscreen"  # run without GUI
-    skplt.metrics.plot_confusion_matrix(y, y_pred, normalize=True)
-    plt.savefig("results/confusion_matrix.png")
+    skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
+    plt.savefig("results/ml_confusion_matrix.png")
 
     # plot roc curve
-    y_proba = loaded_ensemble.predict_proba(X)
-    print("Log Loss:", log_loss(y, y_proba))
-    skplt.metrics.plot_roc(y, y_proba)
-    plt.savefig("results/roc_curve.png")
+    y_proba = loaded_ensemble.predict_proba(X_test)
+    print("Log Loss:", log_loss(y_test, y_proba))
+    skplt.metrics.plot_roc(y_test, y_proba)
+    plt.savefig("results/ml_roc_curve.png")
 
     # skplt.estimators.plot_learning_curve(loaded_ensemble, X, y)
     # plt.savefig("results/learning_curve.png")
@@ -193,6 +200,7 @@ def same_seeds(seed):
     torch.backends.cudnn.benchmark = False
     torch.manual_seed(seed)
     np.random.seed(seed)
+    random.seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
@@ -248,13 +256,12 @@ def fit_payoff_nn():
                 accuracy = accuracy_score(y_test_labels, y_pred_labels)
                 if accuracy > max_acc:
                     max_acc = accuracy
-                    best_model = model.state_dict()
+                    best_model = model
                 print(f"Epoch {epoch + 1}, Test Loss: {loss.item()}, Accuracy: {accuracy:.2f}")
     print(f"Best Accuracy: {max_acc:.2f}")
     torch.save(best_model, "ace/data/payoff/payoff_net.pth")
 
-    model = PayoffNet(input_dim=X.shape[1], hidden_dim=64, output_dim=OUTPUT_DIM)
-    model.load_state_dict(torch.load("ace/data/payoff/payoff_net.pth"))
+    model = torch.load("ace/data/payoff/payoff_net.pth")
     model.to(device)
     model.eval()
     y_test_labels = y_test.cpu().numpy()
@@ -273,5 +280,5 @@ def fit_payoff_nn():
     plt.savefig("results/dnn_roc_curve.png")
 
 if __name__ == "__main__":
-    # prepare_data()
+    prepare_data()
     fit_payoff_nn()

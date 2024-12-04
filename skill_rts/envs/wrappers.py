@@ -4,6 +4,7 @@ from skill_rts.game.game_state import GameState
 from skill_rts.game.metric import Metric
 from skill_rts.game.trajectory import Trajectory
 from skill_rts.envs.record_video import RecordVideo
+from skill_rts.agents import bot_agent
 from skill_rts import logger
 import gym
 import os
@@ -102,7 +103,7 @@ class MicroRTSLLMEnv(gym.Env):
         
         self.agents = agents
         for agent in agents:
-            if agent.__module__ not in ["skill_rts.agents.bot_agent"]:
+            if agent not in bot_agent.ALL_AIS:
                 self.num_players += 1  # llm agent
                 self.llm_agents.append(agent)
             else:  # java bot
@@ -181,13 +182,7 @@ class MicroRTSLLMEnv(gym.Env):
         self.prepare_run()
         while not self.game_over:
             self.step_run()
-        #     print("\r" + " " * 50 + "\r", end="", flush=True)
-        #     print(f"\rRunning step {self.time}", end="", flush=True)
-        # print("\r" + " " * 50 + "\r", end="", flush=True)
-        
         self.end_run()
-        self._set_winner()
-        self._calculate_payoffs()
         return self.payoffs, self.get_traj()
     
     def _calculate_payoffs(self):
@@ -209,8 +204,13 @@ class MicroRTSLLMEnv(gym.Env):
         self.metric.set_winner(self.winner)
     
     def end_run(self):
-        self.env.close()
+        self.close()
         self.log_file.close()
+        self._set_winner()
+        self._calculate_payoffs()
+    
+    def close(self):
+        self.env.close()
     
     def get_traj(self):
         if self.time == 0:

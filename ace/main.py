@@ -1,6 +1,6 @@
 from skill_rts.envs import MicroRTSLLMEnv
 from skill_rts.agents import bot_agent
-from ace.agent.agent import AceAgent
+from ace.agent.agent import Planner
 from ace.configs.config import cfg
 from skill_rts import logger
 
@@ -14,7 +14,7 @@ def get_players():
         if player_cfg["model"] in bot_agent.ALL_AIS:
             players.append(bot_agent.get_agent(player_cfg["model"]))
         else:
-            players.append(AceAgent(**player_cfg, map_path=cfg["env"]["map_path"], player_id=i))
+            players.append(Planner(**player_cfg, map_path=cfg["env"]["map_path"], player_id=i))
     return players
 
 

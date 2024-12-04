@@ -14,7 +14,7 @@ MAX_GENERATIONS = int(1e9)
 BASE_DIR = "ace/data/strategies"
 
 
-def parse_args(config_path: str = "ace/pre_match/configs/gen_strategy.yaml"):
+def parse_args(config_path: str = "ace/pre_match/config/gen_strategy.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -42,7 +42,7 @@ def parse_args(config_path: str = "ace/pre_match/configs/gen_strategy.yaml"):
 
 
 def get_prompt_template(map):
-    with open("ace/pre_match/configs/template.yaml") as f:
+    with open("ace/pre_match/config/template.yaml") as f:
         template = yaml.safe_load(f)
     
     INSTRUCTION = template["INSTRUCTION"] + "\n"
@@ -56,7 +56,7 @@ def get_prompt_template(map):
     return INSTRUCTION + MANUAL + STRATEGY_SPACE + EXIST_STRATEGY + MAP + EXAMPLES + TIPS + START
 
 
-def save_strategy(strategy: Strategy):
+def save_strategy(strategy: Strategy, map_name: str):
     if not os.path.exists(BASE_DIR):
         os.makedirs(BASE_DIR, exist_ok=True)
     
@@ -64,7 +64,7 @@ def save_strategy(strategy: Strategy):
         filename = f"{BASE_DIR}/strategy_{i}.json"
         if not os.path.exists(filename):
             break
-    strategy.to_json(filename)
+    strategy.to_json(filename, map_name)
 
 
 def extract_strategies_to_csv():
@@ -195,7 +195,7 @@ def gen_strategies():
         response = llm_client(prompt)
         strategy = Strategy.load_from_raw(response)
         if strategy is not None and strategy not in exist_strategies:
-            save_strategy(strategy)
+            save_strategy(strategy, map_name)
             exist_strategies.append(strategy)
             logger.info(f"Saved strategy {i}")
             i += 1

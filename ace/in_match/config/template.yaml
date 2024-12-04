@@ -1,5 +1,5 @@
 RECOGNIZE_INSTRUCTION: |
-  You are an RTS game master tasked with analyzing and recognizing opponent strategy based on the game trajectory and provided parameterized framework.
+  You are an RTS game master tasked with analyzing and recognizing opponent strategy based on the summary game trajectory and provided parameterized framework.
 
 RESPONSE_INSTRUCTION: |
   You are an RTS game master tasked with designing a robust and winning strategy based on the provided parameterized framework.
@@ -45,15 +45,12 @@ STRATEGY_SPACE: |
   6. **Defense Feature** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
     - Parameter: Defense area, defined by top left and bottom right coordinates
     - Feature Space: {{(x1, y1), (x2, y2)}}
-  
-  You need to fully consider the strategic rationality of the features combined together. For example, if Military contains heavy, light or ranged units, you need to build barracks early to produce these advanced types of units.
 
 
 RECOGNIZE_EXAMPLES: |
   # Example
   Here is a parameterized strategy example for your reference. You have to output the same format as the example:
   (START OF EXAMPLE)
-  ## Strategy
   - Economic Feature: 2
   - Barracks Feature: resource >= 7
   - Military Feature: Ranged and Worker
@@ -126,6 +123,7 @@ RESPONSE_TIPS: |
   4. Evaluate the coherence of the overall strategy composed of different features.
   5. Do not output any irrelevant content.
   6. Prioritize attacking the enemy's manpower, i.e. DO NOT ATTACK BUILDING FIRST, if your strategy is aggressive.
+  7. You need to fully consider the strategic rationality of the features combined together. For example, if Military contains heavy, light or ranged units, you need to build barracks early to produce these advanced types of units.
 
 RESPONSE_START: |
   Now you are in the **player 0** side. Approach your task step by step.
@@ -137,9 +135,8 @@ RECOGNIZE_TEMPLATE: |
   ${RECOGNIZE_INSTRUCTION}
   ${MANUAL}
   ${STRATEGY_SPACE}
-  ${TRAJECTORY}
-  ${basesWorkers8x8_MAP}
   ${RECOGNIZE_EXAMPLES}
+  ${TRAJECTORY}
   ${RECOGNIZE_START}
 
 RESPONSE_TEMPLATE: |

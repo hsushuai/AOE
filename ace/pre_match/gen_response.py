@@ -5,7 +5,7 @@ import json
 import os
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
 from skill_rts.agents.llm_clients import Qwen
-from ace.agent  import AceAgent
+from ace.agent  import Planner
 from ace.traj_feat import TrajectoryFeature
 from skill_rts import logger
 
@@ -14,7 +14,7 @@ logger.set_level(logger.INFO)
 MAX_GENERATIONS = int(1e9)
 
 
-def parse_args(config_path: str = "ace/configs/pre_match/gen_response.yaml"):
+def parse_args(config_path: str = "ace/config/pre_match/gen_response.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -47,7 +47,7 @@ def parse_args(config_path: str = "ace/configs/pre_match/gen_response.yaml"):
 
 
 def get_prompt_template(map_name):
-    with open("ace/configs/pre_match/template.yaml") as f:
+    with open("ace/config/pre_match/template.yaml") as f:
         template = yaml.safe_load(f)
     RESPONSE_INSTRUCTION = template["RESPONSE_INSTRUCTION"] + "\n"
     MANUAL = template["MANUAL"] + "\n"
@@ -78,8 +78,8 @@ def get_prompt_template(map_name):
 def get_agents(cfg):
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
     agents = [
-        AceAgent(**cfg.agents[0], player_id=0, map_name=map_name), 
-        AceAgent(**cfg.agents[1], player_id=1, map_name=map_name)
+        Planner(**cfg.agents[0], player_id=0, map_name=map_name), 
+        Planner(**cfg.agents[1], player_id=1, map_name=map_name)
     ]
     return agents
 
@@ -115,7 +115,7 @@ def main():
     prompt_template = get_prompt_template(map_name)
     with open(cfg.agents[1].strategy) as f:
         opponent_strategy = json.load(f)["strategy"]
-    opponent_agent = AceAgent(**cfg.agents[1], player_id=1, map_name=map_name)
+    opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
 
     payoffs = [-1, 1]
     trajectory, metric = None, None
@@ -140,7 +140,7 @@ def main():
         strategy, strategy_path = save_strategy(response, run_dir)
 
         # Run the game
-        agent = AceAgent(
+        agent = Planner(
             player_id=0,
             map_name=map_name,
             strategy=strategy_path,

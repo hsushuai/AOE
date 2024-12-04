@@ -63,7 +63,8 @@ class GLM(LLM):
         )
         return response.choices[0].message.content
 
-class ChatGPT(LLM):
+class WebChatGPT(LLM):
+    """Using the web version of ChatGPT, need MANUALLY copy the output"""
     def __init__(self, *args, **kwargs):
         pass
 
