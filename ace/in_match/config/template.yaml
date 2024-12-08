@@ -44,7 +44,7 @@ STRATEGY_SPACE: |
   
   6. **Defense Feature** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
     - Parameter: Defense area, defined by top left and bottom right coordinates
-    - Feature Space: {{(x1, y1), (x2, y2)}}
+    - Feature Space: {{(x1, y1), (x2, y2)}}, e.g. (5, 5), (6, 7)
 
 
 RECOGNIZE_EXAMPLES: |

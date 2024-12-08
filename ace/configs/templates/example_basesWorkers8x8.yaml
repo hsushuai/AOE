@@ -1,8 +1,8 @@
 EXAMPLES:
   - |
     START OF TASK
-    [Harvest Mineral](0, 0)
-    [Harvest Mineral](0, 0)
+    [Harvest Mineral](0, 0)  # one worker harvests minerals
+    [Harvest Mineral](0, 0)  # another worker harvests minerals
     [Produce Unit](worker, east)
     [Produce Unit](worker, south)
     [Produce Unit](worker, east)
@@ -28,8 +28,8 @@ EXAMPLES:
 
   - |
     START OF TASK
-    [Harvest Mineral](7, 7)
-    [Harvest Mineral](7, 7)
+    [Harvest Mineral](7, 7)  # one worker harvests minerals
+    [Harvest Mineral](7, 7)  # another worker harvests minerals
     [Produce Unit](worker, west)
     [Produce Unit](worker, north)
     [Produce Unit](worker, west)

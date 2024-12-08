@@ -1,7 +1,6 @@
 import argparse
 from omegaconf import OmegaConf
 import yaml
-import json
 import os
 from skill_rts.agents.llm_clients import Qwen
 from skill_rts import logger
@@ -173,7 +172,7 @@ def analyze_diversity():
 
     plt.tight_layout()
     # plt.grid(True)
-    filename = "temp/strategy_distribution_map.png"
+    filename = "results/strategy_distribution_map.png"
     plt.savefig(filename, dpi=300)
     logger.info(f"Strategy distribution map saved to {filename}")
 
@@ -203,6 +202,6 @@ def gen_strategies():
 
 
 if __name__ == "__main__":
-    # gen_strategies()
+    gen_strategies()
     analyze_diversity()
-    # extract_strategies_to_csv()
+    extract_strategies_to_csv()

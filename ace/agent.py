@@ -3,10 +3,14 @@ import os
 from omegaconf import OmegaConf
 from ace.configs.templates import zero_shot, few_shot, few_shot_w_strategy
 from skill_rts.agents.llm_clients import Qwen, GLM, WebChatGPT
+from skill_rts.game.trajectory import Trajectory
 from skill_rts import logger
 from ace.strategy import Strategy
+from ace.traj_feat import TrajectoryFeature
+from ace.pre_match.payoff_net import PayoffNet
 import pandas as pd
 import numpy as np
+import random
 import json
 import torch
 
@@ -38,7 +42,7 @@ class Planner(Agent):
         max_tokens: int, 
         map_name: str,
         player_id: int,
-        strategy: str = None,
+        strategy: str | Strategy = None,
     ):
         """
         Args:
@@ -48,7 +52,7 @@ class Planner(Agent):
             max_tokens (int): max tokens for generation
             map_name (str): map name
             player_id (int): player id, 0 for blue side, 1 for red side
-            strategy (str): strategy file path or strategy string
+            strategy (str | Strategy): strategy file path or strategy string or Strategy object
         """
         super().__init__(model, temperature, max_tokens)
         self.prompt = prompt
@@ -93,47 +97,59 @@ class Planner(Agent):
             return yaml.safe_load(f)["EXAMPLES"][self.player_id]
     
     def _get_strategy(self):
-        if os.path.isfile(self.strategy):
-            with open(self.strategy) as f:
-                strategy = yaml.safe_load(f)
-            return strategy["strategy"] + strategy["description"]
-        elif self.strategy is not None:
+        if isinstance(self.strategy, Strategy):
+            return str(self.strategy)
+        elif isinstance(self.strategy, str):
+            if os.path.isfile(self.strategy):
+                with open(self.strategy) as f:
+                    strategy = yaml.safe_load(f)
+                return strategy["strategy"] + strategy["description"]
             return self.strategy
-        else:
-            return ""
+        return ""
 
 
 class Recognizer(Agent):
     def __init__(self, model, temperature, max_tokens):
         super().__init__(model, temperature, max_tokens)
+        self._get_prompt()
     
     def _get_prompt(self):
         self.prompt_template = OmegaConf.load("ace/in_match/config/template.yaml")["RECOGNIZE_TEMPLATE"]
     
-    def step(self, traj: str, *args, **kwargs):
+    def step(self, traj: str, *args, **kwargs) -> Strategy:
         prompt = self.prompt_template.format(trajectory=traj)
-        return self.client(prompt)
+        response = self.client(prompt)
+        return Strategy(response, "")
 
 
 class AceAgent(Agent):
     strategy_dir = "ace/data/train"
 
-    def __init__(self, model, temperature, max_tokens, map_name):
+    def __init__(self, player_id, model, temperature, max_tokens, map_name):
         super().__init__(model, temperature, max_tokens)
-        self.planner = Planner(model, "few-shot-w-strategy", temperature, max_tokens, map_name, 0)
+        self.player_id = player_id
+        self.planner = Planner(model, "few-shot-w-strategy", temperature, max_tokens, map_name, player_id)
         self.recognizer = Recognizer(model, temperature, max_tokens)
         self.payoff_matrix = None
         self.payoff_net = None
+        # initialized meta strategy is the highest average payoff strategy
+        self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategies/strategy_35.json")
     
-    def step(self, obs, traj):
-        opponent = self.recognizer.step(traj)
-        opponent = Strategy(opponent, "")
-        idx = self.match_strategy(opponent)
-        if idx:
-            strategy = self.response4seen(idx)
+    def step(self, obs: str, traj: Trajectory | None):
+        if traj:
+            abs_traj = TrajectoryFeature(traj).to_string()
+            opponent = self.recognizer.step(abs_traj)
+            idx = self.match_strategy(opponent)
+            if idx:
+                logger.debug(f"Matched strategy: {idx}")
+                strategy = self.response4seen(idx)
+            else:
+                logger.debug(f"Unseen opponent:\n{opponent}")
+                strategy, win_rate = self.response4unseen(opponent)
+                strategy = strategy if win_rate >= 0.8 else self.meta_strategy
+            self.planner.strategy = strategy
         else:
-            strategy = self.response4unseen(opponent)
-        self.planner.strategy = strategy
+            self.planner.strategy = self.meta_strategy
         return self.planner.step(obs)
     
     def match_strategy(self, opponent):
@@ -155,23 +171,63 @@ class AceAgent(Agent):
         return d["strategy"] + d["description"]
     
     def response4unseen(self, opponent: Strategy) -> str:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
         if self.payoff_net is None:
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            self.payoff_net = torch.load("ace/data/payoff/payoff_net.pth", device=device)
+            with open("ace/pre_match/config/payoff.yaml") as f:
+                config = yaml.safe_load(f)
+            self.payoff_net = PayoffNet(**config["model"])
+            self.payoff_net.load_state_dict(torch.load("ace/data/payoff/payoff_net.pth", weights_only=True))
+            self.payoff_net.to(device)
         
         feat_space = Strategy.feat_space()
-        n_samples = 1000
+        batch_size = 1024
         best_feats = None
         best_win_rate = -float("inf")
-        for _ in range(n_samples):
-            feats = feat_space[np.random.choice(feat_space.shape[0])]
-            strategy = Strategy.decode(feats, one_hot=False)
-            x = torch.tensor([strategy.one_hot_feats, opponent.one_hot_feats], dtype=torch.float32, device=device)
+        max_iter = len(feat_space) // batch_size if len(feat_space) % batch_size == 0 else len(feat_space) // batch_size + 1
+        for i in range(max_iter):
+            end = (i + 1) * batch_size
+            end = end if end < len(feat_space) else len(feat_space)
+            feats = feat_space[i * batch_size : end]
+            # prepare input data
+            strategies = [Strategy.decode(feat, one_hot=False) for feat in feats]
+            X0 = np.vstack([strategy.one_hot_feats for strategy in strategies])
+            X1 = opponent.one_hot_feats
+            X1 = np.tile(X1, (X0.shape[0], 1))
+            X = torch.tensor(np.hstack([X0, X1]), dtype=torch.float32, device=device)
             with torch.no_grad():
-                win_rate = torch.F.softmax(self.payoff_net(x))
-            if win_rate[0] > best_win_rate:
-                best_win_rate = win_rate[0]
-                best_feats = feats
+                win_rate = torch.nn.functional.softmax(self.payoff_net(X), dim=1)
+            max_idx = win_rate[:, 0].argmax().item()
+            if win_rate[max_idx, 0] > best_win_rate:
+                best_win_rate = win_rate[max_idx, 0]
+                best_feats = feats[max_idx]
+                if best_win_rate >= 0.8:
+                    break
+        response = Strategy.decode(best_feats, one_hot=False).strategy
         logger.info(f"Search for unseen win rate: {best_win_rate}")
-        logger.info(f"Best strategy: {best_feats}")
-        return Strategy.decode(best_feats, one_hot=False).strategy
+        logger.info(f"Best strategy: {response}")
+        return response, best_win_rate
+
+
+if __name__ == "__main__":
+    from skill_rts.envs.wrappers import MicroRTSLLMEnv
+    import time
+
+    agent_config = {
+        "model": "Qwen2.5-72B-Instruct",
+        "temperature": 0,
+        "max_tokens": 8192,
+        "map_name": "basesWorkers8x8"
+    }
+    agent = AceAgent(0, **agent_config)
+    opponent = Planner(
+        player_id=1, 
+        prompt="few-shot-w-strategy",
+        strategy="ace/data/opponents/strategy_1.json",
+        **agent_config
+    )
+    start = time.time()
+    env = MicroRTSLLMEnv([agent, opponent], record_video=True)
+    logger.set_level(logger.DEBUG)
+
+    payoffs, trajectory = env.run()
+    print(f"Payoffs: {payoffs} | Steps: {env.time} | Runtime: {(time.time() - start) / 60:.2f} min")

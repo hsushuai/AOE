@@ -15,4 +15,4 @@ agents:
     prompt: few-shot-w-strategy
     strategy: ace/data/opponent/opponent_strategy_1.json
 
-max_iterations: 10
+best_of_n: 1

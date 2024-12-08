@@ -2,13 +2,12 @@ import argparse
 from omegaconf import OmegaConf
 import os
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from ace.agent  import Planner, Recognizer
-from ace.traj_feat import TrajectoryFeature
-from ace.strategy  import Strategy
+from ace.agent  import Planner, AceAgent
 from skill_rts.agents import bot_agent
+import time
 
 
-def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
+def parse_args(config_path: str = "ace/in_match/config/run.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -40,46 +39,48 @@ def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
     return cfg
 
 
-def main():
-    # ====================
-    #      Initialize
-    # ====================
+def fight_against_llm():
+    # Initialize
     cfg = parse_args()
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
 
     if cfg.agents[1].model in bot_agent.ALL_AIS:
         opponent_agent = bot_agent.ALL_AIS[cfg.agents[1].model]
         opponent_name = cfg.agents[1].model
-    else:
-        opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
-        opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
+    opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
+    opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
     
-    run_dir = f"in_match_runs/{opponent_name}"
+    run_dir = f"runs/in_match_runs/{opponent_name}"
     os.makedirs(run_dir, exist_ok=True)
 
     # Run the game
-    agent = Planner(
+    agent = AceAgent(
         player_id=0,
         map_name=map_name,
-        strategy="none",
-        prompt="few-shot-w-strategy",
         **cfg.agents[0]
     )
     env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env, run_dir=run_dir)
+    start_time = time.time()
     payoffs, trajectory = env.run()
     metric = env.metric
 
     # Save the results
     trajectory.to_json(f"{run_dir}/traj.json")
     metric.to_json(f"{run_dir}/metric.json")
-    print(f"Opponent {opponent_name} |  Payoffs: {payoffs} | Game Time: {env.time}")
+    print(f"Opponent {opponent_name} |  Payoffs: {payoffs} | Runtime: {(time.time() - start_time) / 60:.2f}min, {env.time}steps")
+
+
+def fight_against_aibot():
+    # ====================
+    #      Initialize
+    # ====================
+    cfg = parse_args()
+    map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
+
+    opponent_agent = bot_agent.ALL_AIS[cfg.agents[1].model]
+    opponent_name = cfg.agents[1].model
+    ...
 
 
 if __name__ == "__main__":
-    # main()
-    strategy = Strategy.load_from_json("ace/data/strategies/strategy_2.json")
-    print(strategy.feats)
-    print(strategy.one_hot_feats)
-    decoded_strategy = Strategy.decode(strategy.one_hot_feats)
-    print(decoded_strategy.feats)
-    print(decoded_strategy.one_hot_feats)
+    fight_against_llm()
