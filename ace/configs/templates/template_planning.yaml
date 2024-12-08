@@ -28,7 +28,7 @@ INTRODUCTION: |
   END OF TASK
 
   Here are the available tasks and their descriptions:
-  - [Harvest Mineral] (x, y): Assign one worker to harvest resources from the mineral field located at (x, y).
+  - [Harvest Mineral] (x, y): Assign one worker to harvest resources from the mineral field located at (x, y). Note that this task is a continued task, which means that the worker will continue to harvest resources until mineral disappear or the game ends.
   - [Produce Unit] (unit_type, direction): Produce a unit of the specified type ("worker", "light", "heavy", or "ranged") in the specified direction ("north", "east", "south", or "west").
   - [Build Building] (building_type, (x, y), condition): Constructs a specified building type ("base" or "barracks") at coordinates (x, y) if the condition is met. The condition must be a resource-related expression, like resource >= 7, or set to False, indicating that construction will never occur.
   - [Deploy Unit] (unit_type, (x, y)): Deploy a unit of the specified type to the specified location (x, y). One location can only have one unit deployed.

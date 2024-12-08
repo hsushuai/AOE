@@ -2,7 +2,7 @@ env:
   map_path: maps/8x8/basesWorkers8x8.xml
   max_steps: 2000
   interval: 100
-  record_video: false
+  record_video: true
   display: false
 
 agents:

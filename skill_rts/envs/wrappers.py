@@ -6,6 +6,7 @@ from skill_rts.game.trajectory import Trajectory
 from skill_rts.envs.record_video import RecordVideo
 from skill_rts.agents import bot_agent
 from skill_rts import logger
+from ace.traj_feat import TrajectoryFeature
 import gym
 import os
 import numpy as np
@@ -121,7 +122,8 @@ class MicroRTSLLMEnv(gym.Env):
     
     def prepare_run(self) -> None:
         self.log_file = open(os.path.join(self.run_dir, "run.log"), "w")
-        logger.set_level(logger.INFO)
+        if logger.min_level > logger.INFO:
+            logger.set_level(logger.INFO)
         logger.set_stream(self.log_file)
         
         raw_obs, raw_info = self.reset()
@@ -141,7 +143,7 @@ class MicroRTSLLMEnv(gym.Env):
         
         for player in self.players:
             if self.time % self.interval == 0:
-                tasks = self.llm_agents[player.id].step(player.obs.to_string())
+                tasks = self.llm_agents[player.id].step(player.obs.to_string(), self.get_traj())
                 player.set_tasks(tasks)
             ac = player.step()
             actions.append(ac)
@@ -156,7 +158,7 @@ class MicroRTSLLMEnv(gym.Env):
         self.game_over = done[0]
         self.time += 1
     
-    def step(self, actions: np.ndarray) -> tuple[list, Trajectory]:
+    def step(self, actions: np.ndarray):
         """Step the environment.
 
         Accepts an action and returns a tuple (observation, reward, done, info).
@@ -212,7 +214,7 @@ class MicroRTSLLMEnv(gym.Env):
     def close(self):
         self.env.close()
     
-    def get_traj(self):
+    def get_traj(self) -> Trajectory | None:
         if self.time == 0:
             return None
         else:

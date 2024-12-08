@@ -2,13 +2,12 @@ import argparse
 from omegaconf import OmegaConf
 import os
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from ace.agent  import Planner, Recognizer
-from ace.traj_feat import TrajectoryFeature
-from ace.strategy  import Strategy
+from ace.agent  import Planner, AceAgent
 from skill_rts.agents import bot_agent
+import time
 
 
-def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
+def parse_args(config_path: str = "ace/in_match/config/run.yaml"):
 
     cfg = OmegaConf.load(config_path)
 
@@ -19,7 +18,7 @@ def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
     parser.add_argument("--temperature", type=float, help="Temperature for LLM")
     parser.add_argument("--max_tokens", type=int, help="Maximum tokens for LLM")
     parser.add_argument("--num_generations", type=int, help="Number of generations for LLM")
-    parser.add_argument("--opponent_strategy", type=str, help="Strategies for opponent")
+    parser.add_argument("--opponent", type=str, help="Strategy for opponent")
 
     args = parser.parse_args()
 
@@ -34,52 +33,45 @@ def parse_args(config_path: str = "ace/configs/in_match/run.yaml"):
     if args.max_tokens is not None:
         cfg.agents[0].max_tokens = args.max_tokens
         cfg.agents[1].max_tokens = args.max_tokens
-    if args.opponent_strategy is not None:
-        cfg.agents[1].strategy = args.opponent_strategy
+    if args.opponent is not None:
+        cfg.agents[1].strategy = args.opponent
     
     return cfg
 
 
 def main():
-    # ====================
-    #      Initialize
-    # ====================
+    # Initialize
     cfg = parse_args()
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
 
-    if cfg.agents[1].model in bot_agent.ALL_AIS:
-        opponent_agent = bot_agent.ALL_AIS[cfg.agents[1].model]
-        opponent_name = cfg.agents[1].model
+    if cfg.agents[1].strategy in bot_agent.ALL_AIS:
+        opponent_agent = bot_agent.ALL_AIS[cfg.agents[1].strategy]
+        opponent_name = cfg.agents[1].strategy
     else:
         opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
         opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
     
-    run_dir = f"in_match_runs/{opponent_name}"
-    os.makedirs(run_dir, exist_ok=True)
+    runs_dir = f"runs/in_match_runs/{opponent_name}"
+    os.makedirs(runs_dir, exist_ok=True)
+    
+    # Run the episodes
+    for episode in range(cfg.episodes):
+        run_dir = f"{runs_dir}/run_{episode}"
+        agent = AceAgent(
+            player_id=0,
+            map_name=map_name,
+            **cfg.agents[0]
+        )
+        env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env, run_dir=run_dir)
+        start_time = time.time()
+        payoffs, trajectory = env.run()
+        metric = env.metric
 
-    # Run the game
-    agent = Planner(
-        player_id=0,
-        map_name=map_name,
-        strategy="none",
-        prompt="few-shot-w-strategy",
-        **cfg.agents[0]
-    )
-    env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env, run_dir=run_dir)
-    payoffs, trajectory = env.run()
-    metric = env.metric
-
-    # Save the results
-    trajectory.to_json(f"{run_dir}/traj.json")
-    metric.to_json(f"{run_dir}/metric.json")
-    print(f"Opponent {opponent_name} |  Payoffs: {payoffs} | Game Time: {env.time}")
+        # Save the results
+        trajectory.to_json(f"{run_dir}/traj.json")
+        metric.to_json(f"{run_dir}/metric.json")
+        print(f"Match {episode} | Opponent {opponent_name} |  Payoffs: {payoffs} | Runtime: {(time.time() - start_time) / 60:.2f}min, {env.time}steps")
 
 
 if __name__ == "__main__":
-    # main()
-    strategy = Strategy.load_from_json("ace/data/strategies/strategy_2.json")
-    print(strategy.feats)
-    print(strategy.one_hot_feats)
-    decoded_strategy = Strategy.decode(strategy.one_hot_feats)
-    print(decoded_strategy.feats)
-    print(decoded_strategy.one_hot_feats)
+    main()

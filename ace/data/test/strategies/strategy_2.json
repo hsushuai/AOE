@@ -1,0 +1,12 @@
+{
+    "id": 2,
+    "economic": 1,
+    "barracks": false,
+    "military": "Worker",
+    "aggression": true,
+    "attack": "Worker",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: False\n- Military Feature: Worker\n- Aggression Feature: True\n- Attack Feature: Worker\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support ongoing economic growth.\n- Do not construct barracks, as this strategy does not require advanced units.\n- Keep producing workers to increase your army size.\n- Only produce worker units.\n- Prioritize attacking enemy worker units.\n- Send all workers to attack, rather than just using a single type.\n- Omit designated defense areas; do not deploy units, just go attacking.\n\nYou should not:\n- Do not build additional barracks.\n- Do not produce any other units.\n- Do not plan deploy tasks.\n- Do not focus on defending specific areas.",
+    "map": "basesWorkers8x8"
+}

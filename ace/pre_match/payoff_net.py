@@ -13,10 +13,11 @@ import scikitplot as skplt
 from sklearn.metrics import accuracy_score, log_loss
 import matplotlib.pyplot as plt
 import joblib
+import yaml
 
 import torch.nn as nn
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, TensorDataset
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
@@ -180,7 +181,7 @@ def fit_payoff_model():
 
 
 class PayoffNet(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim):
+    def __init__(self, input_dim=214, hidden_dim=64, output_dim=2):
         super(PayoffNet, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
@@ -207,44 +208,45 @@ def same_seeds(seed):
 
 
 def fit_payoff_nn():
+    # Load config
+    with open("ace/pre_match/config/payoff.yaml", "r") as f:
+        config = yaml.safe_load(f)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Prepare data
     same_seeds(520)
-    OUTPUT_DIM = 2
     data = load_data()
     strategy = np.stack(data["strategy"].values)
     opponent = np.stack(data["opponent"].values)
     X = np.concatenate((strategy, opponent), axis=1)
-    y = data["win_loss"].values + 1  # -1, 0, 1 -> 0, 1, 2 for CrossEntropyLoss which requires label >= 0
-    if OUTPUT_DIM == 2:
-        y[np.where(y < 2)] = 0
-        y[np.where(y == 2)] = 1
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    y = data["win_loss"].values
+    y[np.where(y < 1)] = 0
+    X = torch.tensor(X, dtype=torch.float32, device=device)
+    y = torch.tensor(y, dtype=torch.long, device=device)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    ds_train = TensorDataset(X_train, y_train)
+    train_loader = DataLoader(ds_train, batch_size=config["training"]["batch_size"], shuffle=True, drop_last=True)
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = PayoffNet(input_dim=X.shape[1], hidden_dim=64, output_dim=OUTPUT_DIM)
+    # Initialize model
+    model = PayoffNet(**config["model"]).to(device)
     class_weights = compute_class_weight(
         class_weight="balanced",
-        classes=np.unique(y),
-        y=y
+        classes=torch.unique(y).cpu().numpy(),
+        y=y.cpu().numpy()
     )
     weights = torch.tensor(class_weights, dtype=torch.float32, device=device)
     criterion = nn.CrossEntropyLoss(weight=weights)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=config["training"]["lr"])
 
-    model = model.to(device)
-    X_train = torch.tensor(X_train, dtype=torch.float32, device=device)
-    y_train = torch.tensor(y_train, dtype=torch.long, device=device)
-    X_test = torch.tensor(X_test, dtype=torch.float32, device=device)
-    y_test = torch.tensor(y_test, dtype=torch.long, device=device)
-
+    # Training loop
     max_acc = 0
     best_model = None
-    for epoch in range(1000):
+    for epoch in range(config["training"]["epochs"]):
         model.train()
-        optimizer.zero_grad()
-        y_pred = model(X_train)
-        loss = criterion(y_pred, y_train)
-        loss.backward()
-        optimizer.step()
+        for X_batch, y_batch in train_loader:
+            optimizer.zero_grad()
+            loss = criterion(model(X_batch), y_batch)
+            loss.backward()
+            optimizer.step()
 
         if (epoch + 1) % 10 == 0:
             model.eval()
@@ -259,9 +261,10 @@ def fit_payoff_nn():
                     best_model = model
                 print(f"Epoch {epoch + 1}, Test Loss: {loss.item()}, Accuracy: {accuracy:.2f}")
     print(f"Best Accuracy: {max_acc:.2f}")
-    torch.save(best_model, "ace/data/payoff/payoff_net.pth")
+    torch.save(best_model.state_dict(), "ace/data/payoff/payoff_net.pth")
 
-    model = torch.load("ace/data/payoff/payoff_net.pth")
+    # Testing
+    model.load_state_dict(torch.load("ace/data/payoff/payoff_net.pth", weights_only=True))
     model.to(device)
     model.eval()
     y_test_labels = y_test.cpu().numpy()
@@ -280,5 +283,5 @@ def fit_payoff_nn():
     plt.savefig("results/dnn_roc_curve.png")
 
 if __name__ == "__main__":
-    prepare_data()
+    # prepare_data()
     fit_payoff_nn()

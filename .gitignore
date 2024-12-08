@@ -42,8 +42,8 @@ env/
 .env
 
 # data files
-data/
-results/
+# data/
+# results/
 
 # others
 TODO.md

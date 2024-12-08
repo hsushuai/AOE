@@ -139,7 +139,7 @@ def extract_battle_results():
         df.loc[opponent, strategy] = payoffs[1]
     df = df.fillna(0)
     df = df.sort_index(key=lambda x: x.astype(int))
-    df.to_excel("ace/data/payoff/payoff_matrix.csv")
+    df.to_csv("ace/data/payoff/payoff_matrix.csv")
 
 
 def run():
@@ -170,5 +170,5 @@ def run():
 if __name__ == "__main__":
     # gen_opponent("basesWorkers8x8")
     # train_test_split()
-    run()
-    # extract_battle_results()
+    # run()
+    extract_battle_results()

@@ -23,7 +23,7 @@ class Strategy:
     }
     _map_size: tuple = (8, 8)  # default is  8x8 map
 
-    def __init__(self, strategy: str, description: str):
+    def __init__(self, strategy: str, description: str=""):
         self.strategy = strategy
         self.description = description
         self.economic = None
@@ -193,7 +193,9 @@ class Strategy:
         import os
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
+        self.id = int(filename.split("/")[-1].split(".")[0].split("_")[-1])
         structure = {
+            "id": self.id,
             "economic": self.economic,
             "barracks": self.barracks,
             "military": self.military,
@@ -215,6 +217,7 @@ class Strategy:
         with open(filename, "r") as f:
             structure = json.load(f)
         instance = cls(structure["strategy"], structure["description"])
+        instance.id = structure["id"]
         instance.economic = structure["economic"]
         instance.barracks = structure["barracks"]
         instance.military = structure["military"]
@@ -257,6 +260,9 @@ class Strategy:
             for economic, barracks, military, aggression, attack, defense in feat_space
         ]
         return np.array(feat_space)
+    
+    def __str__(self):
+        return self.strategy + self.description
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+{
+    "id": 17,
+    "economic": 2,
+    "barracks": 6,
+    "military": "Ranged",
+    "aggression": true,
+    "attack": "Ranged > Worker",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged\n- Aggression Feature: True\n- Attack Feature: Ranged > Worker\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct a barracks once resources exceed 6.\n- Keep producing ranged units. More units are better.\n- Only produce ranged units.\n- Prioritize attacking enemy ranged units over workers.\n- Send ranged units to attack, focusing on the enemy's ranged units and then workers.\n- Omit designated defense areas; do not deploy units, just go attacking.\n\nYou should not:\n- Do not build additional barracks.\n- Do not produce any other units.\n- Do not plan deploy task.",
+    "map": "basesWorkers8x8"
+}

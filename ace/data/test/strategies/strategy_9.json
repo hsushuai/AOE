@@ -1,0 +1,12 @@
+{
+    "id": 9,
+    "economic": 2,
+    "barracks": 5,
+    "military": "Light and Worker",
+    "aggression": true,
+    "attack": "Light > Worker",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Light and Worker\n- Aggression Feature: True\n- Attack Feature: Light > Worker\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 5.\n- Keep producing your military (light and worker) more units is better.\n- Only produce light and worker units.\n- Prioritize attacking enemy light units over workers.\n- Send both workers and light units to attack, rather than just using a single type.\n- Focus on early aggression to disrupt the enemy's economy and military build-up.\n\nYou should not:\n- Do not build additional barracks.\n- Do not produce any other units.\n- Do not plan defense areas; focus on attacking the enemy.",
+    "map": "basesWorkers8x8"
+}
