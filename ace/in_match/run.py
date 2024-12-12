@@ -1,11 +1,11 @@
 import argparse
 from omegaconf import OmegaConf
-import os
 import json
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from ace.agent  import Planner, AceAgent
+from ace.agent  import Planner, AceAgent, NaiveAgent
 from skill_rts.agents import bot_agent
 from skill_rts import logger
+from ace.post_match.review import Reviewer
 import time
 
 
@@ -21,6 +21,7 @@ def parse_args(config_path: str = "ace/in_match/config/run.yaml"):
     parser.add_argument("--max_tokens", type=int, help="Maximum tokens for LLM")
     parser.add_argument("--num_generations", type=int, help="Number of generations for LLM")
     parser.add_argument("--opponent", type=str, help="Strategy for opponent")
+    parser.add_argument("--interval", type=int, help="Interval for update plan")
 
     args = parser.parse_args()
 
@@ -37,6 +38,8 @@ def parse_args(config_path: str = "ace/in_match/config/run.yaml"):
         cfg.agents[1].max_tokens = args.max_tokens
     if args.opponent is not None:
         cfg.agents[1].strategy = args.opponent
+    if args.interval is not None:
+        cfg.env.interval = args.interval
     
     return cfg
 
@@ -54,18 +57,22 @@ def main():
         opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
     
     runs_dir = f"runs/in_match_runs/{opponent_name}"
-    os.makedirs(runs_dir, exist_ok=True)
     logger.set_level(logger.DEBUG)
-    
-    # Run the episodes
-    for episode in range(cfg.episodes):
-        run_dir = f"{runs_dir}/run_{episode}"
-        agent = AceAgent(
+
+    agent = AceAgent(
             player_id=0,
             map_name=map_name,
             **cfg.agents[0]
         )
-        env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env, run_dir=run_dir)
+    # agent = Planner(**cfg.agents[0], player_id=0, map_name=map_name, prompt="few-shot-w-strategy", strategy="ace/data/train/strategy_2.json")
+    agent = NaiveAgent(0)
+    env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env)
+    reviewer = Reviewer(**cfg.agents[0])
+    
+    # Run the episodes
+    for episode in range(cfg.episodes):
+        run_dir = f"{runs_dir}/run_{episode}"
+        env.set_dir(run_dir)
         start_time = time.time()
         try:
             payoffs, trajectory = env.run()
@@ -73,12 +80,23 @@ def main():
             print(f"Error in episode {episode}: {e}")
             env.close()
             continue
-        metric = env.metric
+        
+        # Post-match review
+        # if payoffs[0] < payoffs[1]:
+        #     for d in env.plans:
+        #         player = d["players"][0]
+        #         reviewer.reflect_planner(player["strategy"], player["obs"], player["plan"])
+        #     reviewer.reflect_meta_strategy(trajectory)
+        #     env.agents[0].meta_strategy = reviewer.meta_strategy
+        #     env.agents[0].planner.tips = reviewer.planner_tips
+        # else:
+        #     reviewer.recognize_strategy(trajectory)
 
         # Save the results
         OmegaConf.save(cfg, f"{run_dir}/config.yaml")
+        OmegaConf.save(cfg, f"{run_dir}/config.yaml")
         trajectory.to_json(f"{run_dir}/traj.json")
-        metric.to_json(f"{run_dir}/metric.json")
+        env.metric.to_json(f"{run_dir}/metric.json")
         with open(f"{run_dir}/plans.json", "w") as f:
             json.dump(env.plans, f, indent=4)
         print(f"Match {episode} | Opponent {opponent_name} |  Payoffs: {payoffs} | Runtime: {(time.time() - start_time) / 60:.2f}min, {env.time}steps")
@@ -86,3 +104,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

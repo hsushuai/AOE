@@ -1,5 +1,6 @@
 import numpy as np
 import json
+import re
 
 
 class Strategy:
@@ -47,133 +48,75 @@ class Strategy:
             return None
     
     def _parse_feats(self):
-        self.economic = self.strategy.split("Economic Feature: ")[1].split("\n")[0].strip()
-        self.barracks = self.strategy.split("Barracks Feature: ")[1].split("\n")[0].strip()
-        self.military = self.strategy.split("Military Feature: ")[1].split("\n")[0].strip()
-        self.aggression = self.strategy.split("Aggression Feature: ")[1].split("\n")[0].strip()
-        self.attack = self.strategy.split("Attack Feature: ")[1].split("\n")[0].strip()
-        self.defense = self.strategy.split("Defense Feature: ")[1].split("\n")[0].strip()
+        self.economic = re.search(r'.*?Economic Feature.*?: (.*)', self.strategy).group(1)
+        self.barracks = re.search(r'.*?Barracks Feature.*?: (.*)', self.strategy).group(1)
+        self.military = re.search(r'.*?Military Feature.*?: (.*)', self.strategy).group(1)
+        self.aggression = re.search(r'.*?Aggression Feature.*?: (.*)', self.strategy).group(1)
+        self.attack = re.search(r'.*?Attack Feature.*?: (.*)', self.strategy).group(1)
+        self.defense = re.search(r'.*?Defense Feature.*?: (.*)', self.strategy).group(1)
 
         self.economic = int(self.economic)
-        if "resource" in self.barracks:
-            self.barracks = int(self.barracks.split(">= ")[1])
-        else:
+        if "False" in self.barracks:
             self.barracks = False
+        else:
+            self.barracks = float(self.barracks.split(">= ")[1])
         self.aggression = eval(self.aggression)
         if not self.aggression:
-            self.attack = eval(self.attack)
+            self.attack = None
         self.defense = eval(self.defense)
 
     
     def encode(self) -> np.ndarray:
-        feats = []
-        
+        # 2 + 2 + 4 + 1 + 2 + 1 = 12
         # economic
-        feats.append(self.economic)
+        economy_feat = [1, 0] if self.economic == 1 else [0, 1]
         
         # barracks
-        if isinstance(self.barracks, str):
-            if "resource" in self.barracks:
-                feats.append(self.barracks.split(">= ")[1])
-            else:
-                feats.append(-1)
-        elif isinstance(self.barracks, int):
-            feats.append(self.barracks)
+        if self.barracks:
+            # normalize
+            barracks_feat = [1, (min(self.barracks, 10) - 5) / 5]
         else:
-            feats.append(-1)        
+            barracks_feat = [0, 0]
         
         # military
-        military_feat = [self.UNIT2IDX[unit_type.lower()] for unit_type in self.military.split(" and ")]
-        military_feat.extend([-1] * (4 - len(military_feat)))
-        feats.extend(military_feat)
+        militaries = [self.UNIT2IDX[unit_type.lower()] for unit_type in self.military.split(" and ")]
+        military_feat = [1 if idx in militaries else 0 for idx in range(4)]
         
         # aggression
-        aggression_feat = 1 if self.aggression else 0
-        feats.append(aggression_feat)
+        aggression_feat = [1] if self.aggression else [0]
         
         # attack
-        if isinstance(self.attack, str) and ">" in self.attack:
-            attack_feat = [self.UNIT2IDX[unit_type.lower()] for unit_type in self.attack.split(" > ")]
+        if self.attack is not None:
+            attack_feat = [1, 0] if self.attack.lower() == "building" else [0, 1]
         else:
-            attack_feat = []
-        attack_feat.extend([-1] * (6 - len(attack_feat)))
-        feats.extend(attack_feat)
+            attack_feat = [0] * 2
 
         # defense
         if self.defense is not None:
-            locs = self.defense
-            defense_feat = list(map(lambda loc: loc[0] * self._map_size[0] + loc[1], locs))
+            # normalization
+            defense_feat = [self.defense / self._map_size[0]]
         else:
-            defense_feat = [-1, -1]
-        feats.extend(defense_feat)
+            defense_feat = [0]
 
-        return np.array(feats)
+        return np.array(economy_feat + barracks_feat + military_feat + aggression_feat + attack_feat + defense_feat)
     
     @property
     def feats(self) -> np.ndarray:
         return self.encode()
     
-    @property
-    def one_hot_feats(self) -> np.ndarray:
-        feats_size = 1 + 1 + 4 + 1 + 6 * 6 + self._map_size[0] * self._map_size[1]
-        one_hot_feats = np.zeros((feats_size), dtype=int)
-
-        # economic
-        one_hot_feats[0] = self.feats[0]
-
-        # barracks
-        one_hot_feats[1] = self.feats[1]
-        
-        # military
-        military_feat = np.sort(self.feats[2 : 6])
-        military_feat = military_feat[np.where(military_feat != -1)]
-        one_hot_feats[military_feat + 2] = 1
-
-        # aggression
-        one_hot_feats[6] = self.feats[6]
-
-        # attack
-        if one_hot_feats[6] == 1:
-            attack_feat = self.feats[7 : 13]
-            attack_feat = attack_feat[np.where(attack_feat != -1)]
-            for i, feat in enumerate(attack_feat):
-                one_hot_feats[feat + 7 + i * 6] = 1
-        # defense
-        else:
-            defense_feat = self.feats[13:]
-            left_upper, right_lower = tuple(map(lambda x: (x // self._map_size[0], x % self._map_size[0]), defense_feat))
-            for x in range(left_upper[0], right_lower[0] + 1):
-                for y in range(left_upper[1], right_lower[1] + 1):
-                    one_hot_feats[x * self._map_size[0] + y + 43] = 1
-
-        return one_hot_feats
-    
     @classmethod
-    def decode(cls, feats: np.ndarray, one_hot=True) -> "Strategy":
+    def decode(cls, feats: np.ndarray) -> "Strategy":
         """Decode features to strategy"""
-        economic = feats[0]
-        barracks = f"resource >= {feats[1]}"
-        if one_hot:
-            military = map(lambda i: cls.IDX2UNIT[i].capitalize(), np.where(feats[2 : 6] == 1)[0])
-        else:
-            military = [cls.IDX2UNIT[i].capitalize() for i in feats[2 : 6] if i != -1]
+        economic = 1 if feats[0] == 1 else 2
+        barracks = f"resource >= {False if feats[2] == 0 else int(feats[3] * 5 + 5)}"
+        military = map(lambda i: cls.IDX2UNIT[i].capitalize(), np.where(feats[4 : 8] == 1)[0])
         military = " and ".join(military)
-        aggression = True if feats[6] == 1 else False
+        aggression = True if feats[8] == 1 else False
         if aggression:
-            if one_hot:
-                attack = [np.where(feats[7 + 6 * (i - 1) : 7 + 6 * i] == 1)[0] for i in range(1, 7)]
-                attack = [cls.IDX2UNIT[i[0]].capitalize() for i in attack if i.size > 0]
-            else:
-                attack = [cls.IDX2UNIT[i].capitalize() for i in feats[7 : 13]]
-            attack = " > ".join(attack)
+            attack = "Building" if feats[9] == 1 else "Unit"
             defense = None
         else:
-            if one_hot:
-                defense = np.where(feats[43:] == 1)[0]
-                defense = (defense[0], defense[-1])
-            else:
-                defense = feats[13:]
-            defense = tuple(map(lambda i: (i // cls._map_size[0], i % cls._map_size[0]), defense))
+            defense = feats[11]
             attack = None
 
         strategy = "## Strategy\n"
@@ -187,7 +130,7 @@ class Strategy:
         return cls(strategy, "")
 
     def __eq__(self, other):
-        return np.array_equal(self.one_hot_feats, other.one_hot_feats)
+        return np.array_equal(self.feats, other.feats)
     
     def to_json(self, filename, map_name):
         import os
@@ -236,41 +179,55 @@ class Strategy:
         """Return the feature space of the strategy"""
         import itertools
         
-        economic_space = [1, 2]  # 2
-        barracks_space = [5, 6, 7, 8, 9, 10]  # 6
+        economic_space = [[1, 0], [0 ,1]]  # 2
+        barracks_space = [[1, i / 5] for i in range(6)] + [[0, 0]]  # 7
         military_space = [
-            list(feats) + [-1] * (4 - len(feats))
+            [1 if i in feats else 0 for i in range(4)]
             for i in range(1, 5)
-            for feats in itertools.combinations(range(4), i)]  # 15
-        aggression_space = [1]  # aggressive only
-        attack_space = list(itertools.permutations(range(6), 6))  # P(6, 4) = 360
-        defense_space = [[-1, -1]]
+            for feats in itertools.combinations(range(4), i)
+        ]  # C(4, 1) + C(4, 2) + C(4, 3) + C(4, 4) = 15
+        attack_space = [[1, 0], [0, 1]]  # 2
+        defense_space = [[i / Strategy._map_size[0]] for i in range(1, 5)]  # 4
 
-        # 2 * 6 * 15 * 1 * 720 * 1 = 129,600
-        feat_space = list(itertools.product(
-            economic_space,
-            barracks_space,
-            military_space,
-            aggression_space,
-            attack_space,
-            defense_space
-        ))
-        feat_space = [
-            [economic, barracks] + list(military) + [aggression] + list(attack) + list(defense)
-            for economic, barracks, military, aggression, attack, defense in feat_space
-        ]
-        return np.array(feat_space)
+        # 2 * 7 * 15 * 2 + 2 * 7 * 15 * 4 = 1,260
+        feat_space = list(
+            itertools.product(
+                economic_space,
+                barracks_space,
+                military_space,
+                [[1]],
+                attack_space,
+                [[0]],
+            )
+        ) + list(
+            itertools.product(
+                economic_space,
+                barracks_space,
+                military_space,
+                [[0]],
+                [[0, 0]],
+                defense_space,
+            )
+        )
+        feat_space = [np.hstack(feats) for feats in feat_space]
+
+        return np.vstack(feat_space)
     
     def __str__(self):
         return self.strategy + self.description
     
     def to_string(self):
         return self.strategy + self.description
+    
+    def __hash__(self):
+        return hash(self.strategy)
 
 
 if __name__ == "__main__":
     feat_space = Strategy.feat_space()
     print(feat_space.shape)
     print(feat_space[0])
-    strategy = Strategy.decode(feat_space[0], False)
+    strategy = Strategy.decode(feat_space[0])
     print(strategy.strategy)
+    strategy = Strategy(strategy.strategy, "")
+    print(strategy.feats)

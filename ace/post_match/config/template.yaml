@@ -39,12 +39,12 @@ STRATEGY_SPACE: |
   - Feature Space: {{True, False}}  # {{Aggressive, Defensive}}
 
   5. **Attack Feature** define the target priority during an attack if the Aggressiveness Feature is set to True, focusing the military on attacking specific enemy unit types.
-    - Parameter: Priority attack target, including Worker, Heavy, Light, Ranged, Base, Barracks.
-    - Feature Space: {{Ranged > Worker, Base > Barracks > Worker, ...}}
+    - Parameter: Priority attack target
+    - Feature Space: {{Building, Unit}}  # {{Attack Buildings, Attack Units (including Workers, Heavy, Light, Ranged)}}
   
-  6. **Defense Feature** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
-    - Parameter: Defense area, defined by top left and bottom right coordinates
-    - Feature Space: {{(x1, y1), (x2, y2)}}
+  6. **Defense Feature** specifies the distance of the defense perimeter from the base, indicating where military units are deployed if the Aggressive feature is set to False.
+    - Parameter: Distance from base
+    - Feature Space: {{1, 2, 3, 4}}  # {{Close, Medium, Far, Very Far}}
 
 OPPONENT_STRATEGY_SPACE: |
   # Opponent Strategy Space
@@ -56,11 +56,16 @@ STRATEGY_PLAN: |
   The following are the Strategy:
   {strategy}
 
+  The following are the current observations:
+  {obs}
+
   The following are the Plan:
   {plan}
 
-  The following are the trajectory abstraction:
-  {trajectory}
+EXIST_TIPS: |
+  # Existing Tips
+  Here are some tips that I have summarized before. Please optimize based on them.
+  {tips}
 
 basesWorkers8x8_MAP: |
   # Map Initialization Sate
@@ -78,24 +83,21 @@ basesWorkers8x8_MAP: |
 PLANNER_TIPS_EXAMPLES: |
   # Planner Tips Examples
   The following are examples of planner tips, you should strictly follow the format:
-  (START OF EXAMPLE)
   - If your military strategy includes 'Worker', continue to create more workers and send them to attack or defend strategies.
   - One mineral mine can be harvested by two workers at the same time. Please give priority to harvesting resources that are close to you.
   - If the Aggression Feature in your strategy is False, you should strike back when the time is right.
   - If the Aggression Feature in your strategy is True, DO NOT plan deploy unit tasks.
   - The barracks should be located at the top or bottom of the map to avoid enemy attacks.
-  (END OF EXAMPLE)
 
 META_STRATEGY_EXAMPLES: |
   # Meta Strategy Examples
   The following are examples of meta strategy, you should strictly follow the format:
-  (START OF EXAMPLE)
   ## Strategy
   - Economic Feature: 2
   - Barracks Feature: resource >= 7
   - Military Feature: Ranged and Worker
   - Aggression Feature: True
-  - Attack Feature: Ranged > Worker
+  - Attack Feature: Building
   - Defense Feature: None
 
   ## Description
@@ -104,21 +106,19 @@ META_STRATEGY_EXAMPLES: |
   - Construct barracks once resources exceed 7.
   - Keep producing your military (ranged and worker) more units is better.
   - Only produce ranged and worker units.
-  - Prioritize attacking enemy ranged units over workers.
-  - Send both workers and ranged units to attack, rather than just using a single type.
-  - Omit designated defense areas; do not deploy units, just go attacking.
+  - Prioritize attacking enemy buildings over units.
+  - Send both workers and ranged units to attack, rather than just using a single type, cause you Military Feature is Ranged and Worker.
+  - Omit designated defense areas, cause you Defense Feature is None.
 
   You should not:
-  - Do not build additional barracks.
-  - Do not produce any other units.
-  - Do not plan deploy task.
-  (END OF EXAMPLE)
+  - Do not produce any other types of units except the specified type.
+  - Do not plan deploy task, just go attacking.
 
 START: |
-  Approach your task step by step.
+  Approach your task step by step. DO NOT OUTPUT ANY EXTRA CONTENT.
 
 REFLECT_META_STRATEGY: |
-  ${RECOGNIZE_INSTRUCTION}
+  ${REFLECT_META_STRATEGY_INSTRUCTION}
   ${MANUAL}
   ${STRATEGY_SPACE}
   ${META_STRATEGY_EXAMPLES}
@@ -131,6 +131,5 @@ REFLECT_PLANNER: |
   ${basesWorkers8x8_MAP}
   ${STRATEGY_SPACE}
   ${PLANNER_TIPS_EXAMPLES}
-  ${STRATEGY}
-  ${PLAN}
+  ${STRATEGY_PLAN}
   ${START}

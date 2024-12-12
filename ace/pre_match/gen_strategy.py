@@ -105,7 +105,7 @@ def analyze_diversity():
 
     # Load data
     batch_feats = []
-    batch_one_hot_feats = []
+    batch_feats = []
     for i in range(int(1e9)):
         filename = f"{BASE_DIR}/strategy_{i + 1}.json"
         if not os.path.exists(filename):
@@ -113,30 +113,14 @@ def analyze_diversity():
         strategy = Strategy.load_from_json(filename)
         
         batch_feats.append(strategy.feats)
-        batch_one_hot_feats.append(strategy.one_hot_feats)
-   
-    batch_feats = np.array(batch_feats)
-    batch_one_hot_feats = np.array(batch_one_hot_feats)
-
-    # repeated rows
-    _, unique_indices, counts = np.unique(batch_feats, axis=0, return_index=True, return_counts=True)
-    duplicate_rows_mask = counts > 1
-    duplicate_rows = batch_feats[unique_indices[duplicate_rows_mask]]
-    duplicate_indices = []
-    for row in duplicate_rows:
-        indices = np.where((batch_feats == row).all(axis=1))[0]
-        duplicate_indices.append(indices)
-
+    batch_feats = np.vstack(np.array(batch_feats))
+    
     logger.info(f"Loaded {batch_feats.shape[0]} strategies")
     logger.info(f"Dimension of encoded features: {batch_feats.shape[1]}")
-    logger.info(f"Dimension of one-hot features: {batch_one_hot_feats.shape[1]}")
-    logger.info("Index of duplicate rows:")
-    for indices in duplicate_indices:
-        print(indices)
 
     # Calculate average distance
-    ham_dists = pdist(batch_one_hot_feats, metric='hamming')
-    eu_dists = pdist(batch_one_hot_feats, metric='euclidean')
+    ham_dists = pdist(batch_feats, metric='hamming')
+    eu_dists = pdist(batch_feats, metric='euclidean')
 
     avg_ham_dist = np.mean(ham_dists)
     avg_eu_dis = np.mean(eu_dists)
@@ -156,7 +140,12 @@ def analyze_diversity():
     
     # t-SNE
     tsne = TSNE(n_components=2, perplexity=30, random_state=0)
-    strategy_2d_tsne = tsne.fit_transform(batch_one_hot_feats)
+    combined_feats = np.vstack([batch_feats, Strategy.feat_space()])
+
+    combined_2d_tsne = tsne.fit_transform(combined_feats)
+
+    strategy_2d_tsne = combined_2d_tsne[:len(batch_feats), :]
+    all_2d_tsne = combined_2d_tsne[len(batch_feats):, :]
 
     # Plot the strategy distribution map
     fig, axes = plt.subplots(1, 2, figsize=(20, 8))
@@ -165,7 +154,8 @@ def analyze_diversity():
     axes[0].set_xlabel("Distance")
     axes[0].set_ylabel("Frequency")
 
-    axes[1].scatter(strategy_2d_tsne[:, 0], strategy_2d_tsne[:, 1], alpha=0.7)
+    axes[1].scatter(strategy_2d_tsne[:, 0], strategy_2d_tsne[:, 1], alpha=0.7, color="blue")
+    axes[1].scatter(all_2d_tsne[:, 0], all_2d_tsne[:, 1], alpha=0.1, color="red")
     axes[1].set_title("Strategy Distribution Map (t-SNE Dimensionality Reduction)")
     axes[1].set_xlabel("t-SNE Dimension 1")
     axes[1].set_ylabel("t-SNE Dimension 2")
@@ -202,6 +192,6 @@ def gen_strategies():
 
 
 if __name__ == "__main__":
-    gen_strategies()
+    # gen_strategies()
     analyze_diversity()
-    extract_strategies_to_csv()
+    # extract_strategies_to_csv()

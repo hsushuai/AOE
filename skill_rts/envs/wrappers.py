@@ -51,7 +51,6 @@ class MicroRTSLLMEnv(gym.Env):
         self.interval = interval
         self.record_video = record_video
         self.run_dir = run_dir
-        os.makedirs(self.run_dir, exist_ok=True)
         self.display = display
         self.payoff_weights = payoff_weights
         self.theme = theme
@@ -109,6 +108,12 @@ class MicroRTSLLMEnv(gym.Env):
             else:  # java bot
                 self.bot_agents.append(agent)
     
+    def set_dir(self, run_dir: str):
+        """Set the directory to save the run logs."""
+        self.run_dir = run_dir
+        if self.record_video:
+            self.env.video_folder = run_dir
+    
     def reset(self) -> tuple[np.ndarray, list[dict]]:
         """
         Resets the environment to an initial state and returns an initial observation.
@@ -117,17 +122,19 @@ class MicroRTSLLMEnv(gym.Env):
             observation (object): the initial observation.
             info (optional list): list of a dictionary containing extra information, this is only returned if return_info is set to true.
         """
+        self.game_over = False
+        self.time = 0
         return self.env.reset()
     
     def prepare_run(self) -> None:
+        os.makedirs(self.run_dir, exist_ok=True)
         self.log_file = open(os.path.join(self.run_dir, "run.log"), "w")
         if logger.min_level > logger.INFO:
             logger.set_level(logger.INFO)
         logger.set_stream(self.log_file)
         
         raw_obs, raw_info = self.reset()
-        self.game_over = False
-
+        
         self.gs = GameState(raw_info[0]["game_state"])
         self.metric = Metric(self.gs)
 

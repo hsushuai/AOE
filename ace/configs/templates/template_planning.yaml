@@ -52,24 +52,49 @@ OPPONENT: |
 
 STRATEGY: |
   
+  # Parameterized Strategy Space
+  A strategy consists of several dimensions defined by specific parameters:
+
+  1. **Economic Feature** focuses on how many workers to harvest in the game.
+    - Parameter: Number of harvesting workers
+    - Feature Space: {{1, 2}}
+
+  2. **Barracks Feature** determines when to build barracks.  You can construct barracks when resources are greater than or equal to a specific threshold (N), or not build them at all (False).
+    - Parameter: Timing of construction (resource quantity)
+    - Feature Space: {{resource >= N, False}}, where 5 <= N <= 10
+
+  3. **Military Feature** outlines the strategy for combining different unit types used for attack or defense, specifying which units to produce.
+    - Parameter: Combination of unit types, including Worker, Heavy, Light, Ranged.
+    - Feature Space: {{Worker, Ranged and Worker, Ranged and Light and Worker, ...}}
+
+  4. **Aggression Feature** indicates whether the player's strategy is inclined toward aggressive play (attacking) or defensive play (holding ground).
+  - Parameter: Aggression
+  - Feature Space: {{True, False}}  # {{Aggressive, Defensive}}
+
+  5. **Attack Feature** define the target priority during an attack if the Aggressiveness Feature is set to True, focusing the military on attacking specific enemy unit types.
+    - Parameter: Priority attack target
+    - Feature Space: {{Building, Unit}}  # {{Attack Buildings, Attack Units (including Workers, Heavy, Light, Ranged)}}
+  
+  6. **Defense Feature** specifies the distance of the defense perimeter from the base, indicating where military units are deployed if the Aggressive feature is set to False.
+    - Parameter: Distance from base
+    - Feature Space: {{1, 2, 3, 4}}  # {{Close, Medium, Far, Very Far}}
+  
   # Strategy
   The following is a detailed strategy you should strictly follow:
   {strategy}
+
+TIPS: |
+  
+  # Tips
+  Here are some valuable suggestions that you should definitely consider: 
+  {tips}
 
 START: |
   
   # Battlefield Situation
   Here is the description of the **current situation**: 
   {observation}
-
-  # Tips
-  Here are some valuable suggestions that you should definitely consider: 
-  - If your military strategy includes 'Worker', continue to create more workers and send them to attack or defend strategies.
-  - One mineral mine can be harvested by two workers at the same time. Please give priority to harvesting resources that are close to you.
-  - If the Aggression Feature in your strategy is False, you should strike back when the time is right.
-  - If the Aggression Feature in your strategy is True, DO NOT plan deploy unit tasks.
-  - The location of barracks should be in the edge of the map.
-
+  
   You are now **player {player_id}**. Please create a task plan to win the game based on the current situation. 
   Keep in mind that you should also anticipate future scenarios, as your opponent will continue to play. If you adopt an aggressive strategy, you'll need to incorporate more attack tasks to counter their newly produced units.
   Output only the task plan in the specified format, without any extra content.

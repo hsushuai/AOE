@@ -47,34 +47,6 @@ def parse_args(config_path: str = "ace/pre_match/config/battle.yaml"):
     return cfg
 
 
-def gen_opponent(map_name: str) -> str:
-    """Convert strategies for opponent
-    
-    Convert existing strategies to opponent strategies.
-    Specifically, convert the defensive strategy's defensive 
-    area to the area corresponding to player 1.
-    """
-    width, height = re.search(r"(\d+)x(\d+)", map_name).groups()
-    width, height = int(width) - 1, int(height) - 1
-
-    for i in range(1, int(1e9)):
-        filename = f"{DATA_DIR}/strategies/strategy_{i}.json"
-        if not os.path.exists(filename):
-            break
-        strategy = Strategy.load_from_json(filename)
-        if not strategy.aggression:
-            old_defense = strategy.defense
-            strategy.defense = [(width - loc[0], height - loc[1]) for loc in strategy.defense]
-            for old_loc, new_loc in zip(old_defense, strategy.defense):
-                try:
-                    strategy.strategy = strategy.strategy.replace(str(old_loc), str(new_loc))
-                    strategy.description = strategy.description.replace(str(old_loc), str(new_loc))
-                except Exception as e:
-                    print(f"Failed to convert strategy {i}:\n{e}")
-        print(f"Converted strategy {i}")
-        strategy.to_json(f"{DATA_DIR}/opponents/strategy_{i}.json", map_name)
-
-
 def train_test_split(train_size=0.6):
     """Train for seen opponents, test for unseen opponents"""
     import numpy as np
@@ -88,30 +60,20 @@ def train_test_split(train_size=0.6):
     print(f"Number of training strategies: {len(train_indices)}")
     print(f"Number of testing strategies: {len(test_indices)}")
 
-    train_strategy_dir = f"{DATA_DIR}/train/strategies"
-    train_opponent_dir = f"{DATA_DIR}/train/opponents"
-    test_strategy_dir = f"{DATA_DIR}/test/strategies"
-    test_opponent_dir = f"{DATA_DIR}/test/opponents"
-    if not os.path.exists(train_strategy_dir):
-        os.makedirs(train_strategy_dir)
-    if not os.path.exists(train_opponent_dir):
-        os.makedirs(train_opponent_dir)
-    if not os.path.exists(test_strategy_dir):
-        os.makedirs(test_strategy_dir)
-    if not os.path.exists(test_opponent_dir):
-        os.makedirs(test_opponent_dir)
+    train_dir = f"{DATA_DIR}/train"
+    test_dir = f"{DATA_DIR}/test"
+    os.makedirs(train_dir, exist_ok=True)
+    os.makedirs(test_dir, exist_ok=True)
     
     for i in train_indices:
-        shutil.copy(f"{DATA_DIR}/strategies/strategy_{i}.json", f"{train_strategy_dir}/strategy_{i}.json")
-        shutil.copy(f"{DATA_DIR}/opponents/strategy_{i}.json", f"{train_opponent_dir}/strategy_{i}.json")
+        shutil.copy(f"{DATA_DIR}/strategies/strategy_{i}.json", f"{train_dir}/strategy_{i}.json")
 
     for i in test_indices:
-        shutil.copy(f"{DATA_DIR}/strategies/strategy_{i}.json", f"{test_strategy_dir}/strategy_{i}.json")
-        shutil.copy(f"{DATA_DIR}/opponents/strategy_{i}.json", f"{test_opponent_dir}/strategy_{i}.json")
+        shutil.copy(f"{DATA_DIR}/strategies/strategy_{i}.json", f"{test_dir}/strategy_{i}.json")
 
 
 def extract_battle_results():
-    runs_dir = "runs/pre_match_runs"
+    runs_dir = "pre_match_runs"
     df = pd.DataFrame()
     runs = os.listdir(runs_dir)
     runs = sorted(runs, key=lambda x: int(x.split("_")[0]) * 100 + int(x.split("_")[1]))
@@ -168,7 +130,6 @@ def run():
 
 
 if __name__ == "__main__":
-    # gen_opponent("basesWorkers8x8")
     # train_test_split()
     # run()
     extract_battle_results()

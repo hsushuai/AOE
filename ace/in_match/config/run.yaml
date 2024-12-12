@@ -13,6 +13,6 @@ agents:
     temperature: 1
     max_tokens: 8192
     prompt: few-shot-w-strategy
-    strategy: ace/data/opponents/strategy_1.json
+    strategy: coacAI  # ace/data/strategies/strategy_1.json
 
 episodes: 1

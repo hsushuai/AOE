@@ -1,1106 +1,1091 @@
 index,economic,barracks,military,aggression,attack,defense,strategy,description
-1,2,8,Heavy and Light and Worker,True,Base > Barracks > Worker,,"## Strategy
+1,2,False,Worker,False,,1.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: False
+- Military Feature: Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 1
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to sustain economic development.
+- Since the Barracks Feature is set to False, do not construct any barracks. This allows you to focus solely on maintaining a strong economic base.
+- Focus on producing only Worker units. Workers are low-cost and can be used for basic attacks and resource gathering.
+- Since the Aggression Feature is set to False, prioritize defense rather than attacking.
+- Deploy your defense at a close distance (distance = 1) from the base. This will create a tight perimeter of protection around your base.
+- Use your Worker units to defend your base and resources, ensuring that your economic operations are not disrupted.
+
+You should not:
+- Do not produce any other types of units besides Workers.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too far from the base, as the ideal perimeter is close (distance = 1)."
+2,2,8.0,Heavy and Light and Worker,True,Unit,,"## Strategy
 - Economic Feature: 2
 - Barracks Feature: resource >= 8
 - Military Feature: Heavy and Light and Worker
 - Aggression Feature: True
-- Attack Feature: Base > Barracks > Worker
+- Attack Feature: Unit
 - Defense Feature: None
 
 ","## Description
 You should:
 - Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing a balanced mix of heavy, light, and worker units. More units are better.
-- Only produce heavy, light, and worker units.
-- Prioritize attacking enemy bases first, followed by barracks, and then workers.
-- Use a combination of heavy and light units for their different strengths in combat, and workers to support and potentially repair.
-- Send both heavy, light, and worker units to attack, rather than just using a single type.
-- Omit designated defense areas; focus on offensive actions.
+- Construct barracks once you have gathered 8 resources to enable the production of heavy, light, and worker units.
+- Focus on a balanced military strategy by producing a mix of heavy, light, and worker units. Heavy units provide strong offensive capabilities, while light units add versatility, and workers support the economy and can assist in minor skirmishes.
+- Adopt an aggressive playstyle by prioritizing the attack on enemy units (such as workers, heavy, light, and ranged units) over buildings.
+- Send a combination of heavy, light, and worker units to attack the enemy, leveraging the strengths of each unit type for effective combat.
+- Omit designated defense areas, as the strategy focuses on maintaining pressure on the enemy and not on passive defense.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not engage in defensive strategies. Focus on attacking."
-2,1,False,Worker,True,Worker,,"## Strategy
+- Do not produce any other types of units except heavy, light, and worker units.
+- Do not prioritize attacking buildings over enemy units.
+- Do not establish a defensive perimeter, as the strategy emphasizes aggressive play.
+- Avoid settling into a defensive stance; keep the pressure on the enemy to disrupt their economy and military buildup."
+3,1,9.0,Worker,True,Unit,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 9
+- Military Feature: Worker
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support economic growth. This slower economic development will allow for a more focused and efficient use of resources.
+- Construct barracks once resources exceed 9. This delayed construction will ensure that you have enough resources to build and maintain your military units effectively.
+- Focus on producing only worker units. Despite the lack of advanced military units, a large number of workers can be effective in swarming and overwhelming the enemy, especially in early-game confrontations.
+- Prioritize attacking enemy units over buildings. Since workers are relatively weak, focusing on taking out the enemy's units will reduce the threat to your base and resources.
+- Send all your workers to attack the enemy units. This will maximize your offensive power, even though each worker only deals 1 damage.
+
+You should not:
+- Do not produce any other types of units except workers.
+- Do not delay attacking until you have a large number of units; instead, maintain a continuous pressure on the enemy with whatever workers you have.
+- Avoid building a defense perimeter, as the strategy is focused on offensive play."
+4,2,10.0,Heavy and Light and Worker,False,,3.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 10
+- Military Feature: Heavy and Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady flow of resources.
+- Construct a barracks once you have gathered 10 resources. This will enable the production of heavy, light, and worker units.
+- Focus on producing a mix of heavy, light, and worker units to create a balanced military force.
+- Since the Aggression Feature is set to False, prioritize defense rather than attacking.
+- Deploy your defense at a far distance (distance = 3) from the base, creating a broader perimeter to protect your position.
+- Hold ground with your military units, using them to defend against potential enemy attacks rather than pursuing offensive operations.
+
+You should not:
+- Do not produce any unit types other than the specified heavy, light, and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3)."
+5,2,5.0,Light and Worker,False,,2.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 5
+- Military Feature: Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 2
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady income of resources.
+- Construct barracks once resources exceed 5, enabling the production of light and worker units.
+- Focus on producing only light and worker units to build a balanced and versatile military force.
+- Since the Aggression Feature is set to False, prioritize defense rather than attacking.
+- Deploy your defense at a medium distance (distance = 2) from the base, providing a reasonable buffer zone to protect your position.
+- Use light units for their speed and mobility to scout and quickly respond to threats.
+- Use workers to support defensive positions and assist light units in holding ground.
+
+You should not:
+- Do not produce any unit types other than the specified light and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2)."
+6,1,7.0,Light and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 7
+- Military Feature: Light and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support ongoing economic growth. This strategy relies more on defensive and strategic play rather than rapid resource accumulation.
+- Construct barracks once resources exceed 7. This timing allows for a balanced approach, ensuring you have enough resources to sustain the barracks and subsequent unit production.
+- Focus on producing only light and worker units. Light units provide a good balance between cost and damage, while workers can support both economic and military roles.
+- Prioritize attacking enemy buildings over units. This aggressive strategy aims to dismantle the enemy's infrastructure to cripple their ability to produce more units and resources.
+- Send both light and worker units to attack. Utilize the speed of light units and the versatility of workers to effectively engage and destroy enemy buildings.
+- Omit designated defense areas, as the strategy focuses on aggressive play rather than holding ground.
+
+You should not:
+- Do not produce any other types of units except the specified light and worker units.
+- Do not plan for a defensive perimeter, as the strategy is centered around offensive actions.
+- Avoid holding back units for defense; the goal is to maximize the pressure on the enemy's base and infrastructure."
+7,2,9.0,Ranged and Light and Worker,False,,3.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 9
+- Military Feature: Ranged and Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady flow of resources.
+- Construct barracks once you have gathered 9 resources. This will allow you to diversify your military units.
+- Focus on producing a combination of ranged, light, and worker units. This mix provides both offensive and defensive capabilities.
+- Since the Aggression Feature is set to False, prioritize defense over attacking.
+- Deploy your defense at a distance of 3 from the base. This provides a good balance between protecting your base and not leaving your units too exposed.
+- Use your ranged units to support defense by attacking from a distance, while light units can quickly respond to threats.
+- Workers can assist in both defense and resource gathering, ensuring that your economy remains strong and you have the resources to continue producing units.
+
+You should not:
+- Do not produce any unit types other than the specified ranged, light, and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close or too far from the base, as the ideal perimeter is at a distance of 3.
+- Do not neglect resource harvesting, as maintaining a strong economy is crucial for sustaining your defense and production capabilities."
+8,1,5.0,Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 5
+- Military Feature: Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to sustain economic development. This single worker will focus on gathering resources efficiently.
+- Construct barracks as soon as you gather 5 resources to enable the production of worker units.
+- Focus on producing only worker units. Since the military strategy is centered around workers, no other units will be produced.
+- Since the Aggression Feature is set to True, prioritize offensive operations over defense.
+- Prioritize attacking enemy buildings over units. This will help weaken the enemy's infrastructure and resource generation.
+- Send your workers to attack the enemy base and structures immediately upon creation, as your Military Feature is set to Worker.
+- Keep a steady stream of workers being produced to maintain pressure on the enemy.
+
+You should not:
+- Do not produce any other unit types except workers.
+- Do not prioritize defense, as the strategy is aggressive and focuses on attacking enemy buildings.
+- Avoid building any structures other than the barracks, as additional structures are not necessary for this strategy.
+- Do not wait to build up a large force before attacking; instead, send workers to attack as soon as they are available to keep the pressure on the enemy."
+9,2,8.0,Ranged and Light and Worker,False,,2.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 8
+- Military Feature: Ranged and Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 2
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady flow of resources.
+- Construct a barracks once you have gathered 8 resources, which will allow you to produce a variety of units.
+- Focus on producing a balanced military force consisting of ranged, light, and worker units. This combination provides both offensive and defensive capabilities.
+- Since the Aggression Feature is set to False, your primary goal is to defend your position rather than aggressively attack the enemy.
+- Deploy your defense at a medium distance (distance = 2) from the base. This will create a buffer zone that helps protect your base and resources.
+- Use your ranged units to engage enemies from a safe distance, while light units can provide additional firepower and mobility. Workers can support by repairing or rebuilding any damaged structures.
+- Maintain a strong defensive perimeter to prevent enemy units from advancing too close to your base.
+
+You should not:
+- Do not produce any unit types other than the specified ranged, light, and worker units.
+- Do not initiate aggressive attacks or prioritize offensive operations, as the strategy focuses on defense.
+- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).
+- Do not neglect the importance of resource management; ensure you have enough resources to support the production of the necessary units."
+10,2,6.0,Ranged and Worker,True,Unit,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 6
+- Military Feature: Ranged and Worker
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady flow of resources.
+- Build a barracks once resources reach 6 to enable the production of ranged and worker units.
+- Focus on producing a combination of ranged and worker units to balance attack and support capabilities.
+- Be aggressive and prioritize attacking enemy units (Workers, Heavy, Light, Ranged) over buildings, aiming to weaken the enemy's workforce and military presence.
+- Use both workers and ranged units for attacks, leveraging the ranged units' ability to strike from a distance and the workers for close combat and resource gathering.
+- Do not establish a defensive perimeter, as the strategy is focused on offensive actions.
+
+You should not:
+- Do not produce any other unit types except the specified ranged and worker units.
+- Do not build defenses or hold ground; focus on offensive maneuvers to keep pressure on the enemy.
+- Avoid targeting enemy buildings initially; instead, focus on eliminating enemy units to gain control of the map."
+11,2,8.0,Ranged and Light and Worker,False,,3.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 8
+- Military Feature: Ranged and Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady flow of resources.
+- Construct barracks once you have gathered 8 resources to start producing a diverse military force.
+- Focus on producing a balanced force of ranged, light, and worker units.
+- Since the Aggression Feature is set to False, prioritize defensive strategies over offensive maneuvers.
+- Deploy your defense at a far distance (distance = 3) from the base, creating a broader defensive perimeter to protect your resources and structures.
+- Use your military units to defend against enemy attacks and maintain a strong presence around your base.
+
+You should not:
+- Do not produce any unit types other than the specified ranged, light, and worker units.
+- Avoid initiating attacks or prioritizing offensive operations, as the strategy leans towards defense.
+- Do not place your defense too close to the base, as the ideal perimeter is far (distance = 3) for optimal protection."
+12,1,6.0,Heavy and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 6
+- Military Feature: Heavy and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support ongoing economic growth.
+- Construct barracks once resources exceed 6 to enable the production of heavy and worker units.
+- Focus on producing only heavy and worker units.
+- Since the Aggression Feature is set to True, prioritize attacking enemy buildings over units.
+- Send both workers and heavy units to attack, rather than just using a single type, as your Military Feature is Heavy and Worker.
+- Omit designated defense areas, as your Defense Feature is None.
+
+You should not:
+- Do not produce any other types of units except the specified heavy and worker units.
+- Do not plans for a defensive posture; instead, focus on aggressive actions.
+- Avoid producing multiple workers for harvesting unless necessary, as the strategy focuses on a single worker for resource gathering."
+13,1,False,Worker,True,Building,,"## Strategy
 - Economic Feature: 1
 - Barracks Feature: False
 - Military Feature: Worker
 - Aggression Feature: True
-- Attack Feature: Worker
+- Attack Feature: Building
 - Defense Feature: None
 
 ","## Description
 You should:
-- Allocate one worker for mineral harvesting to support ongoing economic growth.
-- Do not construct barracks, as this strategy does not require advanced units.
-- Keep producing workers to increase your army size.
-- Only produce worker units.
-- Prioritize attacking enemy worker units.
-- Send all workers to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
+- Allocate one worker for mineral harvesting to support ongoing economic growth, focusing on a more cautious resource management.
+- Since the Barracks Feature is set to False, there is no need to build a barracks. Focus on using the base to produce workers exclusively.
+- Continuously produce workers as your main unit type to ensure a steady stream of units for both economic and military purposes.
+- Prioritize attacking enemy buildings over units, as the Aggression Feature is set to True and the Attack Feature focuses on buildings.
+- Send all produced workers to attack enemy buildings, especially targeting the base or any structures that the enemy is trying to build.
+- Maintain a focus on offensive operations and do not plan for a designated defense area, as the Defense Feature is None.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not focus on defending specific areas."
-3,1,9,Ranged and Worker,True,Base > Barracks > Worker,,"## Strategy
+- Do not produce any other types of units, such as Light, Heavy, or Ranged units, as these require the construction of a barracks.
+- Do not build a barracks, as it is unnecessary given the current military strategy.
+- Avoid defensive maneuvers or setting up a defensive perimeter; the strategy is to be continuously aggressive and target enemy structures.
+- Do not waste resources on building unnecessary structures or units that do not contribute to the offensive strategy."
+14,1,False,Worker,False,,1.0,"## Strategy
 - Economic Feature: 1
-- Barracks Feature: resource >= 9
-- Military Feature: Ranged and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate one worker for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 9.
-- Keep producing your military (ranged and worker) more units is better.
-- Only produce ranged and worker units.
-- Prioritize attacking enemy bases, then barracks, and finally workers.
-- Send both workers and ranged units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-4,2,7,Heavy and Worker,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 7
-- Military Feature: Heavy and Worker
-- Aggression Feature: True
-- Attack Feature: Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (heavy and worker) more units is better.
-- Only produce heavy and worker units.
-- Prioritize attacking enemy heavy units over workers.
-- Send both workers and heavy units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-5,2,10,Ranged and Light and Worker,True,Ranged > Light > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 10
-- Military Feature: Ranged and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Ranged > Light > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 10.
-- Keep producing a balanced military force consisting of ranged, light, and worker units.
-- Prioritize attacking enemy ranged units first, followed by light units, and then workers.
-- Send a mix of workers, light units, and ranged units to attack, ensuring a versatile and effective offensive force.
-- Focus on aggressive play and do not designate specific defense areas; prioritize offensive actions.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan for defensive deployments.
-- Do not waste resources on unnecessary units or upgrades."
-6,2,5,Heavy and Worker,False,,"[[1, 1], [4, 4]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Heavy and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 1), (4, 4)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (heavy and worker) more units is better.
-- Only produce heavy and worker units.
-- Deploy both workers and heavy units to the defense area, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,1) and the lower right corner (4,4).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on defense and maintaining a strong presence in the designated area."
-7,2,8,Light and Worker,False,,"[[1, 1], [3, 3]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 8
-- Military Feature: Light and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 1), (3, 3)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Deploy both workers and light units to defense areas, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,1) and the lower right corner (3,3).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on defending your base and resources."
-8,2,5,Ranged and Worker,True,Base > Barracks > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Ranged and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (ranged and worker) more units is better.
-- Only produce ranged and worker units.
-- Prioritize attacking enemy bases, followed by barracks, and then workers.
-- Send both workers and ranged units to attack, rather than just using a single type.
-- Focus on early aggression to disrupt the enemy's economy and base structures.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan for designated defense areas; focus on attacking."
-9,2,5,Light and Worker,True,Light > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Light and Worker
-- Aggression Feature: True
-- Attack Feature: Light > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Prioritize attacking enemy light units over workers.
-- Send both workers and light units to attack, rather than just using a single type.
-- Focus on early aggression to disrupt the enemy's economy and military build-up.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan defense areas; focus on attacking the enemy."
-10,2,9,Ranged and Worker,False,,"[[1, 1], [2, 2]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 9
-- Military Feature: Ranged and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 1), (2, 2)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 9.
-- Keep producing your military (ranged and worker) more units is better.
-- Only produce ranged and worker units.
-- Deploy both workers and ranged units to the defense area, which is between the upper left corner (1,1) and the lower right corner (2,2).
-- Focus on defending this area to protect your base and resources.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack the enemy in the early stage.
-- Avoid spreading your units thinly; concentrate them in the designated defense area."
-11,1,5,Heavy and Worker,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 1
-- Barracks Feature: resource >= 5
-- Military Feature: Heavy and Worker
-- Aggression Feature: True
-- Attack Feature: Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate one worker for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (heavy and worker) more units is better.
-- Only produce heavy and worker units.
-- Prioritize attacking enemy heavy units over workers.
-- Send both workers and heavy units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-12,2,6,Ranged and Worker,True,Ranged > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 6
-- Military Feature: Ranged and Worker
-- Aggression Feature: True
-- Attack Feature: Ranged > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 6.
-- Keep producing your military units, focusing on ranged and worker units.
-- Only produce ranged and worker units.
-- Prioritize attacking enemy ranged units over workers.
-- Send both workers and ranged units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just focus on attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks for defense."
-13,2,5,Light and Worker,False,,"[[1, 1], [5, 5]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Light and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 1), (5, 5)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Deploy both workers and light units to defense areas, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,1) and the lower right corner (5,5).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on defending your base and resources."
-14,2,8,Heavy and Light and Worker,False,,"[[1, 3], [4, 6]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 8
-- Military Feature: Heavy and Light and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 3), (4, 6)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing your military (heavy, light, and worker) more units is better.
-- Only produce heavy, light, and worker units.
-- Deploy both workers, heavy, and light units to the defense areas, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,3) and the lower right corner (4,6).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage.
-- Avoid overextending your defense to ensure your base and workers are well-protected."
-15,1,7,Light and Worker,True,Light > Worker,,"## Strategy
-- Economic Feature: 1
-- Barracks Feature: resource >= 7
-- Military Feature: Light and Worker
-- Aggression Feature: True
-- Attack Feature: Light > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate one worker for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Prioritize attacking enemy light units over workers.
-- Send both workers and light units to attack, rather than just using a single type.
-- Focus on early aggression to disrupt the enemy's economy and military buildup.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-16,2,5,Ranged,True,Base > Barracks > Ranged,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Ranged
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Ranged
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Focus on producing ranged units for your military.
-- Prioritize attacking enemy bases, followed by barracks, and then ranged units.
-- Send your ranged units to attack the enemy base and other structures.
-- Ensure that your workers are also involved in attacking when necessary, but prioritize the ranged units for their attack range and effectiveness.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units besides ranged units.
-- Do not plan designated defense areas; focus on attacking the enemy.
-- Avoid producing heavy or light units, as they are not part of this strategy."
-17,2,6,Ranged,True,Ranged > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 6
-- Military Feature: Ranged
-- Aggression Feature: True
-- Attack Feature: Ranged > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct a barracks once resources exceed 6.
-- Keep producing ranged units. More units are better.
-- Only produce ranged units.
-- Prioritize attacking enemy ranged units over workers.
-- Send ranged units to attack, focusing on the enemy's ranged units and then workers.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-18,2,9,Ranged and Worker,True,Base > Barracks > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 9
-- Military Feature: Ranged and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 9.
-- Keep producing your military (ranged and worker) more units is better.
-- Only produce ranged and worker units.
-- Prioritize attacking enemy bases, then barracks, and finally workers.
-- Send both workers and ranged units to attack, rather than just using a single type.
-- Focus on early resource gathering and building a strong economy before transitioning to military production.
-- Once barracks are built, focus on producing a mix of ranged and worker units to balance offensive capabilities and resource gathering.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks; focus on attacking the enemy's key structures and units.
-- Avoid spreading your units too thin; concentrate your forces for more effective attacks."
-19,2,6,Light and Worker,True,Light > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 6
-- Military Feature: Light and Worker
-- Aggression Feature: True
-- Attack Feature: Light > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 6.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Prioritize attacking enemy light units over workers.
-- Send both workers and light units to attack, rather than just using a single type.
-- Focus on taking down the enemy's light units first to weaken their offensive capabilities.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-20,2,7,Heavy and Worker,False,,"[[2, 2], [5, 5]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 7
-- Military Feature: Heavy and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (2, 2), (5, 5)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (heavy and worker) more units is better.
-- Only produce heavy and worker units.
-- Deploy both workers and heavy units to defense areas, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (2,2) and the lower right corner (5,5).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage."
-21,2,7,Light and Worker,True,Light > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 7
-- Military Feature: Light and Worker
-- Aggression Feature: True
-- Attack Feature: Light > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (light and worker) units; more units are better.
-- Only produce light and worker units.
-- Prioritize attacking enemy light units over workers.
-- Send both workers and light units to attack, rather than just using a single type.
-- Avoid deploying units for defense; focus on aggressive play.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not engage in defensive strategies."
-22,2,5,Heavy and Light and Worker,True,Heavy > Light > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Heavy and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Heavy > Light > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (heavy, light, and worker) more units is better.
-- Only produce heavy, light, and worker units.
-- Prioritize attacking enemy heavy units over light units and workers.
-- Send both heavy, light, and worker units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-23,2,8,Heavy and Worker,False,,"[[1, 0], [3, 2]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 8
-- Military Feature: Heavy and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 0), (3, 2)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing your military (heavy and worker) more units is better.
-- Only produce heavy and worker units.
-- Deploy both workers and heavy units to the defense area, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,0) and the lower right corner (3,2).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on defense and preparing for potential counter-attacks."
-24,2,8,Ranged,True,Base > Barracks > Ranged,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 8
-- Military Feature: Ranged
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Ranged
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Focus on producing ranged units exclusively.
-- Prioritize attacking enemy bases, followed by barracks, and then ranged units.
-- Send all ranged units to attack, focusing on key targets to disrupt the enemy's economy and military production.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units (workers, heavy, or light).
-- Do not plan deploy tasks.
-- Do not engage in defensive strategies; focus entirely on aggression."
-25,2,5,Heavy,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Heavy
-- Aggression Feature: True
-- Attack Feature: Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Focus on producing Heavy units, as they provide a strong attack with 4 damage.
-- Prioritize attacking enemy Heavy units over workers.
-- Send Heavy units to attack the enemy base and other structures, leveraging their high damage output.
-- Keep producing Heavy units as long as you have the resources and barracks to support them.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units (such as Light, Ranged, or additional Workers).
-- Do not plan defense areas; focus on aggressive play and taking down the enemy's units and structures."
-26,2,7,Heavy,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 7
-- Military Feature: Heavy
-- Aggression Feature: True
-- Attack Feature: Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Focus on producing heavy units, as they have the highest damage output.
-- Prioritize attacking enemy heavy units over workers.
-- Send heavy units to attack the enemy base and other structures, aiming to disrupt their economy and military production.
-- Avoid deploying units to specific defense areas; focus on maintaining a strong offensive presence.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not engage in defensive strategies; maintain an aggressive stance throughout the game."
-27,2,8,Heavy,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 8
-- Military Feature: Heavy
-- Aggression Feature: True
-- Attack Feature: Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing heavy units as your primary military force.
-- Only produce heavy units.
-- Prioritize attacking enemy heavy units over workers.
-- Send heavy units to attack the enemy base and other structures, rather than just focusing on workers.
-- Omit designated defense areas; do not deploy units, just focus on attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not focus on defending specific areas; the strategy is to be aggressive and take the fight to the enemy."
-28,2,6,Ranged and Heavy,True,Ranged > Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 6
-- Military Feature: Ranged and Heavy
-- Aggression Feature: True
-- Attack Feature: Ranged > Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 6.
-- Keep producing your military (ranged and heavy) more units is better.
-- Only produce ranged and heavy units.
-- Prioritize attacking enemy ranged units, then heavy units, and finally workers.
-- Send both ranged and heavy units to attack, rather than just using a single type.
-- Focus on taking out the enemy’s ranged units first to reduce their long-range threat, followed by heavy units to eliminate their powerful attacks, and finally workers to disrupt their economy.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks; focus on aggressive attacks."
-29,2,8,Ranged and Heavy,True,Ranged > Heavy > Base > Barracks,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 8
-- Military Feature: Ranged and Heavy
-- Aggression Feature: True
-- Attack Feature: Ranged > Heavy > Base > Barracks
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing your military (ranged and heavy) more units is better.
-- Only produce ranged and heavy units.
-- Prioritize attacking enemy ranged units over heavy units, then focus on the enemy base, and finally the barracks.
-- Send both ranged and heavy units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not attack workers or other non-critical targets early in the game."
-30,2,7,Ranged and Light and Worker,True,Base > Barracks > Worker > Light > Ranged,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 7
-- Military Feature: Ranged and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Worker > Light > Ranged
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (ranged, light, and worker) more units are better.
-- Only produce ranged, light, and worker units.
-- Prioritize attacking enemy bases over barracks, then workers, light units, and finally ranged units.
-- Send both workers, light units, and ranged units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just focus on attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not defend specific areas; focus on offensive actions."
-31,2,6,Ranged,True,Base > Barracks > Ranged,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 6
-- Military Feature: Ranged
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Ranged
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 6.
-- Keep producing ranged units, more units are better.
-- Only produce ranged units.
-- Prioritize attacking enemy bases, followed by barracks, and then ranged units.
-- Send ranged units to attack, focusing on the enemy's key structures.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not focus on defending specific areas; prioritize aggressive play."
-32,2,7,Light and Worker,False,,"[[1, 1], [4, 4]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 7
-- Military Feature: Light and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 1), (4, 4)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Deploy both workers and light units to the defense area, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,1) and the lower right corner (4,4).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on defense and building a strong economy."
-33,2,9,Ranged and Light and Worker,True,Base > Barracks > Light > Ranged > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 9
-- Military Feature: Ranged and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Light > Ranged > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 9.
-- Keep producing your military (ranged, light, and worker) more units is better.
-- Only produce ranged, light, and worker units.
-- Prioritize attacking enemy bases, barracks, light units, ranged units, and workers in that order.
-- Send all types of units to attack, rather than just using a single type.
-- Focus on taking out key structures and units to cripple the enemy's ability to produce more units and resources.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks; focus on continuous attacking.
-- Do not prioritize defense areas; maintain an aggressive stance."
-34,2,6,Ranged and Light and Worker,True,Ranged > Light > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 6
-- Military Feature: Ranged and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Ranged > Light > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 6.
-- Keep producing your military (ranged, light, and worker) more units is better.
-- Only produce ranged, light, and worker units.
-- Prioritize attacking enemy ranged units, followed by light units, and then workers.
-- Send both workers, light units, and ranged units to attack, rather than just using a single type.
-- Focus on early aggression to disrupt the enemy's economy and military build-up.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task.
-- Do not focus on defense; your strategy is to actively attack and pressure the enemy."
-35,2,7,Ranged and Light and Worker,True,Base > Barracks > Light > Ranged > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 7
-- Military Feature: Ranged and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Light > Ranged > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (ranged, light, and worker) more units is better.
-- Only produce ranged, light, and worker units.
-- Prioritize attacking enemy bases over barracks, followed by light units, ranged units, and workers.
-- Send all military units to attack, rather than just using a single type.
-- Focus on early aggression to disrupt the enemy's economy and structures.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not focus on defense; the strategy is aggressive and aims to outpace the enemy."
-36,2,9,Ranged,True,Base > Barracks > Ranged,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 9
-- Military Feature: Ranged
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Ranged
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 9.
-- Keep producing ranged units; more units are better.
-- Only produce ranged units.
-- Prioritize attacking enemy bases, then barracks, and finally ranged units.
-- Send all ranged units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-37,2,10,Ranged and Light and Worker,True,Base > Barracks > Light > Ranged > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 10
-- Military Feature: Ranged and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Light > Ranged > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 10.
-- Keep producing your military (ranged, light, and worker) more units is better.
-- Only produce ranged, light, and worker units.
-- Prioritize attacking enemy bases over barracks, then light units, followed by ranged units, and finally workers.
-- Send all units to attack, rather than just using a single type.
-- Focus on aggressive play and aim to disrupt the enemy's economy and military early on.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not focus on defense; your strategy is to be aggressive and pressure the enemy."
-38,2,8,Light and Worker,False,,"[[1, 0], [3, 2]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 8
-- Military Feature: Light and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 0), (3, 2)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Deploy both workers and light units to the defense area between the upper left corner (1,0) and the lower right corner (3,2).
-- Focus on defending your base and resources, ensuring your workers can continue to mine safely.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on defense and economic growth."
-39,2,9,Heavy,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 9
-- Military Feature: Heavy
-- Aggression Feature: True
-- Attack Feature: Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 9.
-- Focus on producing heavy units, as they provide the most damage output.
-- Prioritize attacking enemy heavy units over workers.
-- Send heavy units to attack, and use workers to support by attacking when necessary.
-- Omit designated defense areas; do not deploy units, just focus on attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks for defense."
-40,2,10,Ranged and Heavy,True,Base > Barracks > Heavy > Ranged,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 10
-- Military Feature: Ranged and Heavy
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Heavy > Ranged
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 10.
-- Keep producing your military (ranged and heavy units) more units is better.
-- Only produce ranged and heavy units.
-- Prioritize attacking enemy bases and barracks. If those are not available, prioritize heavy units, followed by ranged units.
-- Send both ranged and heavy units to attack, rather than just using a single type.
-- Focus on aggressive play and avoid setting up specific defense areas.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks for defense areas; focus on attacking."
-41,1,10,Worker,False,,"[[1, 0], [2, 2]]","## Strategy
-- Economic Feature: 1
-- Barracks Feature: resource >= 10
+- Barracks Feature: False
 - Military Feature: Worker
 - Aggression Feature: False
 - Attack Feature: None
-- Defense Feature: (1, 0), (2, 2)
+- Defense Feature: 1
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support ongoing economic growth, prioritizing the accumulation of resources to build up your base defenses and possibly a larger workforce later on.
+- Since the Barracks Feature is set to False, do not build any barracks, as they are not necessary for the production of workers.
+- Focus on producing only worker units.
+- Because the Aggression Feature is False, prioritize defense over attacking.
+- Deploy a single worker for defense at a close distance (distance = 1) from the base to create a small defensive perimeter around your base.
+- Use the worker for both harvesting and defense, balancing the need for resource gathering with the need to protect your base from early attacks.
+
+You should not:
+- Do not produce any other types of units except workers.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too far from the base, as the ideal perimeter is very close (distance = 1)."
+15,1,7.0,Light and Worker,False,,3.0,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 7
+- Military Feature: Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to sustain a steady resource flow.
+- Construct a barracks once resources exceed 7 to enable the production of light and worker units.
+- Focus on producing only light and worker units.
+- Since the Aggression Feature is set to False, prioritize defense rather than attacking.
+- Deploy your defense at a far distance (distance = 3) from the base, allowing a buffer zone that can delay enemy advances.
+- Use light units for their speed and maneuverability to patrol and defend, while workers support by repairing or reinforcing defense as needed.
+- Hold your ground with your military units, focusing on maintaining a defensive perimeter to protect your base and resources.
+
+You should not:
+- Do not produce any unit types other than the specified light and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3) to create a strategic buffer."
+16,2,8.0,Ranged,True,Unit,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 8
+- Military Feature: Ranged
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support ongoing economic growth.
+- Construct barracks once resources exceed 8, enabling the production of ranged units.
+- Focus on producing only ranged units for your military.
+- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings.
+- Send your ranged units to attack, using their ranged attack capability to engage enemies from a safe distance.
+- As the Defense Feature is set to None, do not plan for a defensive perimeter. Instead, focus on aggressive actions to disrupt and overpower the enemy.
+
+You should not:
+- Do not produce any other types of units except the specified ranged units.
+- Do not build a defensive perimeter or hold ground; the strategy is to be aggressive and proactive in attacks.
+- Avoid unnecessary defensive maneuvers and focus on leveraging the ranged attack to gain an advantage."
+17,2,7.0,Heavy and Worker,True,Building,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 7
+- Military Feature: Heavy and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support ongoing economic growth.
+- Construct a barracks once resources exceed 7 to enable the production of heavy and worker units.
+- Focus on producing only heavy and worker units, with a priority on heavy units due to their higher damage output.
+- Since the Aggression Feature is set to True, prioritize attacking enemy buildings over units. This approach helps to dismantle your opponent's infrastructure and limit their resource gathering and unit production capabilities.
+- Send both worker and heavy units to attack, leveraging the synergy between the heavy units' high damage and the worker units' mobility and support roles.
+- Do not plan for a designated defense area, as the strategy is offensive and focuses on taking down the enemy base and structures.
+
+You should not:
+- Do not produce any other types of units except heavy and worker units.
+- Do not waste resources on building defenses or holding ground; the primary focus is on offensive operations.
+- Avoid engaging in prolonged skirmishes with enemy units if they do not threaten your primary objective of attacking buildings."
+18,1,10.0,Ranged and Worker,True,Unit,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 10
+- Military Feature: Ranged and Worker
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to steadily build up resources. The single worker will ensure a continuous flow of resources, though at a slower rate compared to two workers.
+- Construct a barracks once resources exceed 10. This will enable you to produce a mix of ranged and worker units.
+- Focus on producing only ranged and worker units. The combination of ranged units for their attack range and workers for their versatility will provide a balanced offensive force.
+- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings. This will help dismantle the enemy's military capabilities and reduce the threat to your own base.
+- Send both workers and ranged units to attack the enemy, focusing on eliminating their units first. This will weaken their ability to launch counterattacks or defend their base.
+- Omit designated defense areas, as the strategy is focused on aggressive play.
+
+You should not:
+- Do not produce any unit types other than the specified ranged and worker units.
+- Do not allocate resources towards building defensive structures or deploying units for defense.
+- Avoid attacking buildings until the enemy units are neutralized, as your primary target is to weaken their offensive capabilities.
+- Do not build a barracks prematurely; wait until you have at least 10 resources to ensure you have enough to start producing units immediately after construction."
+19,2,5.0,Ranged and Worker,True,Building,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 5
+- Military Feature: Ranged and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support ongoing economic growth.
+- Construct barracks once resources exceed 5 to enable the production of ranged and worker units.
+- Focus on producing a combination of ranged and worker units to balance attack and resource gathering.
+- Prioritize attacking enemy buildings over units to disrupt their economy and production capabilities.
+- Deploy both ranged and worker units to attack, leveraging the ranged units' ability to strike from a distance and the workers' supporting role.
+- Aggressively seek out and destroy enemy structures, especially their base and barracks, to gain an early advantage.
+- Omit designated defense areas, as the strategy is focused on offensive actions.
+
+You should not:
+- Do not produce any other types of units except the specified ranged and worker units.
+- Do not prioritize defending your base or structures; the focus is on aggressive attacks.
+- Avoid holding back units for defense; use all available units for offensive operations."
+20,2,7.0,Heavy and Worker,False,,3.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 7
+- Military Feature: Heavy and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady income of resources.
+- Construct a barracks once you gather 7 resources, enabling the production of heavy and worker units.
+- Focus on producing only heavy and worker units.
+- Since the Aggression Feature is set to False, prioritize defense over attacking.
+- Deploy your defense at a distance of 3 from the base to provide a strong perimeter around your position.
+- Use your heavy units to defend the perimeter and your worker units for support and repairs.
+
+You should not:
+- Do not produce any other unit types except the specified heavy and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close or too far from the base, as the ideal perimeter is a distance of 3."
+21,2,5.0,Light and Worker,False,,1.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 5
+- Military Feature: Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 1
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support economic growth.
+- Construct a barracks as soon as you gather 5 resources to enable the production of light and worker units.
+- Focus on producing only light and worker units.
+- Since the Aggression Feature is set to False, prioritize defense over attacking.
+- Deploy your defense at a close distance (distance = 1) from the base, ensuring a tight perimeter of protection around your position.
+- Hold ground with your military units, using them to defend rather than pursuing enemy units or buildings.
+
+You should not:
+- Do not produce any unit types other than the specified light and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too far from the base, as the ideal perimeter is close (distance = 1)."
+22,1,10.0,Heavy and Worker,False,,4.0,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 10
+- Military Feature: Heavy and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 4
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support the economy. Although this limits your resource intake, it allows for a more focused approach.
+- Construct a barracks when you accumulate 10 resources. This will enable the production of heavy and worker units.
+- Focus on producing heavy and worker units exclusively. Heavy units provide strong offensive and defensive capabilities, while workers can help with resource gathering and minor defensive tasks.
+- Since the Aggression Feature is set to False, prioritize defense over attack. Your strategy is to hold your ground and protect your base and resources.
+- Deploy your defense at a very far distance (distance = 4) from your base. This creates a buffer zone that can help intercept and delay enemy advances.
+- Use heavy units to form the core of your defensive perimeter, supported by workers for auxiliary tasks.
+
+You should not:
+- Do not produce any other unit types except heavy and worker units.
+- Do not initiate attacks or prioritize offensive operations, as your strategy is defensive.
+- Avoid placing your defense too close to the base, as the ideal perimeter is very far (distance = 4) to provide a buffer zone."
+23,2,9.0,Ranged and Light and Worker,True,Building,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 9
+- Military Feature: Ranged and Light and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support ongoing economic growth.
+- Construct barracks once resources exceed 9.
+- Focus on producing a balanced mix of ranged, light, and worker units.
+- Prioritize attacking enemy buildings over units to disrupt the enemy's base and resource gathering capabilities.
+- Send both ranged and light units to attack the enemy buildings, with workers supporting as necessary.
+- Since the Aggression Feature is set to True, prioritize offensive operations and aggressive play.
+- Do not plan for a designated defense area, as the strategy leans heavily on aggression and taking the fight to the enemy.
+
+You should not:
+- Do not produce any unit types other than the specified ranged, light, and worker units.
+- Do not hold back or wait for the enemy to attack; instead, take the initiative and push forward.
+- Avoid placing a strong emphasis on defense, as the strategy is designed for aggressive play and continuous offensive actions."
+24,2,5.0,Ranged and Heavy and Worker,True,Building,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 5
+- Military Feature: Ranged and Heavy and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support the rapid production of units and structures.
+- Construct barracks as soon as you gather 5 resources, enabling the production of ranged and heavy units, in addition to workers.
+- Focus on producing a mix of ranged, heavy, and worker units to create a versatile and powerful military force.
+- Prioritize attacking enemy buildings over units to disrupt the opponent's economic and military capabilities.
+- Send both ranged and heavy units to attack, along with workers for additional support, to maximize offensive impact.
+- Omit designated defense areas, as the strategy is aggressive and focused on attacking rather than defending.
+
+You should not:
+- Do not produce any other types of units except the specified ranged, heavy, and worker units.
+- Do not plan defend tasks; your focus should be on offensive operations and taking the fight to the enemy.
+- Avoid holding back your units for defense; use them to actively engage and destroy enemy structures and units."
+25,2,7.0,Ranged and Light and Worker,True,Unit,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 7
+- Military Feature: Ranged and Light and Worker
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support ongoing economic growth.
+- Construct barracks once resources exceed 7 to enable the production of ranged, light, and worker units.
+- Prioritize the production of ranged and light units for their offensive capabilities, while maintaining a steady flow of worker units to support resource gathering and occasional attacks.
+- Focus on an aggressive playstyle, using your units to actively pursue and attack enemy units, particularly focusing on eliminating enemy worker units to disrupt their economy.
+- Send both ranged and light units to attack, with workers following to assist or harass as needed.
+- Omit designated defense areas, as the strategy is primarily focused on offensive operations.
+
+You should not:
+- Do not produce any other types of units except the specified ranged, light, and worker units.
+- Do not plan for a defensive perimeter, as the strategy is aggression-focused.
+- Avoid hesitating to engage the enemy, even if it means sacrificing some of your units, to maintain pressure and control over the map."
+26,1,6.0,Ranged and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 6
+- Military Feature: Ranged and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate a single worker for mineral harvesting to gradually build up your resources.
+- Construct a barracks once you gather 6 resources, which will enable the production of ranged and worker units.
+- Focus on producing a combination of ranged and worker units. Prioritize the production of ranged units for their attack capabilities and worker units for resource gathering and flexible support roles.
+- Given the Aggression Feature is set to True, prioritize attacking enemy buildings over units to disrupt their economy and limit their ability to produce threats.
+- Use both types of units (ranged and worker) in your offensive operations. Ranged units will provide damage from a distance, while workers can help in basic attacks and provide additional resources through harvesting captured or neutral mineral fields.
+- Do not establish a dedicated defensive perimeter, as the strategy is geared towards aggressive play, focusing on proactive attacks rather than holding ground.
+
+You should not:
+- Do not produce any other types of units, such as Heavy or Light units.
+- Avoid setting up a defensive perimeter, as the focus is on offense.
+- Refrain from building more than one worker for initial resource gathering, as the strategy aims to build up resources more slowly but steadily."
+27,1,6.0,Ranged and Worker,True,Unit,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 6
+- Military Feature: Ranged and Worker
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support your economic needs. This will allow you to gather resources efficiently while leaving an option to use the base to produce additional units if necessary.
+- Build barracks as soon as you have gathered 6 resources. This will enable you to produce both ranged and worker units, which are essential for your aggressive strategy.
+- Focus on producing ranged and worker units. The ranged units will provide long-distance support, while the workers can assist in attacks and repair any necessary structures.
+- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings. This will help in weakening the enemy’s military presence and potentially disrupt their resource gathering.
+- Send both workers and ranged units to attack the enemy. Utilize the ranged units' ability to attack from a distance to keep your units safe while the workers can engage in close combat or assist in repairs.
+- Omit designated defense areas, as the strategy focuses on aggressive play and active engagement with the enemy.
+
+You should not:
+- Do not produce any other types of units except the specified ranged and worker units.
+- Do not build barracks before you have 6 resources, as this could slow down your economic growth and unit production.
+- Do not prioritize defensive tactics, as the strategy is designed for aggressive play.
+- Avoid holding ground or setting up a defensive perimeter, as the goal is to actively engage and disrupt the enemy."
+28,2,9.0,Ranged and Worker,True,Building,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 9
+- Military Feature: Ranged and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to support ongoing economic growth.
+- Construct a barracks once resources exceed 9 to start producing ranged and worker units.
+- Focus on producing only ranged and worker units, as they are key to your military strategy.
+- Prioritize attacking enemy buildings over units, as the Attack Feature is set to Building.
+- Send both workers and ranged units to attack, leveraging the strengths of each unit type.
+- Omit designated defense areas, as the Defense Feature is None, focusing entirely on offensive maneuvers.
+
+You should not:
+- Do not produce any other types of units except the specified ranged and worker units.
+- Do not prioritize attacking enemy units over buildings.
+- Do not plan for a defensive perimeter, as the strategy is aggressive and focused on attacking."
+29,2,6.0,Light and Worker,False,,2.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 6
+- Military Feature: Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 2
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to sustain economic development.
+- Construct barracks as soon as you gather 6 resources to enable the production of light and worker units.
+- Focus on producing only light and worker units.
+- Since the Aggression Feature is set to False, prioritize defense rather than attacking.
+- Deploy your defense at a medium distance (distance = 2) from the base, allowing a perimeter of protection around your position.
+- Hold ground with your military units, using them to defend rather than pursue enemy units or buildings.
+
+You should not:
+- Do not produce any unit types other than the specified light and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2)."
+30,2,9.0,Heavy and Worker,False,,4.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 9
+- Military Feature: Heavy and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 4
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to sustain economic development. This will ensure a steady flow of resources to support both economic and military activities.
+- Construct barracks once resources exceed 9. This timing allows you to have a solid economic base before committing to military production.
+- Focus on producing heavy and worker units. Heavy units are powerful in terms of damage output, making them effective for both defense and any potential offensive actions, while workers can support base functions and mineral harvesting.
+- Since the Aggression Feature is set to False, prioritize defense rather than attacking. This means your primary goal is to protect your base and resources.
+- Deploy your defense at a very far distance (distance = 4) from the base. This allows you to create a significant buffer zone, making it harder for the enemy to reach and attack your base directly.
+- Hold ground with your military units, using them to defend rather than pursue enemy units or buildings. Position your heavy units strategically to cover key areas and provide support to workers as needed.
+
+You should not:
+- Do not produce any unit types other than the specified heavy and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close to the base, as the ideal perimeter is very far (distance = 4).
+- Do not build additional structures or units that are not specified in the strategy.
+- Do not send your units to attack enemy buildings or units unless they pose an immediate threat to your defense."
+31,1,8.0,Heavy,True,Unit,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 8
+- Military Feature: Heavy
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support the economy.
+- Construct a barracks once resources exceed 8 to enable the production of heavy units.
+- Focus on producing heavy units exclusively, as they are robust and can deal significant damage.
+- Since the Aggression Feature is set to True, prioritize aggressive play by targeting enemy units, particularly high-value targets such as workers and other military units.
+- Send your heavy units to attack, leveraging their high damage output to quickly eliminate enemy threats.
+- Omit designated defense areas, as the strategy is focused on offensive operations.
+
+You should not:
+- Do not produce any other types of units except heavy units.
+- Do not build barracks until resources reach 8.
+- Do not prioritize defensive operations; focus on attacking and minimizing the enemy's ability to counter.
+- Avoid holding ground or deploying units for defense, as the strategy is to press the attack and keep the enemy on the back foot."
+32,1,8.0,Light and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 8
+- Military Feature: Light and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support economic needs.
+- Construct barracks once resources exceed 8 to enable the production of light and worker units.
+- Keep producing light and worker units to form a versatile military force.
+- Prioritize attacking enemy buildings over units to disrupt their economy and production capabilities.
+- Send both light and worker units to attack, leveraging the speed and agility of light units to harass and the utility of workers for additional support.
+- Omit designated defense areas, focusing all efforts on offensive maneuvers.
+
+You should not:
+- Do not produce any unit types other than the specified light and worker units.
+- Do not waste resources on unnecessary defensive structures or units.
+- Avoid engaging in defensive operations, as the strategy is focused on aggression and attacking enemy buildings."
+33,2,7.0,Ranged and Light and Worker,False,,3.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 7
+- Military Feature: Ranged and Light and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady flow of resources.
+- Construct barracks once resources exceed 7 to start producing a variety of military units.
+- Focus on producing a mix of ranged, light, and worker units to balance offensive and defensive capabilities.
+- Since the Aggression Feature is set to False, prioritize defense over attacking.
+- Deploy your defense at a far distance (distance = 3) from the base to create a robust perimeter around your position.
+- Use your military units to hold ground and protect your base, rather than actively seeking out and engaging enemy units or buildings.
+
+You should not:
+- Do not produce any unit types other than the specified ranged, light, and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3)."
+34,1,9.0,Heavy and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 9
+- Military Feature: Heavy and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support economic growth.
+- Construct barracks once resources exceed 9.
+- Focus on producing heavy and worker units exclusively.
+- Prioritize attacking enemy buildings over units.
+- Send both heavy and worker units to attack, leveraging the heavy units' superior damage and the workers' support and resource gathering capabilities.
+- Do not plan for a designated defense area, as the strategy is aggressive and focuses on offense.
+
+You should not:
+- Do not produce any other types of units except heavy and worker units.
+- Do not delay the construction of the barracks once the resource threshold is met.
+- Do not hold back from attacking when the opportunity arises, as the strategy is aggressive.
+- Avoid placing a defensive perimeter, as the focus is on assaulting the enemy's structures."
+35,2,5.0,Ranged,True,Building,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 5
+- Military Feature: Ranged
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady flow of resources.
+- Construct a barracks as soon as you accumulate 5 resources to start producing military units.
+- Focus on producing only ranged units, as they provide a balance of cost and range for attacking.
+- Adopt an aggressive strategy, prioritizing the destruction of enemy buildings to cripple their economy and production capabilities.
+- Send your ranged units to attack enemy buildings, especially their base and barracks, to disrupt their operations.
+- Utilize the ranged units' ability to attack from a distance to keep them safe from close-combat units.
+
+You should not:
+- Do not produce any other unit types except the specified ranged units.
+- Do not set up a specific defense perimeter, as the Aggression Feature is set to True, and the focus is on offensive actions.
+- Avoid defending passively and instead focus on proactive attacks to gain the upper hand in the game."
+36,1,7.0,Heavy and Worker,False,,3.0,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 7
+- Military Feature: Heavy and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support economic growth while keeping resources in check.
+- Construct a barracks once resources exceed 7 to enable the production of heavy and worker units.
+- Focus on producing heavy and worker units to create a balanced and strong defense.
+- Since the Aggression Feature is set to False, prioritize defense rather than offensive actions.
+- Deploy your defense at a far distance (distance = 3) from the base, creating a robust perimeter that can deter enemy advances.
+- Hold ground with your heavy units, which have higher damage and HP, to effectively repel enemy attacks. Use workers to support and assist in defense when necessary.
+
+You should not:
+- Do not produce any other unit types except heavy and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy is defensive.
+- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3)."
+37,1,7.0,Ranged,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 7
+- Military Feature: Ranged
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to sustain economic growth.
+- Construct barracks once resources exceed 7 to enable the production of ranged units.
+- Focus on producing only ranged units, as they can provide long-range support and are effective against both units and buildings.
+- Prioritize attacking enemy buildings over units, as they are often more critical to the enemy's economy and offensive capabilities.
+- Send your ranged units to attack enemy structures immediately upon production, taking advantage of their ranged attack to harass and damage enemy positions.
+- Utilize your single worker to support the economy but also assist in attacking when needed, especially to finish off damaged enemy units or structures.
+
+You should not:
+- Do not produce any other types of units except the specified ranged units.
+- Do not plan for a defensive strategy, as the focus is on aggressive play and continuously pressuring the enemy.
+- Avoid lingering in defensive positions; keep your units moving and attacking to maintain the pressure on the enemy."
+38,1,7.0,Light and Worker,True,Unit,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 7
+- Military Feature: Light and Worker
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support the economy and ensure a steady flow of resources.
+- Construct barracks once resources exceed 7 to enable the production of light and worker units.
+- Focus on producing only light and worker units. Light units will serve as your main combat force, while workers can assist in both economic and military roles.
+- Adopt an aggressive stance by prioritizing attacks on enemy units, including workers, heavy, light, and ranged units.
+- Send both light and worker units to attack, utilizing the speed and agility of light units and the versatility of workers to effectively engage the enemy.
+- Do not plan for a specific defense area, as the strategy is primarily offensive.
+
+You should not:
+- Do not produce any other types of units except light and worker units.
+- Do not hold back from attacking; the strategy is to be aggressive and focus on taking out enemy units.
+- Avoid building a fixed defense perimeter; instead, use your units to actively seek out and engage the enemy."
+39,2,False,Worker,False,,2.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: False
+- Military Feature: Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 2
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to sustain economic development.
+- Do not build barracks at any point during the game, as the strategy does not require it.
+- Focus exclusively on producing worker units to build and maintain your base.
+- Since the Aggression Feature is set to False, prioritize defense over attacking.
+- Deploy a defense perimeter at a medium distance (distance = 2) from the base to protect against potential enemy incursions.
+- Use your workers to reinforce and protect your base, ensuring it remains secure.
+
+You should not:
+- Do not produce any units other than workers.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2)."
+40,1,8.0,Ranged and Worker,False,,3.0,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 8
+- Military Feature: Ranged and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 3
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support your economic development.
+- Construct barracks once resources reach 8 to enable the production of ranged and worker units.
+- Focus on producing only ranged and worker units.
+- Since the Aggression Feature is set to False, prioritize defense over attacking.
+- Deploy your defense at a far distance (distance = 3) from the base, creating a wider perimeter around your position.
+- Use your military units to defend rather than pursue enemy units or buildings, maintaining a strong defensive stance.
+
+You should not:
+- Do not produce any unit types other than the specified ranged and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3)."
+41,2,6.0,Heavy and Worker,False,,2.0,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 6
+- Military Feature: Heavy and Worker
+- Aggression Feature: False
+- Attack Feature: None
+- Defense Feature: 2
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to sustain economic development and ensure a steady supply of resources.
+- Construct a barracks as soon as you gather 6 resources to enable the production of heavy and worker units.
+- Focus on producing only heavy and worker units. Heavy units will provide significant attack power, while workers can help with both harvesting and support.
+- Since the Aggression Feature is set to False, prioritize defense rather than initiating aggressive actions.
+- Deploy your defense at a medium distance (distance = 2) from the base. This will allow you to create a balanced perimeter of protection around your position.
+- Utilize heavy units to defend against approaching enemy units and structures, and deploy workers to assist in this defense and to continue resource gathering.
+
+You should not:
+- Do not produce any unit types other than the specified heavy and worker units.
+- Do not initiate attacks or prioritize offensive operations, as the strategy is defensive.
+- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2)."
+42,1,6.0,Ranged,True,Unit,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 6
+- Military Feature: Ranged
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to ensure resource generation.
+- Construct barracks once you have gathered 6 resources to enable the production of ranged units.
+- Focus on producing only ranged units, as they provide a good balance of range and cost.
+- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings.
+- Send your ranged units to engage in combat, leveraging their ability to attack from a distance.
+- Omit designated defense areas, as your strategy is focused on offense rather than defense.
+
+You should not:
+- Do not produce any other unit types except the specified ranged units.
+- Do not plan for defense or hold ground, as your strategy is to actively attack and disrupt the enemy's operations.
+- Avoid unnecessary resource expenditure on other units or structures that do not align with the aggressive playstyle."
+43,1,5.0,Heavy,True,Unit,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 5
+- Military Feature: Heavy
+- Aggression Feature: True
+- Attack Feature: Unit
+- Defense Feature: None
 
 ","## Description
 You should:
 - Allocate one worker for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 10.
-- Keep producing workers. More units are better.
-- Only produce worker units.
-- Deploy workers to the defense area defined by the coordinates (1, 0) to (2, 2).
-- Focus on defending this area rather than engaging in aggressive attacks.
+- Construct barracks once resources exceed 5.
+- Focus on producing heavy units, as they are the primary combat units in this strategy.
+- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings.
+- Send your heavy units to engage the enemy directly. The high damage output of heavy units makes them effective in offensive operations.
+- Omit designated defense areas, as the strategy is aggressively oriented towards attacking.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not engage in active attacks.
-- Do not deploy workers outside the specified defense area."
-42,2,7,Heavy and Ranged,True,Base > Barracks > Heavy > Ranged,,"## Strategy
-- Economic Feature: 2
+- Do not produce any other types of units except heavy units.
+- Do not delay the construction of barracks, as it is crucial for producing heavy units.
+- Do not plan for a defensive strategy, as the focus is on offensive maneuvers.
+- Avoid engaging in defensive operations or holding ground, as the strategy is to actively seek out and destroy enemy units."
+44,1,7.0,Heavy and Light and Worker,False,,3.0,"## Strategy
+- Economic Feature: 1
 - Barracks Feature: resource >= 7
-- Military Feature: Heavy and Ranged
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Heavy > Ranged
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 7.
-- Keep producing your military (heavy and ranged) more units is better.
-- Only produce heavy and ranged units.
-- Prioritize attacking enemy base and barracks, followed by heavy units, and then ranged units.
-- Send both heavy and ranged units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-43,2,5,Light and Worker,False,,"[[1, 0], [2, 2]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Light and Worker
+- Military Feature: Heavy and Light and Worker
 - Aggression Feature: False
 - Attack Feature: None
-- Defense Feature: (1, 0), (2, 2)
+- Defense Feature: 3
 
 ","## Description
 You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Deploy both workers and light units to the defense area, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,0) and the lower right corner (2,2).
+- Allocate one worker for mineral harvesting to support economic growth, ensuring a steady income of resources.
+- Construct a barracks once resources exceed 7 to enable the production of heavy, light, and worker units.
+- Focus on a balanced military composition by producing heavy, light, and worker units. This mix provides a versatile force capable of handling various threats and scenarios.
+- Since the Aggression Feature is set to False, prioritize defense and holding ground over offensive actions.
+- Deploy your defense at a medium-to-far distance (distance = 3) from the base, creating a robust perimeter to protect your position and resources.
+- Use heavy units for their strong attack power, light units for their speed and flexibility, and workers for basic defense and resource gathering.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on building a strong defense."
-44,2,5,Ranged and Light and Worker,True,Base > Barracks > Light > Ranged > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Ranged and Light and Worker
-- Aggression Feature: True
-- Attack Feature: Base > Barracks > Light > Ranged > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing a balanced military force consisting of ranged, light, and worker units.
-- Prioritize attacking enemy bases, barracks, light units, ranged units, and workers in that order.
-- Send both workers, light units, and ranged units to attack, rather than just using a single type.
-- Focus on aggressive play to dominate the map and control resources.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task.
-- Do not hold back on attacks; maintain a consistent pressure on the enemy."
-45,2,5,Light and Worker,True,Base > Barracks > Worker,,"## Strategy
-- Economic Feature: 2
+- Do not produce any units other than the specified heavy, light, and worker units.
+- Avoid initiating attacks or prioritizing offensive operations, as the strategy focuses on defense.
+- Do not place your defense too close to the base, as the ideal perimeter is at a distance of 3, providing a balanced defense.
+- Avoid unnecessary movements that could weaken your defensive position."
+45,1,5.0,Light and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
 - Barracks Feature: resource >= 5
 - Military Feature: Light and Worker
 - Aggression Feature: True
-- Attack Feature: Base > Barracks > Worker
+- Attack Feature: Building
 - Defense Feature: None
 
 ","## Description
 You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct a barracks once resources exceed 5.
-- Keep producing your military units (light and worker) as more units will enhance your attack capabilities.
-- Only produce light and worker units.
-- Prioritize attacking enemy bases over barracks and workers.
-- Send both workers and light units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just focus on attacking.
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not focus on defense; the strategy is aggressive."
-46,2,10,Light and Worker,False,,"[[1, 0], [2, 2]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 10
-- Military Feature: Light and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 0), (2, 2)
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 10.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Deploy both workers and light units to defense areas, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,0) and the lower right corner (2,2).
-
-You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage."
-47,2,5,Heavy and Worker,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Heavy and Worker
-- Aggression Feature: True
-- Attack Feature: Heavy > Worker
-- Defense Feature: None
-
-","## Description
-You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
+- Allocate one worker for mineral harvesting to support ongoing economic growth.
 - Construct barracks once resources exceed 5.
-- Keep producing your military (heavy and worker) more units is better.
-- Only produce heavy and worker units.
-- Prioritize attacking enemy heavy units over workers.
-- Send both workers and heavy units to attack, rather than just using a single type.
-- Omit designated defense areas; do not deploy units, just go attacking.
+- Keep producing your military (light and worker units) more units is better.
+- Only produce light and worker units.
+- Prioritize attacking enemy buildings over units.
+- Send both workers and light units to attack, rather than just using a single type, because your Military Feature is Light and Worker.
+- Omit designated defense areas, as your Defense Feature is None.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task."
-48,2,8,Ranged and Heavy,True,Base > Barracks > Heavy > Ranged,,"## Strategy
+- Do not produce any other types of units except the specified light and worker units.
+- Do not plan defense tasks; focus on attacking.
+- Avoid over-harvesting resources if it means neglecting the construction of barracks and military units.
+
+### Initial Actions
+1. **Worker at (1, 1)**: Move towards the nearest mineral field at (0, 0) to start harvesting resources.
+2. **Base at (1, 2)**: Wait until the worker has collected enough resources (5 or more) to start constructing the barracks.
+
+### Mid-Game Actions
+1. **Once barracks are built**:
+   - Start producing light units and workers.
+   - Allocate one worker to continue mining while the other transitions to military production.
+2. **As soon as you have a small force**:
+   - Send light and worker units to attack the enemy base, focusing on buildings.
+   - Continue to produce more units to reinforce the attack.
+
+### Late-Game Actions
+1. **Maintain a strong offensive**:
+   - Continuously produce light and worker units to replace any losses.
+   - Expand your attack by targeting all enemy buildings to weaken their economic and military capabilities.
+2. **adicional resource management**:
+   - If resources allow, consider building more workers to speed up resource collection, but prioritize military production to maintain pressure on the enemy."
+46,1,7.0,Heavy,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 7
+- Military Feature: Heavy
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate one worker for mineral harvesting to support ongoing economic growth.
+- Construct a barracks once resources exceed 7.
+- Focus on producing heavy units exclusively.
+- Prioritize attacking enemy buildings over units.
+- Direct all heavy units to attack enemy structures, rather than engaging in defensive maneuvers or holding ground.
+- Do not allocate a specific defense perimeter, as the strategy is aggressive and aims to disrupt the enemy's base and operations.
+
+You should not:
+- Do not produce any other types of units besides heavy units.
+- Do not engage in defensive strategies or deploy units to specific defense areas.
+- Avoid spreading your forces thin by attacking multiple targets; focus on a single point of attack to maximize damage and disrupt enemy operations."
+47,2,8.0,Ranged,True,Building,,"## Strategy
 - Economic Feature: 2
 - Barracks Feature: resource >= 8
-- Military Feature: Ranged and Heavy
+- Military Feature: Ranged
 - Aggression Feature: True
-- Attack Feature: Base > Barracks > Heavy > Ranged
+- Attack Feature: Building
 - Defense Feature: None
 
 ","## Description
 You should:
 - Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 8.
-- Keep producing your military (ranged and heavy) more units is better.
-- Only produce ranged and heavy units.
-- Prioritize attacking enemy bases and barracks first, followed by heavy units, and then ranged units.
-- Send both ranged and heavy units to attack, rather than just using a single type.
-- Focus on aggressive play by sending units to attack the enemy as soon as possible.
+- Construct barracks once resources exceed 8 to enable the production of ranged units.
+- Focus on producing only ranged units, as they can attack from a distance and provide good coverage against both enemy units and buildings.
+- Prioritize attacking enemy buildings over units to disrupt their economy and structures.
+- Send all available ranged units to attack, focusing on key enemy structures to weaken their base.
+- Omit designated defense areas, as the strategy is aggressive and focuses on offense.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy tasks.
-- Do not focus on defense; the strategy is designed for aggressive play."
-49,2,6,Heavy and Worker,True,Heavy > Worker,,"## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 6
+- Do not produce any unit types other than ranged units.
+- Do not plan for a defensive perimeter or hold ground; the strategy is to be aggressive and push forward.
+- Avoid attacking individual enemy units unless they are in the way of attacking buildings."
+48,1,5.0,Heavy and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 5
 - Military Feature: Heavy and Worker
 - Aggression Feature: True
-- Attack Feature: Heavy > Worker
+- Attack Feature: Building
 - Defense Feature: None
 
 ","## Description
 You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 6.
-- Keep producing your military (heavy and worker) more units is better.
-- Only produce heavy and worker units.
-- Prioritize attacking enemy heavy units over workers.
-- Send both workers and heavy units to attack, rather than just using a single type.
-- Focus on early aggression to disrupt the opponent's economy and prevent them from building up a strong military.
+- Allocate a single worker for mineral harvesting to support ongoing economic growth.
+- Construct barracks as soon as you gather 5 resources to enable the production of heavy and worker units.
+- Focus on producing heavy and worker units to build a balanced attack force.
+- Prioritize attacking enemy buildings over units to disrupt their economy and infrastructure.
+- Send both workers and heavy units to attack, rather than just using a single type, cause your Military Feature is Heavy and Worker.
+- Omit designated defense areas, as your Defense Feature is None, focusing primarily on offensive actions.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not plan deploy task.
-- Do not focus on defense; the strategy is to be aggressive and keep the pressure on the opponent."
-50,2,5,Light and Worker,False,,"[[1, 1], [4, 4]]","## Strategy
-- Economic Feature: 2
-- Barracks Feature: resource >= 5
-- Military Feature: Light and Worker
-- Aggression Feature: False
-- Attack Feature: None
-- Defense Feature: (1, 1), (4, 4)
+- Do not produce any other types of units except the specified heavy and worker units.
+- Do not plan deploy tasks, just go attacking.
+- Avoid defending your base as the strategy is aggressive and focuses on offensive operations."
+49,1,7.0,Heavy and Worker,True,Building,,"## Strategy
+- Economic Feature: 1
+- Barracks Feature: resource >= 7
+- Military Feature: Heavy and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
 
 ","## Description
 You should:
-- Allocate two workers for mineral harvesting to support ongoing economic growth.
-- Construct barracks once resources exceed 5.
-- Keep producing your military (light and worker) more units is better.
-- Only produce light and worker units.
-- Deploy both workers and light units to the defense area, rather than just using a single type.
-- Deploy the military to the area between the upper left corner (1,1) and the lower right corner (4,4).
+- Allocate one worker for mineral harvesting to support your economic growth.
+- Build a barracks once you have gathered 7 resources.
+- Focus on producing Heavy units and Workers. The Heavy units provide substantial damage to enemy buildings, while Workers can support the economy and assist in attacks.
+- Since the Aggression Feature is set to True, prioritize aggressive play. Focus on attacking enemy buildings to disrupt their economy and production capabilities.
+- Send both Heavy units and Workers to attack enemy structures. The Heavy units will deal significant damage, while the Workers can provide additional damage and help in overwhelming enemy defenses.
+- Do not plan a defensive perimeter, as the strategy is focused on offensive operations.
 
 You should not:
-- Do not build additional barracks.
-- Do not produce any other units.
-- Do not actively attack in the early stage. Focus on defending your base and resource points."
+- Do not produce any other types of units except Heavy and Worker.
+- Do not build additional barracks or focus on a defensive strategy.
+- Avoid sending units to defend your base; instead, use them to attack enemy buildings and units.
+- Do not hesitate to engage the enemy early and often, as the strategy is designed for aggressive play."
+50,2,8.0,Heavy and Worker,True,Building,,"## Strategy
+- Economic Feature: 2
+- Barracks Feature: resource >= 8
+- Military Feature: Heavy and Worker
+- Aggression Feature: True
+- Attack Feature: Building
+- Defense Feature: None
+
+","## Description
+You should:
+- Allocate two workers for mineral harvesting to ensure a steady resource flow.
+- Construct barracks as soon as you gather 8 resources to enable the production of heavy and worker units.
+- Focus on producing heavy and worker units, prioritizing heavy units for their higher damage output.
+- Since the Aggression Feature is set to True, prioritize attacking enemy buildings over units to disrupt the opponent's economy and production capabilities.
+- Send both workers and heavy units to attack, leveraging the combined strength of ranged attacks and melee damage.
+- Do not plan for a designated defense area, as the strategy is focused on aggressive play and constant pressure on the enemy.
+
+You should not:
+- Do not produce any other types of units except heavy and worker units.
+- Do not prioritize defending or setting up a defense perimeter, as the strategy is to maintain offensive pressure.
+- Avoid holding back your units; always push forward to exploit any weaknesses in the enemy's defense."

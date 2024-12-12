@@ -1,8 +1,5 @@
-RECOGNIZE_INSTRUCTION: |
+INSTRUCTION: |
   You are an RTS game master tasked with analyzing and recognizing opponent strategy based on the summary game trajectory and provided parameterized framework.
-
-RESPONSE_INSTRUCTION: |
-  You are an RTS game master tasked with designing a robust and winning strategy based on the provided parameterized framework.
 
 MANUAL: |
   # Game Manual
@@ -26,9 +23,9 @@ STRATEGY_SPACE: |
     - Parameter: Number of harvesting workers
     - Feature Space: {{1, 2}}
 
-  2. **Barracks Feature** determines when to build barracks.  You can construct barracks when resources are greater than or equal to a specific threshold (N), or not build them at all (False).
-    - Parameter: Timing of construction (resource quantity)
-    - Feature Space: {{resource >= N, False}}, where 5 <= N <= 10
+  2. **Barracks Feature** determines when to build barracks. You can construct barracks when resources are greater than or equal to a specific threshold (N), or not build them at all (False).
+    - Parameter: Timing of construction (resource quantity trigger) or not building (False)
+    - Feature Space: {{resource >= N, False}}, where 5 <= N <= 10.
 
   3. **Military Feature** outlines the strategy for combining different unit types used for attack or defense, specifying which units to produce.
     - Parameter: Combination of unit types, including Worker, Heavy, Light, Ranged.
@@ -39,53 +36,23 @@ STRATEGY_SPACE: |
   - Feature Space: {{True, False}}  # {{Aggressive, Defensive}}
 
   5. **Attack Feature** define the target priority during an attack if the Aggressiveness Feature is set to True, focusing the military on attacking specific enemy unit types.
-    - Parameter: Priority attack target, including Worker, Heavy, Light, Ranged, Base, Barracks.
-    - Feature Space: {{Ranged > Worker, Base > Barracks > Worker, ...}}
+    - Parameter: Priority attack target
+    - Feature Space: {{Building, Unit}}  # {{Attack Buildings, Attack Units (including Workers, Heavy, Light, Ranged)}}
   
-  6. **Defense Feature** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
-    - Parameter: Defense area, defined by left upper corner and right lower corner coordinates
-    - Feature Space: (x1, y1), (x2, y2), e.g. (5, 5), (6, 7)
-
-
-RECOGNIZE_EXAMPLES: |
-  # Example
-  Here is a parameterized strategy example for your reference. You have to output the same format as the example, without any extra content:
-  (START OF EXAMPLE)
-  - Economic Feature: 2
-  - Barracks Feature: resource >= 7
-  - Military Feature: Ranged and Worker
-  - Aggression Feature: True
-  - Attack Feature: Ranged > Worker
-  - Defense Feature: None
-  (END OF EXAMPLE)
+  6. **Defense Feature** specifies the distance of the defense perimeter from the base, indicating where military units are deployed if the Aggressive feature is set to False.
+    - Parameter: Distance from base
+    - Feature Space: {{1, 2, 3, 4}}  # {{Close, Medium, Far, Very Far}}, you should output the integer value of the distance.
 
 EXAMPLES: |
   # Example
   Here is a parameterized strategy example for your reference. You have to output the same format as the example:
-  (START OF EXAMPLE)
   ## Strategy
   - Economic Feature: 2
   - Barracks Feature: resource >= 7
   - Military Feature: Ranged and Worker
   - Aggression Feature: True
-  - Attack Feature: Ranged > Worker
+  - Attack Feature: Building
   - Defense Feature: None
-
-  ## Description
-  You should:
-  - Allocate two workers for mineral harvesting to support ongoing economic growth.
-  - Construct barracks once resources exceed 7.
-  - Keep producing your military (ranged and worker) more units is better.
-  - Only produce ranged and worker units.
-  - Prioritize attacking enemy ranged units over workers.
-  - Send both workers and ranged units to attack, rather than just using a single type.
-  - Omit designated defense areas; do not deploy units, just go attacking.
-
-  You should not:
-  - Do not build additional barracks.
-  - Do not produce any other units.
-  - Do not plan deploy task.
-  (END OF EXAMPLE)
 
 basesWorkers8x8_MAP: |
   # Map Initialization Sate
@@ -100,52 +67,18 @@ basesWorkers8x8_MAP: |
   - base(6, 5), action: noop
   - worker(6, 6), action: noop
 
-EXIST_STRATEGY: |
-  # Existing Strategy
-  There are already existing loosed strategies as follows, which you should not repeated:
-  {exist_strategy}
-
 TRAJECTORY: |
   # Trajectory
   Until the current game track summary features is as follows:
   {trajectory}
 
-OPPONENT: |
-  # Opponent Features
-  Based on the past battle history, the characteristics of the opponent are analyzed as follows:
-  {opponent}
-
-RESPONSE_TIPS: |
-  # Tips for Developing a Strategy:
-  1. Analyze the weaknesses of your opponent.
-  2. Consider the relationships and constraints between unit types.
-  3. Ensure that the strategy parameters are valid.
-  4. Evaluate the coherence of the overall strategy composed of different features.
-  5. Do not output any irrelevant content.
-  6. Prioritize attacking the enemy's manpower, i.e. DO NOT ATTACK BUILDING FIRST, if your strategy is aggressive.
-  7. You need to fully consider the strategic rationality of the features combined together. For example, if Military contains heavy, light or ranged units, you need to build barracks early to produce these advanced types of units.
-
-RESPONSE_START: |
-  Now you are in the **player 0** side. Approach your task step by step.
-
-RECOGNIZE_START: |
+START: |
   Now analyze the **player 1** strategy following the example format.
 
-RECOGNIZE_TEMPLATE: |
-  ${RECOGNIZE_INSTRUCTION}
+TEMPLATE: |
+  ${INSTRUCTION}
   ${MANUAL}
   ${STRATEGY_SPACE}
-  ${RECOGNIZE_EXAMPLES}
-  ${TRAJECTORY}
-  ${RECOGNIZE_START}
-
-RESPONSE_TEMPLATE: |
-  ${RESPONSE_INSTRUCTION}
-  ${MANUAL}
-  ${STRATEGY_SPACE}
-  ${basesWorkers8x8_MAP}
-  ${OPPONENT}
-  ${EXIST_STRATEGY}
   ${EXAMPLES}
-  ${RESPONSE_TIPS}
-  ${RESPONSE_START}
+  ${TRAJECTORY}
+  ${START}

@@ -36,14 +36,12 @@ STRATEGY_SPACE: |
   - Feature Space: {{True, False}}  # {{Aggressive, Defensive}}
 
   5. **Attack Feature** define the target priority during an attack if the Aggressiveness Feature is set to True, focusing the military on attacking specific enemy unit types.
-    - Parameter: Priority attack target, including Worker, Heavy, Light, Ranged, Base, Barracks.
-    - Feature Space: {{Ranged > Worker, Base > Barracks > Worker, ...}}
+    - Parameter: Priority attack target
+    - Feature Space: {{Building, Unit}}  # {{Attack Buildings, Attack Units (including Workers, Heavy, Light, Ranged)}}
   
-  6. **Defense Feature** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
-    - Parameter: Defense area, defined by top left and bottom right coordinates
-    - Feature Space: {{(x1, y1), (x2, y2)}}
-  
-  You need to fully consider the strategic rationality of the features combined together. For example, if Military contains heavy, light or ranged units, you need to build barracks early to produce these advanced types of units.
+  6. **Defense Feature** specifies the distance of the defense perimeter from the base, indicating where military units are deployed if the Aggressive feature is set to False.
+    - Parameter: Distance from base
+    - Feature Space: {{1, 2, 3, 4}}  # {{Close, Medium, Far, Very Far}}
 
 EXAMPLES: |
   # Example
@@ -54,7 +52,7 @@ EXAMPLES: |
   - Barracks Feature: resource >= 7
   - Military Feature: Ranged and Worker
   - Aggression Feature: True
-  - Attack Feature: Ranged > Worker
+  - Attack Feature: Building
   - Defense Feature: None
 
   ## Description
@@ -63,14 +61,13 @@ EXAMPLES: |
   - Construct barracks once resources exceed 7.
   - Keep producing your military (ranged and worker) more units is better.
   - Only produce ranged and worker units.
-  - Prioritize attacking enemy ranged units over workers.
-  - Send both workers and ranged units to attack, rather than just using a single type.
-  - Omit designated defense areas; do not deploy units, just go attacking.
+  - Prioritize attacking enemy buildings over units.
+  - Send both workers and ranged units to attack, rather than just using a single type, cause you Military Feature is Ranged and Worker.
+  - Omit designated defense areas, cause you Defense Feature is None.
 
   You should not:
-  - Do not build additional barracks.
-  - Do not produce any other units.
-  - Do not plan deploy task.
+  - Do not produce any other types of units except the specified type.
+  - Do not plan deploy task, just go attacking.
   (END OF EXAMPLE)
 
   (START OF EXAMPLE)
@@ -80,21 +77,21 @@ EXAMPLES: |
   - Military Feature: Ranged and Worker
   - Aggression Feature: False
   - Attack Feature: None
-  - Defense Feature: (3, 1), (3, 4)
+  - Defense Feature: 2
 
   ## Description
   You should:
-  - Allocate two workers for mineral harvesting to support ongoing economic growth.
-  - Construct barracks once resources exceed 6.
-  - Keep producing your military (ranged and worker) more units is better.
-  - Only produce ranged and worker units.
-  - Deploy both workers and ranged units to defense areas, rather than just using a single type.
-  - Deploy the military to the area between the upper left corner (3,1) and the lower right corner (3,4).
-
+  - Allocate two workers for mineral harvesting to sustain economic development.
+  - Construct barracks as soon as you gather 6 resources to enable the production of ranged and worker units.
+  - Focus on producing only ranged and worker units.
+  - Since the Aggression Feature is set to False, prioritize defense rather than attacking.
+  - Deploy your defense at a medium distance (distance = 2) from the base, allowing a perimeter of protection around your position.
+  - Hold ground with your military units, using them to defend rather than pursue enemy units or buildings.
+  
   You should not:
-  - Do not build additional barracks.
-  - Do not produce any other units.
-  - Do not active attack in the early stage.
+  - Do not produce any unit types other than the specified ranged and worker units.
+  - Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.
+  - Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).
   (END OF EXAMPLE)
 
 basesWorkers8x8_MAP: |

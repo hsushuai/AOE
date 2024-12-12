@@ -55,7 +55,7 @@ class RecordVideo(gym.Wrapper):
             self.render()
             self.video_recorder.capture_frame()
             if dones[0]:
-                    self.close_video_recorder()
+                self.close_video_recorder()
 
         elif self._video_enabled():
             self.start_video_recorder()

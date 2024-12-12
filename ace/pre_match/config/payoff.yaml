@@ -1,5 +1,5 @@
 model:
-  input_dim: 214
+  input_dim: 24
   hidden_dim: 64
   output_dim: 2
 training:

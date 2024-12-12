@@ -6,7 +6,6 @@ import random
 from ace.strategy import Strategy
 
 from sklearn.linear_model import SGDClassifier
-from sklearn.naive_bayes import ComplementNB
 from sklearn.ensemble import VotingClassifier
 from lightgbm import LGBMClassifier
 import scikitplot as skplt
@@ -18,7 +17,6 @@ import yaml
 import torch.nn as nn
 import torch
 from torch.utils.data import DataLoader, TensorDataset
-import torch.optim as optim
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 
@@ -32,15 +30,15 @@ def prepare_data(runs_dir = "runs/pre_match_runs", augment=True):
         idx_strategy = run_name.split("_")[0]
         idx_opponent = run_name.split("_")[1]
         strategy_dir = "ace/data/train"
-        strategy = Strategy.load_from_json(f"{strategy_dir}/strategies/strategy_{idx_strategy}.json")
-        opponent = Strategy.load_from_json(f"{strategy_dir}/opponents/strategy_{idx_opponent}.json")
+        strategy = Strategy.load_from_json(f"{strategy_dir}/strategy_{idx_strategy}.json")
+        opponent = Strategy.load_from_json(f"{strategy_dir}/strategy_{idx_opponent}.json")
         with open(f"{runs_dir}/{run_name}/metric.json") as f:
             metric = json.load(f)
         win_loss = metric["win_loss"]
         raw = pd.DataFrame({
             "id": [run_name],
-            "strategy": [strategy.one_hot_feats.tolist()],
-            "opponent": [opponent.one_hot_feats.tolist()],
+            "strategy": [strategy.feats.tolist()],
+            "opponent": [opponent.feats.tolist()],
             "win_loss": [win_loss[0]]
         })
         df = pd.concat([df, raw])
@@ -48,8 +46,8 @@ def prepare_data(runs_dir = "runs/pre_match_runs", augment=True):
         if augment:
             aug_df = pd.DataFrame({
                 "id": [f"{idx_opponent}_{idx_strategy}"],
-                "strategy": [opponent.one_hot_feats.tolist()],
-                "opponent": [strategy.one_hot_feats.tolist()],
+                "strategy": [opponent.feats.tolist()],
+                "opponent": [strategy.feats.tolist()],
                 "win_loss": [win_loss[1]]
             })
             if idx_strategy not in strategy_space:
@@ -57,8 +55,8 @@ def prepare_data(runs_dir = "runs/pre_match_runs", augment=True):
                     aug_df,
                     pd.DataFrame({
                         "id": [f"{idx_strategy}_{idx_strategy}"],
-                        "strategy": [strategy.one_hot_feats.tolist()],
-                        "opponent": [strategy.one_hot_feats.tolist()],
+                        "strategy": [strategy.feats.tolist()],
+                        "opponent": [strategy.feats.tolist()],
                         "win_loss": [0]
                     })
                 ])
@@ -68,8 +66,8 @@ def prepare_data(runs_dir = "runs/pre_match_runs", augment=True):
                     aug_df,
                     pd.DataFrame({
                         "id": [f"{idx_opponent}_{idx_opponent}"],
-                        "strategy": [opponent.one_hot_feats.tolist()],
-                        "opponent": [opponent.one_hot_feats.tolist()],
+                        "strategy": [opponent.feats.tolist()],
+                        "opponent": [opponent.feats.tolist()],
                         "win_loss": [0]
                     })
                 ])
