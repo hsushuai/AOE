@@ -7,12 +7,12 @@ env:
 
 agents:
   - model: Qwen2.5-72B-Instruct
-    temperature: 0
+    temperature: 1
     max_tokens: 8192
   - model: Qwen2.5-72B-Instruct
-    temperature: 0
+    temperature: 1
     max_tokens: 8192
     prompt: few-shot-w-strategy
-    strategy: ace/data/opponent/opponent_strategy_1.json
+    strategy: ace/data/opponents/strategy_1.json
 
-episodes: 5
+episodes: 1

@@ -1,9 +1,11 @@
 import argparse
 from omegaconf import OmegaConf
 import os
+import json
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
 from ace.agent  import Planner, AceAgent
 from skill_rts.agents import bot_agent
+from skill_rts import logger
 import time
 
 
@@ -53,6 +55,7 @@ def main():
     
     runs_dir = f"runs/in_match_runs/{opponent_name}"
     os.makedirs(runs_dir, exist_ok=True)
+    logger.set_level(logger.DEBUG)
     
     # Run the episodes
     for episode in range(cfg.episodes):
@@ -64,12 +67,20 @@ def main():
         )
         env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env, run_dir=run_dir)
         start_time = time.time()
-        payoffs, trajectory = env.run()
+        try:
+            payoffs, trajectory = env.run()
+        except Exception as e:
+            print(f"Error in episode {episode}: {e}")
+            env.close()
+            continue
         metric = env.metric
 
         # Save the results
+        OmegaConf.save(cfg, f"{run_dir}/config.yaml")
         trajectory.to_json(f"{run_dir}/traj.json")
         metric.to_json(f"{run_dir}/metric.json")
+        with open(f"{run_dir}/plans.json", "w") as f:
+            json.dump(env.plans, f, indent=4)
         print(f"Match {episode} | Opponent {opponent_name} |  Payoffs: {payoffs} | Runtime: {(time.time() - start_time) / 60:.2f}min, {env.time}steps")
 
 

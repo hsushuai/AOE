@@ -10,7 +10,6 @@ from ace.traj_feat import TrajectoryFeature
 from ace.pre_match.payoff_net import PayoffNet
 import pandas as pd
 import numpy as np
-import random
 import json
 import torch
 
@@ -59,7 +58,7 @@ class Planner(Agent):
         self.map_name = map_name
         self.player_id = player_id
         self.prompt_template = self._get_prompt_template()
-        self.strategy = strategy
+        self._get_strategy(strategy)
     
     def _get_prompt_template(self) -> str:
         return {
@@ -90,22 +89,24 @@ class Planner(Agent):
         elif self.prompt == "few-shot":
             return self.prompt_template.format(observation=self.obs, player_id=self.player_id, examples=self._get_shot())
         elif self.prompt == "few-shot-w-strategy":
-            return self.prompt_template.format(observation=self.obs, player_id=self.player_id, examples=self._get_shot(), strategy=self._get_strategy())
+            return self.prompt_template.format(observation=self.obs, player_id=self.player_id, examples=self._get_shot(), strategy=self.strategy)
     
     def _get_shot(self):
         with open(f"ace/configs/templates/example_{self.map_name}.yaml") as f:
             return yaml.safe_load(f)["EXAMPLES"][self.player_id]
     
-    def _get_strategy(self):
-        if isinstance(self.strategy, Strategy):
-            return str(self.strategy)
-        elif isinstance(self.strategy, str):
-            if os.path.isfile(self.strategy):
-                with open(self.strategy) as f:
-                    strategy = yaml.safe_load(f)
-                return strategy["strategy"] + strategy["description"]
-            return self.strategy
-        return ""
+    def _get_strategy(self, strategy):
+        if isinstance(strategy, Strategy):
+            self.strategy = str(strategy)
+        elif isinstance(strategy, str):
+            if os.path.isfile(strategy):
+                with open(strategy) as f:
+                    strategy = json.load(f)
+                self.strategy = strategy["strategy"] + strategy["description"]
+            else:
+                self.strategy = strategy
+        else:
+            self.strategy = ""
 
 
 class Recognizer(Agent):
@@ -118,8 +119,16 @@ class Recognizer(Agent):
     
     def step(self, traj: str, *args, **kwargs) -> Strategy:
         prompt = self.prompt_template.format(trajectory=traj)
-        response = self.client(prompt)
-        return Strategy(response, "")
+        while True:
+            try:
+                response = self.client(prompt)
+                strategy = Strategy(response, "")
+                strategy.encode()  # check if the strategy is valid
+                logger.info(f"Recognizer response:\n{response}")
+                return strategy
+            except Exception:
+                logger.error("Recognizer error, retrying...")
+        raise ValueError("Recognizer failed to generate a valid strategy")
 
 
 class AceAgent(Agent):
@@ -134,20 +143,21 @@ class AceAgent(Agent):
         self.payoff_net = None
         # initialized meta strategy is the highest average payoff strategy
         self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategies/strategy_35.json")
+        self.strategy = self.meta_strategy.to_string()
     
     def step(self, obs: str, traj: Trajectory | None):
         if traj:
             abs_traj = TrajectoryFeature(traj).to_string()
             opponent = self.recognizer.step(abs_traj)
             idx = self.match_strategy(opponent)
-            if idx:
+            if idx:  # seen opponent
                 logger.debug(f"Matched strategy: {idx}")
-                strategy = self.response4seen(idx)
-            else:
+                self.strategy = self.response4seen(idx)
+            else:  # unseen opponent
                 logger.debug(f"Unseen opponent:\n{opponent}")
                 strategy, win_rate = self.response4unseen(opponent)
-                strategy = strategy if win_rate >= 0.8 else self.meta_strategy
-            self.planner.strategy = strategy
+                self.strategy = strategy if win_rate >= 0.8 else self.meta_strategy.to_string()
+            self.planner.strategy = self.strategy
         else:
             self.planner.strategy = self.meta_strategy
         return self.planner.step(obs)

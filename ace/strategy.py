@@ -263,6 +263,9 @@ class Strategy:
     
     def __str__(self):
         return self.strategy + self.description
+    
+    def to_string(self):
+        return self.strategy + self.description
 
 
 if __name__ == "__main__":

@@ -43,13 +43,13 @@ STRATEGY_SPACE: |
     - Feature Space: {{Ranged > Worker, Base > Barracks > Worker, ...}}
   
   6. **Defense Feature** outline critical defense areas if the Aggressiveness Feature is set to False, specifying where military units are deployed.
-    - Parameter: Defense area, defined by top left and bottom right coordinates
-    - Feature Space: {{(x1, y1), (x2, y2)}}, e.g. (5, 5), (6, 7)
+    - Parameter: Defense area, defined by left upper corner and right lower corner coordinates
+    - Feature Space: (x1, y1), (x2, y2), e.g. (5, 5), (6, 7)
 
 
 RECOGNIZE_EXAMPLES: |
   # Example
-  Here is a parameterized strategy example for your reference. You have to output the same format as the example:
+  Here is a parameterized strategy example for your reference. You have to output the same format as the example, without any extra content:
   (START OF EXAMPLE)
   - Economic Feature: 2
   - Barracks Feature: resource >= 7

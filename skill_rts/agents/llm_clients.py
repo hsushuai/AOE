@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from skill_rts import logger
+from openai import OpenAI
+from zhipuai import ZhipuAI
+import os
 
 class LLM(ABC):
     """Base class for LLM"""
@@ -27,9 +30,6 @@ class LLM(ABC):
 
 class Qwen(LLM):
     def __init__(self, model, temperature, max_tokens):
-        from openai import OpenAI
-        import os
-
         super().__init__(model, temperature, max_tokens)
         if "qwen" in model:  # deploy on localhost
             self.client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
@@ -49,8 +49,6 @@ class Qwen(LLM):
 
 class GLM(LLM):
     def __init__(self, model, temperature, max_tokens):
-        from zhipuai import ZhipuAI
-
         super().__init__(model, temperature, max_tokens)
         self.client = ZhipuAI()
     
@@ -62,6 +60,7 @@ class GLM(LLM):
             max_tokens=self.max_tokens
         )
         return response.choices[0].message.content
+
 
 class WebChatGPT(LLM):
     """Using the web version of ChatGPT, need MANUALLY copy the output"""
@@ -79,7 +78,22 @@ class WebChatGPT(LLM):
         return "\n".join(response)
 
 
+class Llama(LLM):
+    def __init__(self, model, temperature, max_tokens):
+        super().__init__(model, temperature, max_tokens)
+        self.client = OpenAI(base_url="http://172.18.36.59:11434/v1", api_key="ollama")
+    
+    def call(self, prompt: str) -> str:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=self.temperature,
+            max_tokens=self.max_tokens
+        )
+        return response.choices[0].message.content
+
+
 if __name__ == "__main__":
     # llm = GLM("glm-4-flash", 0, 1024)
-    llm = Qwen("qwen2.5:72b-instruct-q4_K_M", 0, 1024)
+    llm = Llama("llama3.3:70b", 0, 8192)
     print(llm("who are you"))

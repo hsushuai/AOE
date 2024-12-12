@@ -24,7 +24,7 @@ class Reviewer:
         self.analyze_strategy_space(traj_feat_str)
         self.reflect_meta_strategy()
         self.reflect_planner(strategy, plan, traj)
-
+    
     def analyze_strategy_space(self, traj_feat_str):
         strategy = self.recognizer.step(traj_feat_str)
         self.opponent_strategy_space.add(Strategy(strategy, ""))

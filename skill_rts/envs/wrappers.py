@@ -6,7 +6,6 @@ from skill_rts.game.trajectory import Trajectory
 from skill_rts.envs.record_video import RecordVideo
 from skill_rts.agents import bot_agent
 from skill_rts import logger
-from ace.traj_feat import TrajectoryFeature
 import gym
 import os
 import numpy as np
@@ -104,7 +103,7 @@ class MicroRTSLLMEnv(gym.Env):
         
         self.agents = agents
         for agent in agents:
-            if agent not in bot_agent.ALL_AIS:
+            if agent not in bot_agent.ALL_AIS.values():
                 self.num_players += 1  # llm agent
                 self.llm_agents.append(agent)
             else:  # java bot
@@ -134,16 +133,18 @@ class MicroRTSLLMEnv(gym.Env):
 
         # initialize players
         self.players = []
+        self.plans = []
         for player_id in range(self.num_players):
             self.players.append(Player(player_id, GameState(raw_info[player_id]["player_obs"])))
     
     def step_run(self):
         actions = []
         logger.info((f"{'-'*20} step-{self.time} {'-'*20}"))
-        
+
         for player in self.players:
             if self.time % self.interval == 0:
                 tasks = self.llm_agents[player.id].step(player.obs.to_string(), self.get_traj())
+                self._record_plan(player, tasks)
                 player.set_tasks(tasks)
             ac = player.step()
             actions.append(ac)
@@ -157,6 +158,17 @@ class MicroRTSLLMEnv(gym.Env):
         
         self.game_over = done[0]
         self.time += 1
+    
+    def _record_plan(self, player, tasks):
+        if len(self.plans) <= self.time / self.interval:
+            d = {
+                "time": self.time,
+                "players": [{"id": player.id, "obs": player.obs.to_string(), "strategy": self.agents[player.id].strategy, "plan": tasks}]
+            }
+            self.plans.append(d)
+        else:
+            d = {"id": player.id, "obs": player.obs.to_string(), "strategy": self.agents[player.id].strategy, "plan": tasks}
+            self.plans[int(self.time / self.interval)]["players"].append(d)
     
     def step(self, actions: np.ndarray):
         """Step the environment.
