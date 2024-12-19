@@ -1,12 +1,12 @@
 {
     "id": 48,
-    "economic": 1,
-    "barracks": 5.0,
-    "military": "Heavy and Worker",
+    "economic": 2,
+    "barracks": 6.0,
+    "military": "Ranged and Heavy",
     "aggression": true,
     "attack": "Building",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 5\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate a single worker for mineral harvesting to support ongoing economic growth.\n- Construct barracks as soon as you gather 5 resources to enable the production of heavy and worker units.\n- Focus on producing heavy and worker units to build a balanced attack force.\n- Prioritize attacking enemy buildings over units to disrupt their economy and infrastructure.\n- Send both workers and heavy units to attack, rather than just using a single type, cause your Military Feature is Heavy and Worker.\n- Omit designated defense areas, as your Defense Feature is None, focusing primarily on offensive actions.\n\nYou should not:\n- Do not produce any other types of units except the specified heavy and worker units.\n- Do not plan deploy tasks, just go attacking.\n- Avoid defending your base as the strategy is aggressive and focuses on offensive operations.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged and Heavy\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 6.\n- Focus on producing both ranged and heavy units. More units will provide a stronger offensive capability.\n- Prioritize attacking enemy buildings over units to disrupt the enemy's economy and production capabilities.\n- Send both ranged and heavy units to attack, as your Military Feature includes both unit types.\n- Omit designated defense areas, as your Defense Feature is set to None. Focus on aggressive play to overwhelm the enemy.\n\nYou should not:\n- Do not produce any other types of units except the specified types (ranged and heavy).\n- Do not plan defensive deployments, as the focus is on aggressive play.\n- Avoid being too passive; keep the pressure on the enemy by continuously attacking buildings.",
     "map": "basesWorkers8x8"
 }

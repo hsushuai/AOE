@@ -1,0 +1,12 @@
+{
+    "id": 43,
+    "economic": 2,
+    "barracks": 9.0,
+    "military": "Light and Ranged",
+    "aggression": true,
+    "attack": "Building",
+    "defense": null,
+    "strategy": "## Strategy\nEconomic Feature: 2\nBarracks Feature: resource >= 9\nMilitary Feature: Light and Ranged\nAggression Feature: True\nAttack Feature: Building\nDefense Feature: None\n",
+    "description": "",
+    "map": "basesWorkers8x8"
+}

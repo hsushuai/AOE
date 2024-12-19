@@ -1,12 +1,12 @@
 {
     "id": 24,
-    "economic": 2,
-    "barracks": 5.0,
-    "military": "Ranged and Heavy and Worker",
+    "economic": 1,
+    "barracks": 8.0,
+    "military": "Light and Heavy",
     "aggression": true,
-    "attack": "Building",
+    "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Ranged and Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support the rapid production of units and structures.\n- Construct barracks as soon as you gather 5 resources, enabling the production of ranged and heavy units, in addition to workers.\n- Focus on producing a mix of ranged, heavy, and worker units to create a versatile and powerful military force.\n- Prioritize attacking enemy buildings over units to disrupt the opponent's economic and military capabilities.\n- Send both ranged and heavy units to attack, along with workers for additional support, to maximize offensive impact.\n- Omit designated defense areas, as the strategy is aggressive and focused on attacking rather than defending.\n\nYou should not:\n- Do not produce any other types of units except the specified ranged, heavy, and worker units.\n- Do not plan defend tasks; your focus should be on offensive operations and taking the fight to the enemy.\n- Avoid holding back your units for defense; use them to actively engage and destroy enemy structures and units.",
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 8\n- Military Feature: Light and Heavy\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support the economy.\n- Construct a barracks once resources exceed 8.\n- Focus on producing a mix of Light and Heavy units, as your Military Feature requires these units.\n- Be aggressive and prioritize attacking enemy units, including Workers, Light, Heavy, and Ranged units.\n- Send both Light and Heavy units to attack, leveraging the strengths of each unit type for a balanced assault.\n- Concentrate on taking out enemy units to disrupt their economic and military capabilities.\n- Omit designated defense areas, as the Defense Feature is set to None, focusing solely on offensive operations.\n\nYou should not:\n- Do not produce any other types of units except Light and Heavy units.\n- Do not wait to build a large army before attacking; instead, use available units to maintain constant pressure on the enemy.\n- Avoid building a barracks if you do not have enough resources; focus on building and using the worker to gather more resources to meet the requirement.\n- Do not prioritize attacking buildings over units, as your Attack Feature is set to prioritize Units.",
     "map": "basesWorkers8x8"
 }

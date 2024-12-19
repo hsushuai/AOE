@@ -1,0 +1,401 @@
+index,economic,barracks,military,aggression,attack,defense,strategy,description
+1,2,7.0,Heavy and Ranged,False,,3.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 7
+Military Feature: Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+2,1,9.0,Worker and Heavy and Ranged,False,,1.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 9
+Military Feature: Worker and Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+3,1,7.0,Ranged,True,Building,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Ranged
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+4,1,10.0,Heavy and Light and Ranged,False,,1.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 10
+Military Feature: Heavy and Light and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+5,2,5.0,Heavy and Ranged,False,,3.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 5
+Military Feature: Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+6,1,7.0,Worker and Light,False,,1.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Worker and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+7,1,10.0,Worker and Heavy,True,Building,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 10
+Military Feature: Worker and Heavy
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+8,1,7.0,Worker and Ranged,False,,4.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Worker and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+9,1,10.0,Heavy and Ranged,False,,2.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 10
+Military Feature: Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 2
+",
+10,2,9.0,Worker and Heavy,True,Unit,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 9
+Military Feature: Worker and Heavy
+Aggression Feature: True
+Attack Feature: Unit
+Defense Feature: None
+",
+11,2,10.0,Heavy and Light and Ranged,False,,1.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 10
+Military Feature: Heavy and Light and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+12,1,8.0,Light,False,,3.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 8
+Military Feature: Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+13,1,7.0,Light,False,,1.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+14,2,7.0,Worker and Light and Ranged,False,,4.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 7
+Military Feature: Worker and Light and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+15,1,6.0,Heavy and Light and Ranged,True,Unit,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 6
+Military Feature: Heavy and Light and Ranged
+Aggression Feature: True
+Attack Feature: Unit
+Defense Feature: None
+",
+16,1,7.0,Worker and Light and Ranged,False,,3.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Worker and Light and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+17,1,7.0,Worker and Light,True,Unit,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Worker and Light
+Aggression Feature: True
+Attack Feature: Unit
+Defense Feature: None
+",
+18,2,9.0,Worker and Ranged,False,,3.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 9
+Military Feature: Worker and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+19,1,7.0,Worker and Light and Ranged,True,Unit,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Worker and Light and Ranged
+Aggression Feature: True
+Attack Feature: Unit
+Defense Feature: None
+",
+20,2,9.0,Worker and Light,False,,4.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 9
+Military Feature: Worker and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+21,1,8.0,Worker and Heavy and Ranged,False,,2.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 8
+Military Feature: Worker and Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 2
+",
+22,1,9.0,Worker and Heavy and Ranged,False,,4.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 9
+Military Feature: Worker and Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+23,2,7.0,Light and Ranged,False,,2.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 7
+Military Feature: Light and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 2
+",
+24,2,9.0,Ranged,True,Building,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 9
+Military Feature: Ranged
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+25,2,10.0,Worker and Light and Ranged,False,,4.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 10
+Military Feature: Worker and Light and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+26,1,10.0,Worker and Heavy and Light,False,,4.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 10
+Military Feature: Worker and Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+27,1,7.0,Worker and Heavy,True,Unit,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Worker and Heavy
+Aggression Feature: True
+Attack Feature: Unit
+Defense Feature: None
+",
+28,1,5.0,Ranged,False,,2.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 5
+Military Feature: Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 2
+",
+29,1,5.0,Worker and Heavy and Ranged,False,,3.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 5
+Military Feature: Worker and Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+30,2,False,Worker,True,Building,,"## Strategy
+Economic Feature: 2
+Barracks Feature: False
+Military Feature: Worker
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+31,1,6.0,Heavy and Light,False,,4.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 6
+Military Feature: Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+32,2,7.0,Heavy and Light,True,Unit,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 7
+Military Feature: Heavy and Light
+Aggression Feature: True
+Attack Feature: Unit
+Defense Feature: None
+",
+33,1,5.0,Worker and Light and Ranged,True,Building,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 5
+Military Feature: Worker and Light and Ranged
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+34,2,8.0,Light,True,Building,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 8
+Military Feature: Light
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+35,1,10.0,Light and Ranged,True,Building,,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 10
+Military Feature: Light and Ranged
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+36,2,9.0,Worker and Heavy and Light,False,,3.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 9
+Military Feature: Worker and Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+37,2,5.0,Worker and Heavy and Light,False,,1.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 5
+Military Feature: Worker and Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+38,2,10.0,Heavy,True,Building,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 10
+Military Feature: Heavy
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+39,2,6.0,Worker and Heavy and Light and Ranged,False,,3.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 6
+Military Feature: Worker and Heavy and Light and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 3
+",
+40,1,10.0,Heavy,False,,2.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 10
+Military Feature: Heavy
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 2
+",
+41,1,6.0,Worker and Heavy and Light,False,,4.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 6
+Military Feature: Worker and Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+42,2,8.0,Heavy and Light,False,,1.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 8
+Military Feature: Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+43,2,9.0,Light and Ranged,True,Building,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 9
+Military Feature: Light and Ranged
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+44,2,9.0,Heavy and Light,False,,1.0,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 9
+Military Feature: Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 1
+",
+45,1,7.0,Heavy,False,,4.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 7
+Military Feature: Heavy
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",
+46,2,7.0,Worker and Heavy,True,Unit,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 7
+Military Feature: Worker and Heavy
+Aggression Feature: True
+Attack Feature: Unit
+Defense Feature: None
+",
+47,1,False,Worker,False,,2.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: False
+Military Feature: Worker
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 2
+",
+48,1,8.0,Heavy and Ranged,False,,2.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 8
+Military Feature: Heavy and Ranged
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 2
+",
+49,2,10.0,Worker and Heavy,True,Building,,"## Strategy
+Economic Feature: 2
+Barracks Feature: resource >= 10
+Military Feature: Worker and Heavy
+Aggression Feature: True
+Attack Feature: Building
+Defense Feature: None
+",
+50,1,10.0,Heavy and Light,False,,4.0,"## Strategy
+Economic Feature: 1
+Barracks Feature: resource >= 10
+Military Feature: Heavy and Light
+Aggression Feature: False
+Attack Feature: None
+Defense Feature: 4
+",

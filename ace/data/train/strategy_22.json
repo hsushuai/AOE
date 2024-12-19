@@ -1,12 +1,12 @@
 {
     "id": 22,
     "economic": 1,
-    "barracks": 10.0,
-    "military": "Heavy and Worker",
-    "aggression": false,
-    "attack": null,
-    "defense": 4,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 10\n- Military Feature: Heavy and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 4\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support the economy. Although this limits your resource intake, it allows for a more focused approach.\n- Construct a barracks when you accumulate 10 resources. This will enable the production of heavy and worker units.\n- Focus on producing heavy and worker units exclusively. Heavy units provide strong offensive and defensive capabilities, while workers can help with resource gathering and minor defensive tasks.\n- Since the Aggression Feature is set to False, prioritize defense over attack. Your strategy is to hold your ground and protect your base and resources.\n- Deploy your defense at a very far distance (distance = 4) from your base. This creates a buffer zone that can help intercept and delay enemy advances.\n- Use heavy units to form the core of your defensive perimeter, supported by workers for auxiliary tasks.\n\nYou should not:\n- Do not produce any other unit types except heavy and worker units.\n- Do not initiate attacks or prioritize offensive operations, as your strategy is defensive.\n- Avoid placing your defense too close to the base, as the ideal perimeter is very far (distance = 4) to provide a buffer zone.",
+    "barracks": 6.0,
+    "military": "Ranged",
+    "aggression": true,
+    "attack": "Building",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct barracks once resources exceed 6.\n- Focus on producing only ranged units. The more units, the better, to maximize your offensive capabilities.\n- Prioritize attacking enemy buildings over units, as this can disrupt their economy and resource generation.\n- Send all your ranged units to attack, leveraging their ranged attack to engage from a safe distance.\n- Omit designated defense areas, as your strategy is focused on aggressive play.\n\nYou should not:\n- Do not produce any other types of units except ranged units.\n- Do not plan for a defensive strategy, as the focus is on continuous and aggressive attacks.\n- Avoid holding back units for defense; use them all to apply pressure on the enemy.",
     "map": "basesWorkers8x8"
 }

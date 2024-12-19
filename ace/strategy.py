@@ -108,7 +108,7 @@ class Strategy:
     def decode(cls, feats: np.ndarray) -> "Strategy":
         """Decode features to strategy"""
         economic = 1 if feats[0] == 1 else 2
-        barracks = f"resource >= {False if feats[2] == 0 else int(feats[3] * 5 + 5)}"
+        barracks = f"resource >= {int(feats[3] * 5 + 5)}" if feats[2] == 1 else False
         military = map(lambda i: cls.IDX2UNIT[i].capitalize(), np.where(feats[4 : 8] == 1)[0])
         military = " and ".join(military)
         aggression = True if feats[8] == 1 else False
@@ -116,7 +116,7 @@ class Strategy:
             attack = "Building" if feats[9] == 1 else "Unit"
             defense = None
         else:
-            defense = feats[11]
+            defense = int(feats[11] * cls._map_size[0])
             attack = None
 
         strategy = "## Strategy\n"
@@ -180,12 +180,13 @@ class Strategy:
         import itertools
         
         economic_space = [[1, 0], [0 ,1]]  # 2
-        barracks_space = [[1, i / 5] for i in range(6)] + [[0, 0]]  # 7
+        barracks_space = [[1, i / 5] for i in range(6)]  # 6 + 1 ([0, 0])
         military_space = [
             [1 if i in feats else 0 for i in range(4)]
             for i in range(1, 5)
             for feats in itertools.combinations(range(4), i)
         ]  # C(4, 1) + C(4, 2) + C(4, 3) + C(4, 4) = 15
+        military_space.remove([1, 0, 0, 0])
         attack_space = [[1, 0], [0, 1]]  # 2
         defense_space = [[i / Strategy._map_size[0]] for i in range(1, 5)]  # 4
 
@@ -193,9 +194,9 @@ class Strategy:
         feat_space = list(
             itertools.product(
                 economic_space,
-                barracks_space,
-                military_space,
-                [[1]],
+                [[0, 0]],
+                [[1, 0, 0, 0]],  # worker rush
+                [[1]],  # aggressive
                 attack_space,
                 [[0]],
             )
@@ -203,10 +204,28 @@ class Strategy:
             itertools.product(
                 economic_space,
                 barracks_space,
-                military_space,
-                [[0]],
+                military_space,  # advanced military
+                [[1]],  # aggressive
+                attack_space,
+                [[0]]
+            )
+        ) + list(
+            itertools.product(
+                economic_space,
+                [[0, 0]],
+                [[1, 0, 0, 0]],  # worker rush
+                [[0]],  # defensive
                 [[0, 0]],
                 defense_space,
+            )
+        ) + list(
+            itertools.product(
+                economic_space,
+                barracks_space,
+                military_space,  # advanced military
+                [[0]],
+                [[0, 0]],
+                defense_space
             )
         )
         feat_space = [np.hstack(feats) for feats in feat_space]
@@ -226,8 +245,8 @@ class Strategy:
 if __name__ == "__main__":
     feat_space = Strategy.feat_space()
     print(feat_space.shape)
-    print(feat_space[0])
-    strategy = Strategy.decode(feat_space[0])
+    print(feat_space[-1])
+    strategy = Strategy.decode(feat_space[-1])
     print(strategy.strategy)
     strategy = Strategy(strategy.strategy, "")
     print(strategy.feats)

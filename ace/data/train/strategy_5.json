@@ -1,12 +1,12 @@
 {
     "id": 5,
     "economic": 2,
-    "barracks": 5.0,
+    "barracks": 6.0,
     "military": "Light and Worker",
-    "aggression": false,
-    "attack": null,
-    "defense": 2,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 2\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to ensure a steady income of resources.\n- Construct barracks once resources exceed 5, enabling the production of light and worker units.\n- Focus on producing only light and worker units to build a balanced and versatile military force.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking.\n- Deploy your defense at a medium distance (distance = 2) from the base, providing a reasonable buffer zone to protect your position.\n- Use light units for their speed and mobility to scout and quickly respond to threats.\n- Use workers to support defensive positions and assist light units in holding ground.\n\nYou should not:\n- Do not produce any unit types other than the specified light and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).",
+    "aggression": true,
+    "attack": "Unit",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Light and Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 6.\n- Focus on producing a combination of Light and Worker units. More units are better.\n- Prioritize attacking enemy units over buildings.\n- Send both workers and light units to attack, leveraging the mobility and damage output of light units while using workers for additional support.\n- Omit designated defense areas, as the Defense Feature is set to None.\n\nYou should not:\n- Do not produce any other types of units except the specified Light and Worker units.\n- Do not prioritize defending a specific perimeter area or deploying defensive units, as the strategy is focused on aggression.\n- Avoid building too many workers beyond the initial two, as the focus is on military units to maintain pressure on the opponent.",
     "map": "basesWorkers8x8"
 }

@@ -1,12 +1,12 @@
 {
     "id": 26,
     "economic": 1,
-    "barracks": 6.0,
-    "military": "Ranged and Worker",
+    "barracks": 9.0,
+    "military": "Ranged and Light",
     "aggression": true,
-    "attack": "Building",
+    "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate a single worker for mineral harvesting to gradually build up your resources.\n- Construct a barracks once you gather 6 resources, which will enable the production of ranged and worker units.\n- Focus on producing a combination of ranged and worker units. Prioritize the production of ranged units for their attack capabilities and worker units for resource gathering and flexible support roles.\n- Given the Aggression Feature is set to True, prioritize attacking enemy buildings over units to disrupt their economy and limit their ability to produce threats.\n- Use both types of units (ranged and worker) in your offensive operations. Ranged units will provide damage from a distance, while workers can help in basic attacks and provide additional resources through harvesting captured or neutral mineral fields.\n- Do not establish a dedicated defensive perimeter, as the strategy is geared towards aggressive play, focusing on proactive attacks rather than holding ground.\n\nYou should not:\n- Do not produce any other types of units, such as Heavy or Light units.\n- Avoid setting up a defensive perimeter, as the focus is on offense.\n- Refrain from building more than one worker for initial resource gathering, as the strategy aims to build up resources more slowly but steadily.",
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 9\n- Military Feature: Ranged and Light\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic growth.\n- Construct a barracks once resources exceed 9.\n- Focus on producing a combination of Ranged and Light units for your military.\n- Prioritize attacking enemy units over buildings.\n- Send both Ranged and Light units to attack, leveraging the strengths of both unit types.\n- Do not plan for a defensive perimeter, focus on offensive operations.\n\nYou should not:\n- Do not produce any other types of units except Ranged and Light units.\n- Do not initiate attacks until you have a sufficient number of Ranged and Light units.\n- Avoid producing Heavy units, as they are not part of your military strategy.\n- Do not build a defensive perimeter, as your strategy is aggressive and focuses on attacking.",
     "map": "basesWorkers8x8"
 }

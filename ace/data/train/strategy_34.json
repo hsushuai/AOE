@@ -1,12 +1,12 @@
 {
     "id": 34,
-    "economic": 1,
-    "barracks": 9.0,
-    "military": "Heavy and Worker",
+    "economic": 2,
+    "barracks": 7.0,
+    "military": "Ranged and Light and Worker",
     "aggression": true,
-    "attack": "Building",
+    "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 9\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support economic growth.\n- Construct barracks once resources exceed 9.\n- Focus on producing heavy and worker units exclusively.\n- Prioritize attacking enemy buildings over units.\n- Send both heavy and worker units to attack, leveraging the heavy units' superior damage and the workers' support and resource gathering capabilities.\n- Do not plan for a designated defense area, as the strategy is aggressive and focuses on offense.\n\nYou should not:\n- Do not produce any other types of units except heavy and worker units.\n- Do not delay the construction of the barracks once the resource threshold is met.\n- Do not hold back from attacking when the opportunity arises, as the strategy is aggressive.\n- Avoid placing a defensive perimeter, as the focus is on assaulting the enemy's structures.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 7\n- Military Feature: Ranged and Light and Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 7.\n- Keep producing a mixed force of military units (ranged, light, and worker). Prioritize this composition for a balanced attack and utility.\n- Focus on producing these units as soon as possible, as more units will increase your chances of winning.\n- Prioritize attacking enemy units over buildings. The combination of ranged and light units will help in taking down both enemy units and structures effectively.\n- Send your units to actively engage the enemy, using the ranged units to attack from a distance and the light units to tackle closer threats.\n- Omit designated defense areas, as the Defense Feature is set to None. Focus on constant pressure and offensive maneuvers.\n\nYou should not:\n- Do not produce any other types of units except the specified types (ranged, light, and worker).\n- Do not establish a specific defense perimeter, as the strategy is geared towards aggression.\n- Avoid over-focusing on building defenses, as the strategy is to maintain a constant offensive stance.",
     "map": "basesWorkers8x8"
 }

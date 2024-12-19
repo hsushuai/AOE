@@ -1,12 +1,12 @@
 {
     "id": 49,
     "economic": 1,
-    "barracks": 7.0,
+    "barracks": 9.0,
     "military": "Heavy and Worker",
     "aggression": true,
     "attack": "Building",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support your economic growth.\n- Build a barracks once you have gathered 7 resources.\n- Focus on producing Heavy units and Workers. The Heavy units provide substantial damage to enemy buildings, while Workers can support the economy and assist in attacks.\n- Since the Aggression Feature is set to True, prioritize aggressive play. Focus on attacking enemy buildings to disrupt their economy and production capabilities.\n- Send both Heavy units and Workers to attack enemy structures. The Heavy units will deal significant damage, while the Workers can provide additional damage and help in overwhelming enemy defenses.\n- Do not plan a defensive perimeter, as the strategy is focused on offensive operations.\n\nYou should not:\n- Do not produce any other types of units except Heavy and Worker.\n- Do not build additional barracks or focus on a defensive strategy.\n- Avoid sending units to defend your base; instead, use them to attack enemy buildings and units.\n- Do not hesitate to engage the enemy early and often, as the strategy is designed for aggressive play.",
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 9\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support economic growth.\n- Construct barracks once resources exceed 9.\n- Keep producing a combination of heavy and worker units.\n- Prioritize producing heavy and worker units, as they are part of your military feature.\n- Focus on aggressive play by attacking enemy buildings over units.\n- Send both heavy and worker units to attack, leveraging the higher damage output of heavy units and the versatility of workers.\n- Omit designated defense areas, as the Defense Feature is set to None.\n\nYou should not:\n- Do not produce any other types of units except heavy and workers.\n- Do not plan for defensive positions; focus solely on attacking enemy buildings.\n- Avoid delaying the construction of barracks past the specified resource threshold (resource >= 9) to ensure timely production of heavy units.",
     "map": "basesWorkers8x8"
 }

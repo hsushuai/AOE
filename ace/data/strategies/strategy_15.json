@@ -1,12 +1,12 @@
 {
     "id": 15,
     "economic": 1,
-    "barracks": 7.0,
+    "barracks": 6.0,
     "military": "Light and Worker",
     "aggression": false,
     "attack": null,
     "defense": 3,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain a steady resource flow.\n- Construct a barracks once resources exceed 7 to enable the production of light and worker units.\n- Focus on producing only light and worker units.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking.\n- Deploy your defense at a far distance (distance = 3) from the base, allowing a buffer zone that can delay enemy advances.\n- Use light units for their speed and maneuverability to patrol and defend, while workers support by repairing or reinforcing defense as needed.\n- Hold your ground with your military units, focusing on maintaining a defensive perimeter to protect your base and resources.\n\nYou should not:\n- Do not produce any unit types other than the specified light and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3) to create a strategic buffer.",
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 6\n- Military Feature: Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct barracks once resources exceed 6. This will allow you to diversify your military units by adding Light units to your force alongside Workers.\n- Focus on producing a combination of Light and Worker units. Light units provide a balance between mobility and attack power, while Workers help with resource collection and can also participate in defense.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking in the early stage (0~200 time steps).\n- Deploy your defense at a far distance (distance = 3) from the base, allowing a broader perimeter of protection around your position.\n\nYou should not:\n- Do not produce any unit types other than Light and Worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense in the early stage.\n- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3) to maximize the area of control and provide early warnings against enemy advances.",
     "map": "basesWorkers8x8"
 }

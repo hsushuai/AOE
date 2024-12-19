@@ -1,12 +1,12 @@
 {
     "id": 35,
-    "economic": 2,
-    "barracks": 5.0,
-    "military": "Ranged",
+    "economic": 1,
+    "barracks": 10.0,
+    "military": "Light and Heavy and Worker",
     "aggression": true,
     "attack": "Building",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Ranged\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to ensure a steady flow of resources.\n- Construct a barracks as soon as you accumulate 5 resources to start producing military units.\n- Focus on producing only ranged units, as they provide a balance of cost and range for attacking.\n- Adopt an aggressive strategy, prioritizing the destruction of enemy buildings to cripple their economy and production capabilities.\n- Send your ranged units to attack enemy buildings, especially their base and barracks, to disrupt their operations.\n- Utilize the ranged units' ability to attack from a distance to keep them safe from close-combat units.\n\nYou should not:\n- Do not produce any other unit types except the specified ranged units.\n- Do not set up a specific defense perimeter, as the Aggression Feature is set to True, and the focus is on offensive actions.\n- Avoid defending passively and instead focus on proactive attacks to gain the upper hand in the game.",
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 10\n- Military Feature: Light and Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 10.\n- Keep producing a mix of light, heavy, and worker units. More units are better.\n- Prioritize the production of light and heavy units, as they provide a balanced attack and defense capability.\n- Prioritize attacking enemy buildings over units, as the Attack Feature is set to Building.\n- Send all units, including workers, to attack, rather than just using a single type, as your Military Feature includes Light, Heavy, and Worker.\n- Omit designated defense areas, as the Defense Feature is set to None, focusing on aggressive play.\n\nYou should not:\n- Do not produce any other types of units except the specified types (Light, Heavy, Worker).\n- Do not plan a defensive perimeter, as the strategy is focused on aggression.\n- Avoid building barracks prematurely; wait until resources exceed 10 to ensure a steady flow of military units.",
     "map": "basesWorkers8x8"
 }

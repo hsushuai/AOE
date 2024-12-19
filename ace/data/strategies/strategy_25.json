@@ -1,12 +1,12 @@
 {
     "id": 25,
     "economic": 2,
-    "barracks": 7.0,
-    "military": "Ranged and Light and Worker",
+    "barracks": 6.0,
+    "military": "Ranged and Light",
     "aggression": true,
     "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 7\n- Military Feature: Ranged and Light and Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 7 to enable the production of ranged, light, and worker units.\n- Prioritize the production of ranged and light units for their offensive capabilities, while maintaining a steady flow of worker units to support resource gathering and occasional attacks.\n- Focus on an aggressive playstyle, using your units to actively pursue and attack enemy units, particularly focusing on eliminating enemy worker units to disrupt their economy.\n- Send both ranged and light units to attack, with workers following to assist or harass as needed.\n- Omit designated defense areas, as the strategy is primarily focused on offensive operations.\n\nYou should not:\n- Do not produce any other types of units except the specified ranged, light, and worker units.\n- Do not plan for a defensive perimeter, as the strategy is aggression-focused.\n- Avoid hesitating to engage the enemy, even if it means sacrificing some of your units, to maintain pressure and control over the map.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged and Light\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support the economy, ensuring a steady resource flow.\n- Construct barracks once resources exceed 6, which will allow you to start producing military units.\n- Focus on producing a combination of ranged and light units. These units provide a balanced approach to both ranged and melee combat.\n- Prioritize attacking enemy units, particularly targeting their workers and combat units to weaken their economic and military capabilities.\n- Send both ranged and light units to attack, leveraging the ranged units' ability to strike from a distance and the light units' speed and maneuverability.\n- Omit designated defense areas, as the focus is on an aggressive playstyle that aims to constantly pressure the opponent.\n\nYou should not:\n- Do not produce any other types of units except ranged and light units.\n- Do not build a defensive perimeter or focus on holding ground, as the strategy is designed for aggressive play.\n- Avoid targeting enemy buildings initially; focus on eliminating enemy units to disrupt their operations.",
     "map": "basesWorkers8x8"
 }

@@ -46,7 +46,7 @@ class PathPlanner:
 
         while queue:
             pos, dist, first_dir = queue.popleft()
-            neighbors = self.get_neighbors(pos, True) if dist == 0 else self.get_neighbors(pos, False)
+            neighbors = self.get_neighbors(pos)
             for dir_name, neighbor in neighbors:
                 if neighbor == tg_location:
                     if first_dir is None:

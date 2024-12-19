@@ -1,12 +1,12 @@
 {
     "id": 3,
-    "economic": 1,
-    "barracks": 9.0,
-    "military": "Worker",
+    "economic": 2,
+    "barracks": 5.0,
+    "military": "Ranged and Light and Worker",
     "aggression": true,
     "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 9\n- Military Feature: Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support economic growth. This slower economic development will allow for a more focused and efficient use of resources.\n- Construct barracks once resources exceed 9. This delayed construction will ensure that you have enough resources to build and maintain your military units effectively.\n- Focus on producing only worker units. Despite the lack of advanced military units, a large number of workers can be effective in swarming and overwhelming the enemy, especially in early-game confrontations.\n- Prioritize attacking enemy units over buildings. Since workers are relatively weak, focusing on taking out the enemy's units will reduce the threat to your base and resources.\n- Send all your workers to attack the enemy units. This will maximize your offensive power, even though each worker only deals 1 damage.\n\nYou should not:\n- Do not produce any other types of units except workers.\n- Do not delay attacking until you have a large number of units; instead, maintain a continuous pressure on the enemy with whatever workers you have.\n- Avoid building a defense perimeter, as the strategy is focused on offensive play.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Ranged and Light and Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 5.\n- Produce a mix of ranged, light, and worker units. More units will enhance your offensive capabilities.\n- Prioritize attacking enemy units over buildings to weaken their economic and military capabilities.\n- Send a balanced mix of units to attack, with ranged units providing long-range support and light units dealing quick, high-damage strikes.\n- Focus on aggressive play, continuously pressuring the enemy and preventing them from establishing a strong economic or military presence.\n\nYou should not:\n- Do not produce any other types of units except the specified types (ranged, light, and worker).\n- Do not prioritize defense or establish a defense perimeter, as the strategy is aggressive and focuses on continuous offensive actions.\n- Avoid holding back your units; always keep them engaged in attacks or on the move to pressure the enemy.",
     "map": "basesWorkers8x8"
 }

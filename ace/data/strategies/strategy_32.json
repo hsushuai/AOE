@@ -1,12 +1,12 @@
 {
     "id": 32,
-    "economic": 1,
-    "barracks": 8.0,
-    "military": "Light and Worker",
+    "economic": 2,
+    "barracks": 6.0,
+    "military": "Heavy and Ranged",
     "aggression": true,
-    "attack": "Building",
+    "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 8\n- Military Feature: Light and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support economic needs.\n- Construct barracks once resources exceed 8 to enable the production of light and worker units.\n- Keep producing light and worker units to form a versatile military force.\n- Prioritize attacking enemy buildings over units to disrupt their economy and production capabilities.\n- Send both light and worker units to attack, leveraging the speed and agility of light units to harass and the utility of workers for additional support.\n- Omit designated defense areas, focusing all efforts on offensive maneuvers.\n\nYou should not:\n- Do not produce any unit types other than the specified light and worker units.\n- Do not waste resources on unnecessary defensive structures or units.\n- Avoid engaging in defensive operations, as the strategy is focused on aggression and attacking enemy buildings.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Heavy and Ranged\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 6.\n- Focus on producing heavy and ranged units to build a strong and versatile military force.\n- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings to disrupt their economy and unit production.\n- Use heavy units for close combat and ranged units for supporting from a distance.\n- Send all produced units to attack, combining heavy and ranged units for a balanced offensive strategy.\n- Omit designated defense areas, as the Defense Feature is set to None.\n\nYou should not:\n- Do not produce any unit types other than the specified heavy and ranged units.\n- Do not prioritize the defense of your base or any other location, as the strategy is focused on aggressive play.\n- Avoid initiating defensive operations or setting up defensive perimeters.",
     "map": "basesWorkers8x8"
 }

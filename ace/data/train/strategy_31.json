@@ -1,12 +1,12 @@
 {
     "id": 31,
     "economic": 1,
-    "barracks": 8.0,
-    "military": "Heavy",
-    "aggression": true,
-    "attack": "Unit",
-    "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 8\n- Military Feature: Heavy\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support the economy.\n- Construct a barracks once resources exceed 8 to enable the production of heavy units.\n- Focus on producing heavy units exclusively, as they are robust and can deal significant damage.\n- Since the Aggression Feature is set to True, prioritize aggressive play by targeting enemy units, particularly high-value targets such as workers and other military units.\n- Send your heavy units to attack, leveraging their high damage output to quickly eliminate enemy threats.\n- Omit designated defense areas, as the strategy is focused on offensive operations.\n\nYou should not:\n- Do not produce any other types of units except heavy units.\n- Do not build barracks until resources reach 8.\n- Do not prioritize defensive operations; focus on attacking and minimizing the enemy's ability to counter.\n- Avoid holding ground or deploying units for defense, as the strategy is to press the attack and keep the enemy on the back foot.",
+    "barracks": 9.0,
+    "military": "Light",
+    "aggression": false,
+    "attack": null,
+    "defense": 3,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 9\n- Military Feature: Light\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct barracks once resources exceed 9.\n- Focus on producing only Light units, as they are cheaper and can be produced relatively quickly, providing a balance between cost and damage output.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking in the early stage (0~200 time steps).\n- Deploy your defense at a far distance (distance = 3) from the base, which allows you to control a larger area and protect your resources effectively.\n\nYou should not:\n- Do not produce any unit types other than the specified Light units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense in the early stage.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is far (distance = 3).",
     "map": "basesWorkers8x8"
 }

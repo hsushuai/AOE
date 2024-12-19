@@ -3,10 +3,10 @@
     "economic": 1,
     "barracks": 7.0,
     "military": "Light and Worker",
-    "aggression": true,
-    "attack": "Building",
-    "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Light and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support ongoing economic growth. This strategy relies more on defensive and strategic play rather than rapid resource accumulation.\n- Construct barracks once resources exceed 7. This timing allows for a balanced approach, ensuring you have enough resources to sustain the barracks and subsequent unit production.\n- Focus on producing only light and worker units. Light units provide a good balance between cost and damage, while workers can support both economic and military roles.\n- Prioritize attacking enemy buildings over units. This aggressive strategy aims to dismantle the enemy's infrastructure to cripple their ability to produce more units and resources.\n- Send both light and worker units to attack. Utilize the speed of light units and the versatility of workers to effectively engage and destroy enemy buildings.\n- Omit designated defense areas, as the strategy focuses on aggressive play rather than holding ground.\n\nYou should not:\n- Do not produce any other types of units except the specified light and worker units.\n- Do not plan for a defensive perimeter, as the strategy is centered around offensive actions.\n- Avoid holding back units for defense; the goal is to maximize the pressure on the enemy's base and infrastructure.",
+    "aggression": false,
+    "attack": null,
+    "defense": 2,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 2\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct barracks once resources exceed 7.\n- Produce a combination of Light and Worker units.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking, especially during the early to mid-game stages (0~200 time steps).\n- Deploy your defense at a medium distance (distance = 2) from the base, creating a buffer zone to protect your base and resources.\n- Use Light units for their speed and agility to quickly respond to threats, while Workers provide additional support and a minor threat to the enemy.\n\nYou should not:\n- Do not produce any unit types other than Light and Worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).",
     "map": "basesWorkers8x8"
 }

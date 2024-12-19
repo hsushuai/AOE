@@ -1,12 +1,12 @@
 {
     "id": 19,
-    "economic": 2,
-    "barracks": 5.0,
-    "military": "Ranged and Worker",
-    "aggression": true,
-    "attack": "Building",
-    "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Ranged and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 5 to enable the production of ranged and worker units.\n- Focus on producing a combination of ranged and worker units to balance attack and resource gathering.\n- Prioritize attacking enemy buildings over units to disrupt their economy and production capabilities.\n- Deploy both ranged and worker units to attack, leveraging the ranged units' ability to strike from a distance and the workers' supporting role.\n- Aggressively seek out and destroy enemy structures, especially their base and barracks, to gain an early advantage.\n- Omit designated defense areas, as the strategy is focused on offensive actions.\n\nYou should not:\n- Do not produce any other types of units except the specified ranged and worker units.\n- Do not prioritize defending your base or structures; the focus is on aggressive attacks.\n- Avoid holding back units for defense; use all available units for offensive operations.",
+    "economic": 1,
+    "barracks": 6.0,
+    "military": "Ranged and Light and Worker",
+    "aggression": false,
+    "attack": null,
+    "defense": 3,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged and Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct a barracks once resources exceed 6.\n- Focus on producing a balanced military force consisting of ranged, light, and worker units.\n- Since the Aggression Feature is set to False, prioritize defense over attacking in the early stage.\n- Deploy your defense at a far distance (distance = 3) from the base to create a robust perimeter of protection around your position.\n- Use the ranged units for long-range defense and the light units for quick response and flanking maneuvers.\n- Keep a few worker units to assist in repairing the base and any damaged structures.\n\nYou should not:\n- Do not produce any unit types other than the specified ranged, light, and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is far (distance = 3).\n- Do not neglect the importance of maintaining a steady stream of resources by keeping your worker units actively mining.",
     "map": "basesWorkers8x8"
 }

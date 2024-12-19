@@ -1,12 +1,12 @@
 {
     "id": 40,
     "economic": 1,
-    "barracks": 8.0,
-    "military": "Ranged and Worker",
-    "aggression": false,
-    "attack": null,
-    "defense": 3,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 8\n- Military Feature: Ranged and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support your economic development.\n- Construct barracks once resources reach 8 to enable the production of ranged and worker units.\n- Focus on producing only ranged and worker units.\n- Since the Aggression Feature is set to False, prioritize defense over attacking.\n- Deploy your defense at a far distance (distance = 3) from the base, creating a wider perimeter around your position.\n- Use your military units to defend rather than pursue enemy units or buildings, maintaining a strong defensive stance.\n\nYou should not:\n- Do not produce any unit types other than the specified ranged and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3).",
+    "barracks": 7.0,
+    "military": "Ranged",
+    "aggression": true,
+    "attack": "Unit",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Ranged\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate a single worker for mineral harvesting to support your economic development. This will allow you to focus on building up resources without overextending your workforce.\n- Construct a barracks once your resources reach 7. This will enable you to produce ranged units, which can engage enemies from a safe distance.\n- Prioritize producing only ranged units. Ranged units provide a significant advantage in attacking enemies while maintaining a safe distance, allowing you to control the battlefield more effectively.\n- Adopt an aggressive playstyle by prioritizing attacks on enemy units, particularly workers, light, heavy, and ranged units. This will weaken the enemy's ability to produce more units and resources, giving you a strategic advantage.\n- Focus on sending your ranged units to attack, as they are your primary offensive force. Utilize their ranged attack to engage enemies before they can get close.\n- Omit designated defense areas, as your strategy is geared towards aggression and constant pressure on the enemy.\n\nYou should not:\n- Do not produce any other types of units except the specified ranged units.\n- Do not prioritize attacking enemy buildings over units, as your strategy is to weaken the enemy's military presence first.\n- Avoid building unnecessary structures or units that do not align with your aggressive and ranged-focused strategy.",
     "map": "basesWorkers8x8"
 }

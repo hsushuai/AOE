@@ -1,12 +1,12 @@
 {
     "id": 20,
-    "economic": 2,
+    "economic": 1,
     "barracks": 7.0,
-    "military": "Heavy and Worker",
+    "military": "Ranged",
     "aggression": false,
     "attack": null,
-    "defense": 3,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 7\n- Military Feature: Heavy and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to ensure a steady income of resources.\n- Construct a barracks once you gather 7 resources, enabling the production of heavy and worker units.\n- Focus on producing only heavy and worker units.\n- Since the Aggression Feature is set to False, prioritize defense over attacking.\n- Deploy your defense at a distance of 3 from the base to provide a strong perimeter around your position.\n- Use your heavy units to defend the perimeter and your worker units for support and repairs.\n\nYou should not:\n- Do not produce any other unit types except the specified heavy and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is a distance of 3.",
+    "defense": 4,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Ranged\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 4\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct a barracks once resources exceed 7.\n- Focus on producing only ranged units. Since the Aggression Feature is set to False, prioritize defense over offensive actions.\n- Deploy your defense at a very far distance (distance = 4) from the base to create an outer perimeter to protect your resources and structures.\n- Use the ranged units to defend this perimeter, taking advantage of their ability to attack from a distance.\n\nYou should not:\n- Do not produce any unit types other than the specified ranged units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close to the base, as the ideal perimeter is very far (distance = 4).\n- Ensure that your economic activities are not disrupted by enemy attacks by maintaining a strong and distant defensive line.",
     "map": "basesWorkers8x8"
 }

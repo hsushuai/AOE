@@ -1,12 +1,12 @@
 {
     "id": 33,
     "economic": 2,
-    "barracks": 7.0,
-    "military": "Ranged and Light and Worker",
+    "barracks": 10.0,
+    "military": "Heavy and Light and Worker",
     "aggression": false,
     "attack": null,
-    "defense": 3,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 7\n- Military Feature: Ranged and Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to ensure a steady flow of resources.\n- Construct barracks once resources exceed 7 to start producing a variety of military units.\n- Focus on producing a mix of ranged, light, and worker units to balance offensive and defensive capabilities.\n- Since the Aggression Feature is set to False, prioritize defense over attacking.\n- Deploy your defense at a far distance (distance = 3) from the base to create a robust perimeter around your position.\n- Use your military units to hold ground and protect your base, rather than actively seeking out and engaging enemy units or buildings.\n\nYou should not:\n- Do not produce any unit types other than the specified ranged, light, and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 3).",
+    "defense": 4,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 10\n- Military Feature: Heavy and Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 4\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 10. This threshold is higher than typical strategies, ensuring a solid economic base before military expansion.\n- Focus on producing a diverse military force consisting of heavy, light, and worker units. This combination provides a balanced approach to both offense and defense.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking in the early and mid stages of the game.\n- Deploy your defense at a very far distance (distance = 4) from the base, creating a strong perimeter that can protect against potential attacks while maintaining a strategic position for counter-attacks if necessary.\n- Regularly assess the resource levels and adjust your production to ensure a steady supply of units.\n\nYou should not:\n- Do not produce any unit types other than the specified worker, heavy, and light units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close to the base, as the ideal perimeter is far (distance = 4) to provide a buffer zone.\n- Ensure that your resource management is efficient to support the higher cost of heavy and light units.",
     "map": "basesWorkers8x8"
 }

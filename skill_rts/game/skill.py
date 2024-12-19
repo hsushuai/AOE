@@ -130,11 +130,11 @@ class DeployUnit(Skill):
     name = "[Deploy Unit]"
 
     def execute_step(self):
-        return self.move_to_loc(self.params)
+        return self.move_to_loc(self.params[1])
     
     def assign_to_unit(self):
         unit_type, tgt_loc = self.params
-        if self.obs[tgt_loc] is None:
+        if self.obs[tgt_loc] is None or self.obs[tgt_loc].owner == self.player.id:
             candidates = [unit.location for unit in self.player if unit.type == unit_type and unit.task is None]
             if candidates:
                 nearest_loc = self.path_planner.get_manhattan_nearest(tgt_loc, candidates)
@@ -278,7 +278,9 @@ class HarvestMineral(Skill):
             base_loc = self.path_planner.get_manhattan_nearest(self.unit.location, bases_locs)
             if manhattan_distance(base_loc, self.unit.location) == 1:
                 return self.unit.deliver(get_direction(self.unit.location, base_loc))
-            return self.move_to_loc(base_loc)
+            tgt_locs = [loc for direction, loc in self.path_planner.get_neighbors(base_loc)]
+            tgt_loc = self.path_planner.get_path_nearest(self.unit.location, tgt_locs)
+            return self.move_to_loc(tgt_loc)
     
     def assign_to_unit(self):
         mine_loc = self.params

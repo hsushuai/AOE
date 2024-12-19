@@ -4,8 +4,8 @@ import json
 import matplotlib.pyplot as plt
 
 
-def extract_pre_match_runs_results():
-    runs_dir = "runs/pre_match_runs"
+def extract_offline_runs_results():
+    runs_dir = "runs/offline_runs"
     df = pd.DataFrame()
     runs = os.listdir(runs_dir)
     runs = sorted(runs, key=lambda x: int(x.split("_")[0]) * 100 + int(x.split("_")[1]))
@@ -36,7 +36,7 @@ def extract_pre_match_runs_results():
     df.to_csv("ace/data/payoff/payoff_matrix.csv")
 
 
-def extract_in_match_results(runs_dir, output):
+def extract_online_results(runs_dir, output):
     match_results = {}
     for opponent in os.listdir(runs_dir):
         win_loss = [0, 0, 0]  # [win, draw, loss]
@@ -89,5 +89,5 @@ def extract_in_match_results(runs_dir, output):
 
 
 if __name__ == "__main__":
-    extract_in_match_results("runs/temperature1_vs_bots", "results/ace_vs_bots_temp1.pdf")
+    extract_online_results("runs/temperature1_vs_bots", "results/ace_vs_bots_temp1.pdf")
             

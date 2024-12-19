@@ -25,7 +25,7 @@ class MicroRTSLLMEnv(gym.Env):
         record_video: bool=False,
         run_dir: str="runs",
         display: bool=False,
-        payoff_weights: list=[0.1, 0.1],  # alpha, beta
+        payoff_weights: list=[1, 0 ,0],  # alpha, beta, gamma
         theme: str="white"
     ):
         """
@@ -166,6 +166,24 @@ class MicroRTSLLMEnv(gym.Env):
         self.game_over = done[0]
         self.time += 1
     
+    def _is_draw(self):
+        for i in range(self.num_players):
+            if self._can_win(i):
+                return False
+        return True
+        
+    def _can_win(self, player_id):
+        units = ["worker", "heavy", "light", "ranged"]
+        player = self.players[player_id]
+        for unit in units:  # check if any unit is alive
+            if len(getattr(player, unit)) > 0:
+                return True
+        if len(player.base) > 0 and player.resource > 1:
+            return True  # check if can produce a worker
+        if len(player.barracks) > 0 and player.resource > 2:
+            return True  # check if can produce an advanced unit
+        return False
+
     def _record_plan(self, player, tasks):
         if len(self.plans) <= self.time / self.interval:
             d = {
@@ -202,17 +220,21 @@ class MicroRTSLLMEnv(gym.Env):
         """
         self.prepare_run()
         while not self.game_over:
+            if self._is_draw():  # check if no one can win
+                self.game_over = True
+                self._raw_payoffs = [0, 0]
+                break
             self.step_run()
         self.end_run()
         return self.payoffs, self.get_traj()
     
     def _calculate_payoffs(self):
         """Calculate the payoffs for each player."""
-        # 10 * win_loss + alpha * damage_dealt + beta * resource_balance
-        alpha, beta = self.payoff_weights
+        # alpha * win_loss + beta * damage_dealt + gamma * resource_balance
+        alpha, beta, gamma = self.payoff_weights
 
         resource_balance = list(map(lambda x, y: x - y, self.metric.resource_spent, self.metric.resource_harvested))
-        self.payoffs = list(map(lambda x, y, z: round(10 * x + alpha * y + beta * z, 2), self.metric.win_loss, self.metric.damage_dealt, resource_balance))
+        self.payoffs = list(map(lambda x, y, z: round(alpha * x + beta * y + gamma * z, 2), self.metric.win_loss, self.metric.damage_dealt, resource_balance))
     
     def _set_winner(self):
         """Set the winner of the game."""

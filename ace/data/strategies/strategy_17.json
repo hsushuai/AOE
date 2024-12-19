@@ -1,12 +1,12 @@
 {
     "id": 17,
-    "economic": 2,
+    "economic": 1,
     "barracks": 7.0,
-    "military": "Heavy and Worker",
+    "military": "Light",
     "aggression": true,
-    "attack": "Building",
+    "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 7\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct a barracks once resources exceed 7 to enable the production of heavy and worker units.\n- Focus on producing only heavy and worker units, with a priority on heavy units due to their higher damage output.\n- Since the Aggression Feature is set to True, prioritize attacking enemy buildings over units. This approach helps to dismantle your opponent's infrastructure and limit their resource gathering and unit production capabilities.\n- Send both worker and heavy units to attack, leveraging the synergy between the heavy units' high damage and the worker units' mobility and support roles.\n- Do not plan for a designated defense area, as the strategy is offensive and focuses on taking down the enemy base and structures.\n\nYou should not:\n- Do not produce any other types of units except heavy and worker units.\n- Do not waste resources on building defenses or holding ground; the primary focus is on offensive operations.\n- Avoid engaging in prolonged skirmishes with enemy units if they do not threaten your primary objective of attacking buildings.",
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Light\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct barracks once resources exceed 7.\n- Focus on producing only Light units.\n- Prioritize attacking enemy units over buildings.\n- Send Light units to attack, rather than just using a single type, as your Military Feature is Light.\n- Omit designated defense areas, as your Defense Feature is None.\n\nYou should not:\n- Do not produce any other types of units except the specified Light units.\n- Do not initiate defensive strategies or deploy defensive units, as the strategy leans towards aggression.\n- Avoid constructing any unnecessary buildings or units that do not contribute to the offensive strategy.",
     "map": "basesWorkers8x8"
 }

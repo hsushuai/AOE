@@ -1,12 +1,12 @@
 {
     "id": 50,
     "economic": 2,
-    "barracks": 8.0,
-    "military": "Heavy and Worker",
-    "aggression": true,
-    "attack": "Building",
-    "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 8\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to ensure a steady resource flow.\n- Construct barracks as soon as you gather 8 resources to enable the production of heavy and worker units.\n- Focus on producing heavy and worker units, prioritizing heavy units for their higher damage output.\n- Since the Aggression Feature is set to True, prioritize attacking enemy buildings over units to disrupt the opponent's economy and production capabilities.\n- Send both workers and heavy units to attack, leveraging the combined strength of ranged attacks and melee damage.\n- Do not plan for a designated defense area, as the strategy is focused on aggressive play and constant pressure on the enemy.\n\nYou should not:\n- Do not produce any other types of units except heavy and worker units.\n- Do not prioritize defending or setting up a defense perimeter, as the strategy is to maintain offensive pressure.\n- Avoid holding back your units; always push forward to exploit any weaknesses in the enemy's defense.",
+    "barracks": 9.0,
+    "military": "Heavy and Light and Worker",
+    "aggression": false,
+    "attack": null,
+    "defense": 3,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 9\n- Military Feature: Heavy and Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to maximize resource collection and support the creation of a diverse military.\n- Construct barracks once resources exceed 9 to enable the production of Heavy and Light units.\n- Focus on producing a mix of Heavy, Light, and Worker units. The combination of these units provides both offensive and defensive capabilities.\n- Since the Aggression Feature is set to False, prioritize a defensive stance. In the early stage (0~200 time steps), focus on building up your base and unit strength.\n- Deploy your defense at a moderate distance (distance = 3) from the base. This allows you to create a strong perimeter that can effectively repel enemy attacks while keeping your base protected.\n- Use Worker units to assist in resource collection and support the production of Heavy and Light units.\n\nYou should not:\n- Do not produce any unit types other than the specified (Heavy, Light, and Worker) units.\n- Avoid initiating attacks or offensive operations, as the strategy is defensive.\n- Ensure that the defense perimeter is maintained at a moderate distance (distance = 3) from the base, avoiding placing it too close or too far.\n- Do not neglect resource collection; maintaining a steady flow of resources is crucial for sustaining your defensive strategy.",
     "map": "basesWorkers8x8"
 }

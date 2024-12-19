@@ -1,12 +1,12 @@
 {
     "id": 39,
     "economic": 2,
-    "barracks": false,
-    "military": "Worker",
+    "barracks": 8.0,
+    "military": "Heavy and Ranged and Worker",
     "aggression": false,
     "attack": null,
-    "defense": 2,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: False\n- Military Feature: Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 2\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to sustain economic development.\n- Do not build barracks at any point during the game, as the strategy does not require it.\n- Focus exclusively on producing worker units to build and maintain your base.\n- Since the Aggression Feature is set to False, prioritize defense over attacking.\n- Deploy a defense perimeter at a medium distance (distance = 2) from the base to protect against potential enemy incursions.\n- Use your workers to reinforce and protect your base, ensuring it remains secure.\n\nYou should not:\n- Do not produce any units other than workers.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).",
+    "defense": 1,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 8\n- Military Feature: Heavy and Ranged and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 1\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 8.\n- Focus on producing a balanced military consisting of heavy, ranged, and worker units.\n- Since the Aggression Feature is set to False, prioritize defense rather than initiating attacks.\n- Deploy your defense at a close distance (distance = 1) from the base to create a strong perimeter around your position.\n- Ensure a steady production of heavy units for their high damage and ranged units for their ability to attack from a distance, supported by workers to reinforce and support.\n\nYou should not:\n- Do not produce any unit types other than the specified heavy, ranged, and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too far from the base, as the ideal perimeter is close (distance = 1).\n- Ensure that the barracks is built as soon as resources allow to maintain a steady production of military units.",
     "map": "basesWorkers8x8"
 }

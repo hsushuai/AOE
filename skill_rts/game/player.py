@@ -88,6 +88,10 @@ class TaskManager:
         resource = self.player.resource  # noqa: F841
         kills = {unit_type: len(units) for unit_type, units in self._metric.unit_killed[self.player_id].items()}
         prods = {unit_type: len(units) for unit_type, units in self._metric.unit_produced[self.player_id].items()}
+        for i in range(len(self.player.barracks)):
+            if "[Build Building]" in self.task_list:
+                index = self.task_list.index("[Build Building]")
+                self.completed_tasks.append((self.task_list.pop(index), self.params_list.pop(index)))
         if "[Build Building]" in self.task_list:
             index = self.task_list.index("[Build Building]")
             condition = self.params_list[index][2]
@@ -113,15 +117,18 @@ class TaskManager:
                 for task, params in self.produce_pending:
                     self.task_list.insert(0, task)
                     self.params_list.insert(0, params)
-        for task, params in zip(self.task_list, self.params_list):
+
+        # check if any tasks are completed
+        completed_indices = []
+        for i, task_w_params in enumerate(zip(self.task_list, self.params_list)):
+            task, params = task_w_params
             skill = Player.get_skill(task)
-            if skill is not None and skill.is_completed(kills=kills, prods=prods, obs=self.obs, params=params):
-                self.completed_tasks.append((task, params))
-                self.task_list.remove(task)
-                self.params_list.remove(params)
-    
-    def _pend_produce_task(self):
-        ...
+            if skill and skill.is_completed(kills=kills, prods=prods, obs=self.obs, params=params):
+                completed_indices.append(i)
+        for i in sorted(completed_indices, reverse=True):
+            self.completed_tasks.append((self.task_list[i], self.params_list[i]))
+            self.task_list.pop(i)
+            self.params_list.pop(i)
     
     @property
     def tasks(self):

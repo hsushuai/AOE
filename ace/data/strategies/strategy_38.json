@@ -1,12 +1,12 @@
 {
     "id": 38,
-    "economic": 1,
-    "barracks": 7.0,
-    "military": "Light and Worker",
-    "aggression": true,
-    "attack": "Unit",
-    "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Light and Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support the economy and ensure a steady flow of resources.\n- Construct barracks once resources exceed 7 to enable the production of light and worker units.\n- Focus on producing only light and worker units. Light units will serve as your main combat force, while workers can assist in both economic and military roles.\n- Adopt an aggressive stance by prioritizing attacks on enemy units, including workers, heavy, light, and ranged units.\n- Send both light and worker units to attack, utilizing the speed and agility of light units and the versatility of workers to effectively engage the enemy.\n- Do not plan for a specific defense area, as the strategy is primarily offensive.\n\nYou should not:\n- Do not produce any other types of units except light and worker units.\n- Do not hold back from attacking; the strategy is to be aggressive and focus on taking out enemy units.\n- Avoid building a fixed defense perimeter; instead, use your units to actively seek out and engage the enemy.",
+    "economic": 2,
+    "barracks": 9.0,
+    "military": "Ranged and Heavy",
+    "aggression": false,
+    "attack": null,
+    "defense": 3,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 9\n- Military Feature: Ranged and Heavy\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 9.\n- Keep producing a combination of ranged and heavy units. More units are better for both defense and potential future attacks.\n- Since the Aggression Feature is set to False, prioritize defense over attacking in the early to mid-stage (0~400 time steps).\n- Deploy your defense at a medium to far distance (distance = 3) from the base, allowing a substantial perimeter of protection around your position.\n- Focus on maintaining a strong defensive line to protect your base and resources, ensuring a stable economy and unit production.\n\nYou should not:\n- Do not produce any unit types other than the specified ranged and heavy units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense in the early stage.\n- Avoid placing your defense too close to the base, as the ideal perimeter is medium to far (distance = 3).",
     "map": "basesWorkers8x8"
 }

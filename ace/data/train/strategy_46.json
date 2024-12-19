@@ -1,12 +1,12 @@
 {
     "id": 46,
-    "economic": 1,
-    "barracks": 7.0,
-    "military": "Heavy",
-    "aggression": true,
-    "attack": "Building",
-    "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Heavy\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support ongoing economic growth.\n- Construct a barracks once resources exceed 7.\n- Focus on producing heavy units exclusively.\n- Prioritize attacking enemy buildings over units.\n- Direct all heavy units to attack enemy structures, rather than engaging in defensive maneuvers or holding ground.\n- Do not allocate a specific defense perimeter, as the strategy is aggressive and aims to disrupt the enemy's base and operations.\n\nYou should not:\n- Do not produce any other types of units besides heavy units.\n- Do not engage in defensive strategies or deploy units to specific defense areas.\n- Avoid spreading your forces thin by attacking multiple targets; focus on a single point of attack to maximize damage and disrupt enemy operations.",
+    "economic": 2,
+    "barracks": 8.0,
+    "military": "Heavy and Worker",
+    "aggression": false,
+    "attack": null,
+    "defense": 3,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 8\n- Military Feature: Heavy and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 8.\n- Focus on producing both heavy and worker units for a balanced military force.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking in the early stage (0~400 time steps).\n- Deploy your defense at a far distance (distance = 3) from the base, allowing a wider perimeter of protection around your position.\n\nYou should not:\n- Do not produce any unit types other than the specified heavy and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense in the early stage.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is far (distance = 3).",
     "map": "basesWorkers8x8"
 }

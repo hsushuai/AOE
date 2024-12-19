@@ -1,12 +1,12 @@
 {
     "id": 21,
-    "economic": 2,
+    "economic": 1,
     "barracks": 5.0,
-    "military": "Light and Worker",
-    "aggression": false,
-    "attack": null,
-    "defense": 1,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 1\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support economic growth.\n- Construct a barracks as soon as you gather 5 resources to enable the production of light and worker units.\n- Focus on producing only light and worker units.\n- Since the Aggression Feature is set to False, prioritize defense over attacking.\n- Deploy your defense at a close distance (distance = 1) from the base, ensuring a tight perimeter of protection around your position.\n- Hold ground with your military units, using them to defend rather than pursuing enemy units or buildings.\n\nYou should not:\n- Do not produce any unit types other than the specified light and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too far from the base, as the ideal perimeter is close (distance = 1).",
+    "military": "Heavy and Worker",
+    "aggression": true,
+    "attack": "Building",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 5\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic growth.\n- Construct barracks once resources exceed 5.\n- Focus on producing a combination of heavy and worker units.\n- Prioritize attacking enemy buildings over units to disrupt their economy and production capabilities.\n- Send both heavy and worker units to attack, leveraging the heavy unit's higher damage for building destruction and the worker unit's mobility for exploration and\u9a9a\u6270 (harassment).\n- Do not plan to deploy any defensive positions, as the strategy focuses on aggressive play.\n\nYou should not:\n- Do not produce any units other than heavy and worker units.\n- Avoid initiating attacks on enemy units unless it serves a strategic purpose (e.g., protecting your attacking units or destroying a key building).\n- Do not allocate additional workers for mining beyond the initial one, as the strategy relies on a balanced approach between economic growth and military strength.\n- Avoid building unnecessary structures or units that do not align with the aggressive and building-focused attack strategy.",
     "map": "basesWorkers8x8"
 }

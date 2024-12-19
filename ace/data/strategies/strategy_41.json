@@ -1,12 +1,12 @@
 {
     "id": 41,
-    "economic": 2,
-    "barracks": 6.0,
-    "military": "Heavy and Worker",
+    "economic": 1,
+    "barracks": 5.0,
+    "military": "Ranged and Light",
     "aggression": false,
     "attack": null,
-    "defense": 2,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Heavy and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 2\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to sustain economic development and ensure a steady supply of resources.\n- Construct a barracks as soon as you gather 6 resources to enable the production of heavy and worker units.\n- Focus on producing only heavy and worker units. Heavy units will provide significant attack power, while workers can help with both harvesting and support.\n- Since the Aggression Feature is set to False, prioritize defense rather than initiating aggressive actions.\n- Deploy your defense at a medium distance (distance = 2) from the base. This will allow you to create a balanced perimeter of protection around your position.\n- Utilize heavy units to defend against approaching enemy units and structures, and deploy workers to assist in this defense and to continue resource gathering.\n\nYou should not:\n- Do not produce any unit types other than the specified heavy and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy is defensive.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).",
+    "defense": 1,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 5\n- Military Feature: Ranged and Light\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 1\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct a barracks once resources exceed 5.\n- Focus on producing a balanced military force consisting of ranged and light units.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking in the early stage (0~200 time steps).\n- Deploy your defense at a close distance (distance = 1) from the base, allowing a strong perimeter of protection immediately around your position.\n\nYou should not:\n- Do not produce any unit types other than the specified ranged and light units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense in the early stage.\n- Avoid placing your defense too far from the base, as the ideal perimeter is close (distance = 1).",
     "map": "basesWorkers8x8"
 }

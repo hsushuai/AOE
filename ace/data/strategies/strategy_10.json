@@ -1,12 +1,12 @@
 {
     "id": 10,
     "economic": 2,
-    "barracks": 6.0,
-    "military": "Ranged and Worker",
+    "barracks": 5.0,
+    "military": "Ranged and Heavy",
     "aggression": true,
-    "attack": "Unit",
+    "attack": "Building",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged and Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to ensure a steady flow of resources.\n- Build a barracks once resources reach 6 to enable the production of ranged and worker units.\n- Focus on producing a combination of ranged and worker units to balance attack and support capabilities.\n- Be aggressive and prioritize attacking enemy units (Workers, Heavy, Light, Ranged) over buildings, aiming to weaken the enemy's workforce and military presence.\n- Use both workers and ranged units for attacks, leveraging the ranged units' ability to strike from a distance and the workers for close combat and resource gathering.\n- Do not establish a defensive perimeter, as the strategy is focused on offensive actions.\n\nYou should not:\n- Do not produce any other unit types except the specified ranged and worker units.\n- Do not build defenses or hold ground; focus on offensive maneuvers to keep pressure on the enemy.\n- Avoid targeting enemy buildings initially; instead, focus on eliminating enemy units to gain control of the map.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Ranged and Heavy\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth. This will ensure a steady flow of resources to sustain the production of advanced units.\n- Construct barracks once resources exceed 5. This will allow you to start producing advanced units as soon as possible.\n- Focus on producing a combination of ranged and heavy units. The ranged units will provide long-range support, while the heavy units will deal significant damage in close combat.\n- Prioritize attacking enemy buildings. This strategy aims to disrupt the opponent's base and resource generation early on, putting pressure on their ability to recover.\n- Send both ranged and heavy units to attack, leveraging the strengths of each unit type to maximize your offensive capabilities.\n- Omit designated defense areas, as your strategy is focused on aggressive play.\n\nYou should not:\n- Do not produce any other types of units except the specified ranged and heavy units.\n- Do not delay building barracks once your resource threshold is met, as it is crucial for producing advanced units.\n- Avoid defensive positioning, as your strategy is centered around aggressive play and early offensive actions.",
     "map": "basesWorkers8x8"
 }

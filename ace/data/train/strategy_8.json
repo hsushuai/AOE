@@ -1,12 +1,12 @@
 {
     "id": 8,
     "economic": 1,
-    "barracks": 5.0,
-    "military": "Worker",
+    "barracks": 8.0,
+    "military": "Ranged",
     "aggression": true,
     "attack": "Building",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 5\n- Military Feature: Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development. This single worker will focus on gathering resources efficiently.\n- Construct barracks as soon as you gather 5 resources to enable the production of worker units.\n- Focus on producing only worker units. Since the military strategy is centered around workers, no other units will be produced.\n- Since the Aggression Feature is set to True, prioritize offensive operations over defense.\n- Prioritize attacking enemy buildings over units. This will help weaken the enemy's infrastructure and resource generation.\n- Send your workers to attack the enemy base and structures immediately upon creation, as your Military Feature is set to Worker.\n- Keep a steady stream of workers being produced to maintain pressure on the enemy.\n\nYou should not:\n- Do not produce any other unit types except workers.\n- Do not prioritize defense, as the strategy is aggressive and focuses on attacking enemy buildings.\n- Avoid building any structures other than the barracks, as additional structures are not necessary for this strategy.\n- Do not wait to build up a large force before attacking; instead, send workers to attack as soon as they are available to keep the pressure on the enemy.",
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 8\n- Military Feature: Ranged\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct a barracks once resources exceed 8 to start producing ranged units.\n- Focus on producing ranged units, as they provide long-range attacks, which can be advantageous in both offensive and defensive scenarios.\n- Given the Aggression Feature is set to True, prioritize attacking enemy buildings over units to disrupt their economy and production capabilities.\n- Send your ranged units to attack enemy structures, focusing on their base and any other important buildings.\n- Avoid deploying a dedicated defense perimeter, as the strategy is primarily offensive.\n\nYou should not:\n- Do not allocate more than one worker for harvesting, as this strategy focuses on a balanced economy with a strong offensive capability.\n- Do not produce any other unit types other than the specified ranged units.\n- Do not initiate defensive deployments or prioritize unit attacks over building attacks.\n- Avoid unnecessary defensive measures, as the strategy is designed to be aggressive and maintain pressure on the enemy.",
     "map": "basesWorkers8x8"
 }

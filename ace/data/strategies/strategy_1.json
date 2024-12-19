@@ -1,12 +1,12 @@
 {
     "id": 1,
     "economic": 2,
-    "barracks": false,
-    "military": "Worker",
-    "aggression": false,
-    "attack": null,
-    "defense": 1,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: False\n- Military Feature: Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 1\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to sustain economic development.\n- Since the Barracks Feature is set to False, do not construct any barracks. This allows you to focus solely on maintaining a strong economic base.\n- Focus on producing only Worker units. Workers are low-cost and can be used for basic attacks and resource gathering.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking.\n- Deploy your defense at a close distance (distance = 1) from the base. This will create a tight perimeter of protection around your base.\n- Use your Worker units to defend your base and resources, ensuring that your economic operations are not disrupted.\n\nYou should not:\n- Do not produce any other types of units besides Workers.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too far from the base, as the ideal perimeter is close (distance = 1).",
+    "barracks": 8.0,
+    "military": "Heavy and Worker",
+    "aggression": true,
+    "attack": "Unit",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 8\n- Military Feature: Heavy and Worker\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support the economy and fund the construction of more units and buildings.\n- Construct barracks once resources exceed 8, allowing for the production of Heavy units which are more durable and deal higher damage.\n- Focus on producing Heavy and Worker units. Heavy units will serve as the frontline attackers, while Workers will support by dealing damage and potentially serving as a resource to replace fallen Heavy units.\n- Prioritize attacking enemy units over buildings, especially targeting enemy Workers and other support units to weaken the opponent's economy and military capabilities.\n- Send both Heavy and Worker units to attack, leveraging the high damage and durability of Heavy units and the mobility and resource efficiency of Worker units.\n- Since the Defense Feature is set to None, focus entirely on aggressive maneuvers and avoid setting up a designated defense perimeter.\n\nYou should not:\n- Do not produce any other types of units such as Ranged or Light units, as they are not part of this strategy.\n- Do not waste resources on building unnecessary structures or units that do not contribute to the aggressive approach.\n- Avoid setting up defensive positions, as the strategy is to maintain a constant offensive pressure on the enemy.",
     "map": "basesWorkers8x8"
 }

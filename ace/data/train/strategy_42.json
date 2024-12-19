@@ -1,12 +1,12 @@
 {
     "id": 42,
-    "economic": 1,
+    "economic": 2,
     "barracks": 6.0,
-    "military": "Ranged",
-    "aggression": true,
-    "attack": "Unit",
-    "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to ensure resource generation.\n- Construct barracks once you have gathered 6 resources to enable the production of ranged units.\n- Focus on producing only ranged units, as they provide a good balance of range and cost.\n- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings.\n- Send your ranged units to engage in combat, leveraging their ability to attack from a distance.\n- Omit designated defense areas, as your strategy is focused on offense rather than defense.\n\nYou should not:\n- Do not produce any other unit types except the specified ranged units.\n- Do not plan for defense or hold ground, as your strategy is to actively attack and disrupt the enemy's operations.\n- Avoid unnecessary resource expenditure on other units or structures that do not align with the aggressive playstyle.",
+    "military": "Ranged and Light and Worker",
+    "aggression": false,
+    "attack": null,
+    "defense": 2,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Ranged and Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 2\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support a balanced economic and military growth.\n- Construct barracks once resources exceed 6, ensuring a timely production of diverse units.\n- Focus on producing a combination of ranged, light, and worker units. This mix provides both ranged and melee capabilities, enhancing your defensive and potential offensive flexibility.\n- Since the Aggression Feature is set to False, prioritize defensive positioning and stability. Avoid initiating attacks in the early stages (0~200 time steps) to strengthen your base and unit composition.\n- Deploy your defense at a medium distance (distance = 2) from the base. This will allow you to create a buffer zone that can intercept enemy units before they reach your core structures.\n- Use workers for both harvesting and defensive support, ensuring that your econonomic and military capabilities are maintained.\n\nYou should not:\n- Do not produce any unit types other than the specified (ranged, light, and worker).\n- Avoid initiating attacks or prioritizing offensive operations, as the strategy is defensive.\n- Do not place your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).\n- Refrain from overextending your resources by producing too many units too quickly, as this can leave you vulnerable to resource shortages.",
     "map": "basesWorkers8x8"
 }

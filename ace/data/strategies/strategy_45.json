@@ -1,12 +1,12 @@
 {
     "id": 45,
-    "economic": 1,
-    "barracks": 5.0,
-    "military": "Light and Worker",
+    "economic": 2,
+    "barracks": 10.0,
+    "military": "Heavy and Ranged",
     "aggression": true,
-    "attack": "Building",
+    "attack": "Unit",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 5\n- Military Feature: Light and Worker\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 5.\n- Keep producing your military (light and worker units) more units is better.\n- Only produce light and worker units.\n- Prioritize attacking enemy buildings over units.\n- Send both workers and light units to attack, rather than just using a single type, because your Military Feature is Light and Worker.\n- Omit designated defense areas, as your Defense Feature is None.\n\nYou should not:\n- Do not produce any other types of units except the specified light and worker units.\n- Do not plan defense tasks; focus on attacking.\n- Avoid over-harvesting resources if it means neglecting the construction of barracks and military units.\n\n### Initial Actions\n1. **Worker at (1, 1)**: Move towards the nearest mineral field at (0, 0) to start harvesting resources.\n2. **Base at (1, 2)**: Wait until the worker has collected enough resources (5 or more) to start constructing the barracks.\n\n### Mid-Game Actions\n1. **Once barracks are built**:\n   - Start producing light units and workers.\n   - Allocate one worker to continue mining while the other transitions to military production.\n2. **As soon as you have a small force**:\n   - Send light and worker units to attack the enemy base, focusing on buildings.\n   - Continue to produce more units to reinforce the attack.\n\n### Late-Game Actions\n1. **Maintain a strong offensive**:\n   - Continuously produce light and worker units to replace any losses.\n   - Expand your attack by targeting all enemy buildings to weaken their economic and military capabilities.\n2. **adicional resource management**:\n   - If resources allow, consider building more workers to speed up resource collection, but prioritize military production to maintain pressure on the enemy.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 10\n- Military Feature: Heavy and Ranged\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to quickly accumulate resources.\n- Wait to construct barracks once resources exceed 10 to ensure a solid economic foundation.\n- Focus on producing a combination of Heavy and Ranged units for a balanced offensive force.\n- Prioritize attacking enemy units over buildings to disrupt their economy and unit production.\n- Use both Heavy and Ranged units to apply pressure and establish dominance on the map.\n- Avoid setting up a designated defense area since the strategy is aggressive, focusing on proactive attacks.\n\nYou should not:\n- Do not produce any units other than Heavy and Ranged units.\n- Do not delay building the barracks once resources reach the threshold, as it is crucial for your military strategy.\n- Avoid defensive strategies and static positioning; keep your units moving and attacking.\n- Do not focus on attacking enemy buildings until the enemy units are neutralized.",
     "map": "basesWorkers8x8"
 }

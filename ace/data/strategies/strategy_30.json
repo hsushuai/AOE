@@ -1,12 +1,12 @@
 {
     "id": 30,
-    "economic": 2,
-    "barracks": 9.0,
+    "economic": 1,
+    "barracks": 7.0,
     "military": "Heavy and Worker",
     "aggression": false,
     "attack": null,
-    "defense": 4,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 9\n- Military Feature: Heavy and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 4\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to sustain economic development. This will ensure a steady flow of resources to support both economic and military activities.\n- Construct barracks once resources exceed 9. This timing allows you to have a solid economic base before committing to military production.\n- Focus on producing heavy and worker units. Heavy units are powerful in terms of damage output, making them effective for both defense and any potential offensive actions, while workers can support base functions and mineral harvesting.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking. This means your primary goal is to protect your base and resources.\n- Deploy your defense at a very far distance (distance = 4) from the base. This allows you to create a significant buffer zone, making it harder for the enemy to reach and attack your base directly.\n- Hold ground with your military units, using them to defend rather than pursue enemy units or buildings. Position your heavy units strategically to cover key areas and provide support to workers as needed.\n\nYou should not:\n- Do not produce any unit types other than the specified heavy and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close to the base, as the ideal perimeter is very far (distance = 4).\n- Do not build additional structures or units that are not specified in the strategy.\n- Do not send your units to attack enemy buildings or units unless they pose an immediate threat to your defense.",
+    "defense": 3,
+    "strategy": "## Strategy\n- Economic Feature: 1\n- Barracks Feature: resource >= 7\n- Military Feature: Heavy and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 3\n\n",
+    "description": "## Description\nYou should:\n- Allocate one worker for mineral harvesting to sustain economic development.\n- Construct barracks once resources exceed 7.\n- Focus on producing a combination of heavy and worker units.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking in the early stage (0~200 time steps).\n- Deploy your defense at a far distance (distance = 3) from the base, allowing a larger perimeter of protection around your position.\n\nYou should not:\n- Do not produce any unit types other than the specified heavy and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense in the early stage.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is far (distance = 3).",
     "map": "basesWorkers8x8"
 }

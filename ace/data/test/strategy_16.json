@@ -1,12 +1,12 @@
 {
     "id": 16,
     "economic": 2,
-    "barracks": 8.0,
-    "military": "Ranged",
+    "barracks": 5.0,
+    "military": "Light and Ranged",
     "aggression": true,
-    "attack": "Unit",
+    "attack": "Building",
     "defense": null,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 8\n- Military Feature: Ranged\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 8, enabling the production of ranged units.\n- Focus on producing only ranged units for your military.\n- Since the Aggression Feature is set to True, prioritize attacking enemy units over buildings.\n- Send your ranged units to attack, using their ranged attack capability to engage enemies from a safe distance.\n- As the Defense Feature is set to None, do not plan for a defensive perimeter. Instead, focus on aggressive actions to disrupt and overpower the enemy.\n\nYou should not:\n- Do not produce any other types of units except the specified ranged units.\n- Do not build a defensive perimeter or hold ground; the strategy is to be aggressive and proactive in attacks.\n- Avoid unnecessary defensive maneuvers and focus on leveraging the ranged attack to gain an advantage.",
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 5\n- Military Feature: Light and Ranged\n- Aggression Feature: True\n- Attack Feature: Building\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct a barracks once resources exceed 5.\n- Focus on producing a balanced military force of Light and Ranged units.\n- Maintain a steady production of both Light and Ranged units, as these will form the core of your offensive capabilities.\n- Prioritize attacking enemy buildings over units, focusing on disrupting the opponent's economy and production capabilities.\n- Send both Light and Ranged units to attack, leveraging the strengths of each unit type: Light units for their moderate damage and Ranged units for their ability to attack from a distance.\n- Omit designated defense areas, as the strategy is heavily focused on aggressive play.\n\nYou should not:\n- Do not produce any other types of units except Light and Ranged units.\n- Do not plan extensive defensive measures, as the strategy leans towards continuous offensive actions.\n- Avoid building unnecessary structures or units that do not contribute directly to your aggressive strategy.",
     "map": "basesWorkers8x8"
 }

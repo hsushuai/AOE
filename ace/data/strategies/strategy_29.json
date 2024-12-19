@@ -1,12 +1,12 @@
 {
     "id": 29,
     "economic": 2,
-    "barracks": 6.0,
-    "military": "Light and Worker",
-    "aggression": false,
-    "attack": null,
-    "defense": 2,
-    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 6\n- Military Feature: Light and Worker\n- Aggression Feature: False\n- Attack Feature: None\n- Defense Feature: 2\n\n",
-    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to sustain economic development.\n- Construct barracks as soon as you gather 6 resources to enable the production of light and worker units.\n- Focus on producing only light and worker units.\n- Since the Aggression Feature is set to False, prioritize defense rather than attacking.\n- Deploy your defense at a medium distance (distance = 2) from the base, allowing a perimeter of protection around your position.\n- Hold ground with your military units, using them to defend rather than pursue enemy units or buildings.\n\nYou should not:\n- Do not produce any unit types other than the specified light and worker units.\n- Do not initiate attacks or prioritize offensive operations, as the strategy leans towards defense.\n- Avoid placing your defense too close or too far from the base, as the ideal perimeter is medium (distance = 2).",
+    "barracks": 7.0,
+    "military": "Ranged and Light",
+    "aggression": true,
+    "attack": "Unit",
+    "defense": null,
+    "strategy": "## Strategy\n- Economic Feature: 2\n- Barracks Feature: resource >= 7\n- Military Feature: Ranged and Light\n- Aggression Feature: True\n- Attack Feature: Unit\n- Defense Feature: None\n\n",
+    "description": "## Description\nYou should:\n- Allocate two workers for mineral harvesting to support ongoing economic growth.\n- Construct barracks once resources exceed 7.\n- Focus on producing a combination of ranged and light units.\n- Prioritize attacking enemy units over buildings, as the Attack Feature is set to Unit.\n- Send both ranged and light units to attack, ensuring a balanced approach to both ranged and close combat.\n- Do not designate specific defense areas, as the Defense Feature is set to None.\n\nYou should not:\n- Do not produce any other types of units except the specified ranged and light units.\n- Do not plan for defensive deployments, focus on aggressive attacks to dismantle the enemy's forces.\n- Avoid targeting buildings unless the enemy units are already neutralized.",
     "map": "basesWorkers8x8"
 }
