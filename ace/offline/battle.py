@@ -138,5 +138,5 @@ def run():
 
 if __name__ == "__main__":
     # train_test_split()
-    # run()
-    extract_battle_results()
+    run()
+    # extract_battle_results()

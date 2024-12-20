@@ -3,22 +3,27 @@ import pandas as pd
 import numpy as np
 import json
 import random
-from ace.strategy import Strategy
-
-from sklearn.linear_model import SGDClassifier
-from sklearn.ensemble import VotingClassifier
-from lightgbm import LGBMClassifier
-import scikitplot as skplt
-from sklearn.metrics import accuracy_score, log_loss
 import matplotlib.pyplot as plt
-import joblib
-import yaml
-
 import torch.nn as nn
 import torch
-from torch.utils.data import DataLoader, TensorDataset
+import torch.optim as optim
+import torch.nn.functional as F
+from ace.strategy import Strategy
+from torch.utils.data import TensorDataset, DataLoader
 from sklearn.model_selection import train_test_split
-from sklearn.utils.class_weight import compute_class_weight
+import scikitplot as skplt
+
+
+def same_seeds(seed):
+    """Fixed random seed for reproducibility."""
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
 
 
 def prepare_data(runs_dir = "runs/offline_runs", augment=True):
@@ -76,210 +81,177 @@ def prepare_data(runs_dir = "runs/offline_runs", augment=True):
     df.to_csv("ace/data/payoff/payoff_data.csv", index=False)
 
 
-def load_data(file_path="ace/data/payoff/payoff_data.csv"):
-    df = pd.read_csv(file_path)
+def get_loader():
+    # Load the payoff data
+    df = pd.read_csv("ace/data/payoff/payoff_data.csv")
     df["strategy"] = df["strategy"].apply(lambda x: np.array(eval(x)))
     df["opponent"] = df["opponent"].apply(lambda x: np.array(eval(x)))
-    return df
 
-
-def fit_payoff_model():
-    same_seeds(520)
-    OUTPUT_DIM = 2
-    data = load_data()
-    strategy = np.stack(data["strategy"].values)
-    opponent = np.stack(data["opponent"].values)
+    strategy = np.stack(df["strategy"].values)
+    opponent = np.stack(df["opponent"].values)
     X = np.concatenate((strategy, opponent), axis=1)
-    y = data["win_loss"].values + 1  # -1, 0, 1 -> 0, 1, 2 for CrossEntropyLoss which requires label >= 0
-    if OUTPUT_DIM == 2:
-        y[np.where(y < 2)] = 0
-        y[np.where(y == 2)] = 1
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    y = df["win_loss"].values
+    y[np.where(y < 1)] = 0
 
-    sgd_model1 = SGDClassifier(
-        max_iter=8000,
-        tol=1e-4,
-        loss="modified_huber",
-        n_jobs=-1,
-        random_state=42,
-        verbose=10,
-        early_stopping=True,
-        validation_fraction=0.1,
-        class_weight="balanced",
-    )
-    sgd_model2 = SGDClassifier(
-        max_iter=15000,
-        tol=1e-4,
-        loss="modified_huber",
-        n_jobs=-1,
-        random_state=71,
-        verbose=10,
-        early_stopping=True,
-        validation_fraction=0.1,
-        class_weight="balanced",
-    )
-    sgd_model3 = SGDClassifier(
-        max_iter=20000,
-        tol=1e-4,
-        loss="modified_huber",
-        n_jobs=-1,
-        random_state=22,
-        verbose=10,
-        early_stopping=True,
-        validation_fraction=0.1,
-        class_weight="balanced",
-    )
-    params = {
-        "n_iter": 300,
-        "verbose": -1,
-        "learning_rate": 0.005689066836106983,
-        "colsample_bytree": 0.8915976762048253,
-        "colsample_bynode": 0.5942203285139224,
-        "lambda_l1": 7.6277555139102864,
-        "lambda_l2": 6.6591278779517808,
-        "min_data_in_leaf": 156,
-        "max_depth": 11,
-        "max_bin": 813,
-    }
-    lgb = LGBMClassifier(**params)
+    # Convert data to PyTorch tensors and adjust dimensions to (samples, 1, features) to fit 1D CNN
+    X_tensor = torch.tensor(X, dtype=torch.float32).unsqueeze(1)  # (samples, 1, features)
+    y_tensor = torch.tensor(y, dtype=torch.float32)
 
-    ensemble = VotingClassifier(
-        estimators=[
-            ("sgd1", sgd_model1),
-            ("sgd2", sgd_model2),
-            ("sgd3", sgd_model3),
-            ("lgb", lgb),
-        ],
-        weights=[0.15, 0.15, 0.15, 0.55],
-        voting="soft",
-        n_jobs=-1,
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X_tensor, y_tensor, test_size=0.2)
 
-    ensemble.fit(X_train, y_train)
-    joblib.dump(ensemble, "ace/data/payoff/ensemble_model.pkl")
-    loaded_ensemble = joblib.load("ace/data/payoff/ensemble_model.pkl")
-    
-    # test
-    y_pred = loaded_ensemble.predict(X_test)
-    print("Accuracy:", accuracy_score(y_test, y_pred))
+    # Dataset
+    train_set = TensorDataset(X_train, y_train)
+    test_set = TensorDataset(X_test, y_test)
 
-    # plot confusion matrix
-    os.environ["QT_QPA_PLATFORM"] = "offscreen"  # run without GUI
-    skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
-    plt.savefig("results/ml_confusion_matrix.png")
+    # Data loader
+    train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
+    test_loader = DataLoader(test_set, batch_size=32, shuffle=False)
 
-    # plot roc curve
-    y_proba = loaded_ensemble.predict_proba(X_test)
-    print("Log Loss:", log_loss(y_test, y_proba))
-    skplt.metrics.plot_roc(y_test, y_proba)
-    plt.savefig("results/ml_roc_curve.png")
-
-    # skplt.estimators.plot_learning_curve(loaded_ensemble, X, y)
-    # plt.savefig("results/learning_curve.png")
+    return train_loader, test_loader
 
 
 class PayoffNet(nn.Module):
-    def __init__(self, input_dim=24, hidden_dim=64, output_dim=2):
-        super(PayoffNet, self).__init__()
-        self.net = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, output_dim)
-        )
-    
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(24, 256)
+        self.bn_fc1 = nn.BatchNorm1d(256)
+        self.fc2 = nn.Linear(256, 64)
+        self.bn_fc2 = nn.BatchNorm1d(64)
+        self.fc3 = nn.Linear(64, 1)
+        self.dropout = nn.Dropout(p=0.5)
+
     def forward(self, x):
-        return self.net(x)
+        x = x.view(x.size(0), -1)
+        x = F.leaky_relu(self.bn_fc1(self.fc1(x)))
+        x = self.dropout(x)
+        x = F.leaky_relu(self.bn_fc2(self.fc2(x)))
+        x = self.dropout(x)
+        x = self.fc3(x)
+        return torch.sigmoid(x.squeeze(1))
+    
+    @staticmethod
+    def load(filename: str) -> "PayoffNet":
+        model = PayoffNet().to("cuda")
+        model.load_state_dict(torch.load(filename, weights_only=True))
+        model.eval()
+        return model
+    
+    def search_best_response(self, feat_space, opponent_feats) -> tuple[Strategy, float]:
+        # Shuffle the feature space
+        np.random.seed(520)
+        shuffled_space = feat_space[np.random.permutation(feat_space.shape[0])]
+        opponent_feats = np.tile(opponent_feats, (shuffled_space.shape[0], 1))
+        X = torch.tensor(np.hstack([shuffled_space, opponent_feats]), dtype=torch.float32, device="cuda")
+        X = X.unsqueeze(1)
+        with torch.no_grad():
+            win_rate = self(X)
+        max_idx = win_rate.argmax().item()
+        response = Strategy.decode(shuffled_space[max_idx]).strategy
+        return response, win_rate[max_idx].item()
 
 
-def same_seeds(seed):
-    """Fixed random seed for reproducibility."""
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-    torch.manual_seed(seed)
-    np.random.seed(seed)
-    random.seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)
-        torch.cuda.manual_seed_all(seed)
-
-
-def fit_payoff_nn():
-    # Load config
-    with open("ace/configs/payoff.yaml", "r") as f:
-        config = yaml.safe_load(f)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # Prepare data
+def train_model():
     same_seeds(520)
-    data = load_data()
-    strategy = np.stack(data["strategy"].values)
-    opponent = np.stack(data["opponent"].values)
-    X = np.concatenate((strategy, opponent), axis=1)
-    y = data["win_loss"].values
-    y[np.where(y < 1)] = 0
-    X = torch.tensor(X, dtype=torch.float32, device=device)
-    y = torch.tensor(y, dtype=torch.long, device=device)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    ds_train = TensorDataset(X_train, y_train)
-    train_loader = DataLoader(ds_train, batch_size=config["training"]["batch_size"], shuffle=True, drop_last=True)
+    train_loader, test_loader = get_loader()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # Initialize model
-    model = PayoffNet(**config["model"]).to(device)
-    class_weights = compute_class_weight(
-        class_weight="balanced",
-        classes=torch.unique(y).cpu().numpy(),
-        y=y.cpu().numpy()
-    )
-    weights = torch.tensor(class_weights, dtype=torch.float32, device=device)
-    criterion = nn.CrossEntropyLoss(weight=weights)
-    optimizer = torch.optim.Adam(model.parameters(), lr=config["training"]["lr"])
+    model = PayoffNet().to(device)
+    criterion = nn.BCELoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
 
-    # Training loop
-    max_acc = 0
-    best_model = None
-    for epoch in range(config["training"]["epochs"]):
+    max_epochs = 1000
+    train_losses = []
+    train_accuracies = []
+    test_accuracies = []
+    best_acc = 0.0
+    patience = 100
+    patience_counter = 0
+
+    for epoch in range(max_epochs):
         model.train()
-        for X_batch, y_batch in train_loader:
+        running_loss = 0.0
+        correct = 0
+        total = 0
+
+        for inputs, labels in train_loader:
             optimizer.zero_grad()
-            loss = criterion(model(X_batch), y_batch)
+            inputs, labels = inputs.to(device), labels.to(device)
+
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
-        if (epoch + 1) % 10 == 0:
-            model.eval()
-            with torch.no_grad():
-                y_pred = model(X_test)
-                loss = criterion(y_pred, y_test)
-                y_pred_labels = torch.argmax(y_pred, dim=1).cpu().numpy()
-                y_test_labels = y_test.cpu().numpy()
-                accuracy = accuracy_score(y_test_labels, y_pred_labels)
-                if accuracy > max_acc:
-                    max_acc = accuracy
-                    best_model = model
-                print(f"Epoch {epoch + 1}, Test Loss: {loss.item()}, Accuracy: {accuracy:.2f}")
-    print(f"Best Accuracy: {max_acc:.2f}")
-    torch.save(best_model.state_dict(), "ace/data/payoff/payoff_net.pth")
+            running_loss += loss.item()
 
-    # Testing
+            predictions = (outputs > 0.5).float()
+            total += labels.size(0)
+            correct += (predictions == labels).sum().item()
+
+        train_loss = running_loss / len(train_loader)
+        train_acc = correct / total
+        train_losses.append(train_loss)
+        train_accuracies.append(train_acc)
+
+        model.eval()
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            for inputs, labels in test_loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+                outputs = model(inputs)
+                predictions = (outputs > 0.5).float()
+                total += labels.size(0)
+                correct += (predictions == labels).sum().item()
+
+        test_acc = correct / total
+        test_accuracies.append(test_acc)
+
+        if test_acc > best_acc:
+            best_acc = test_acc
+            torch.save(model.state_dict(), "ace/data/payoff/payoff_net.pth")
+            patience_counter = 0
+        else:
+            patience_counter += 1
+
+        if patience_counter >= patience:
+            print(f"Early stopping, best test accuracy: {best_acc:.4f}")
+            break
+
+        print(f"Epoch [{epoch+1}/{max_epochs}], Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Test Accuracy: {test_acc:.4f}")
+
+    os.environ["QT_QPA_PLATFORM"] = "offscreen"  # without GUI
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(1, len(train_accuracies)+1), train_accuracies, label="Train Accuracy")
+    plt.plot(range(1, len(test_accuracies)+1), test_accuracies, label="Test Accuracy")
+    plt.xlabel("Epochs")
+    plt.ylabel("Accuracy")
+    plt.title("Accuracy over Epochs")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("results/training_curve.png", dpi=300)
+
+    y_probas = []
+    y_true = []
     model.load_state_dict(torch.load("ace/data/payoff/payoff_net.pth", weights_only=True))
-    model.to(device)
     model.eval()
-    y_test_labels = y_test.cpu().numpy()
+    model.to(device)
     with torch.no_grad():
-        y_pred = model(X_test)
-    y_pred_labels = torch.argmax(y_pred, dim=1).cpu().numpy()
-    y_pred_probs = torch.softmax(y_pred, dim=1).cpu().numpy()
-    # plot confusion matrix
-    os.environ["QT_QPA_PLATFORM"] = "offscreen"  # run without GUI
-    skplt.metrics.plot_confusion_matrix(y_test_labels, y_pred_labels, normalize=True)
-    plt.savefig("results/dnn_confusion_matrix.png")
+        for inputs, labels in test_loader:
+            inputs, labels = inputs.to(device), labels.to(device)
+            probas = model(inputs)
+            y_probas.extend(probas.cpu().numpy())
+            y_true.extend(labels.cpu().numpy())
 
-    # plot roc curve
-    print("Log Loss:", log_loss(y_test_labels, y_pred_probs))
-    skplt.metrics.plot_roc(y_test_labels, y_pred_probs)
-    plt.savefig("results/dnn_roc_curve.png")
+    y_true = np.array(y_true)
+    y_probas = np.array(y_probas)
+    y_preds = (y_probas > 0.5).astype(int)
+    os.environ["QT_QPA_PLATFORM"] = "offscreen"  # without GUI
+    skplt.metrics.plot_confusion_matrix(y_true, y_preds, normalize=True)
+    plt.tight_layout()
+    plt.savefig("results/confusion_matrix.png", dpi=300)
+
 
 if __name__ == "__main__":
-    prepare_data()
-    # fit_payoff_nn()
+    # prepare_data()
+    train_model()  # 0.7944

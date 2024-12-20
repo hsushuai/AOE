@@ -2,10 +2,9 @@ import argparse
 from omegaconf import OmegaConf
 import json
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from ace.agent  import Planner, AceAgent, NaiveAgent
+from ace.agent  import Planner, AceAgent
 from skill_rts.agents import bot_agent
 from skill_rts import logger
-from ace.reviewer import Reviewer
 import time
 
 

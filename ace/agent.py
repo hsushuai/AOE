@@ -120,18 +120,22 @@ class Recognizer(Agent):
     def __init__(self, model, temperature, max_tokens):
         super().__init__(model, temperature, max_tokens)
         self._get_prompt()
+        self.max_retry = 3
     
     def _get_prompt(self):
         self.template = OmegaConf.load("ace/templates/recognizer.yaml")["TEMPLATE"]
     
     def step(self, traj: str, *args, **kwargs) -> Strategy:
         prompt = self.template.format(trajectory=traj)
-        while True:
+        feat_space = Strategy.feat_space()
+        for _ in range(self.max_retry):
             try:
                 response = self.client(prompt)
                 strategy = Strategy(response, "")
-                strategy.encode()  # check if the strategy is valid
-                return strategy
+                feat = strategy.encode()
+                # check if the strategy is in the feature space
+                if np.any(np.all(feat_space == feat, axis=1)):
+                    return strategy
             except Exception as e:
                 print(f"Recognizer error {e}, retrying...")
                 print(f"Wrong response:\n{response}")
@@ -149,7 +153,7 @@ class AceAgent(Agent):
         self.payoff_matrix = None
         self.payoff_net = None
         # initialized meta strategy is the highest average payoff strategy
-        self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategy_10.json")
+        self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategy_23.json")
         self.strategy = self.meta_strategy.to_string()
     
     def step(self, obs: str, traj: Trajectory | None):
@@ -188,30 +192,15 @@ class AceAgent(Agent):
         return d["strategy"] + d["description"]
     
     def response4unseen(self, opponent: Strategy) -> str:
-        device = "cuda" if torch.cuda.is_available() else "cpu"
         if self.payoff_net is None:
-            with open("ace/configs/payoff.yaml") as f:
-                config = yaml.safe_load(f)
-            self.payoff_net = PayoffNet(**config["model"])
-            self.payoff_net.load_state_dict(torch.load("ace/data/payoff/payoff_net.pth", weights_only=True))
-            self.payoff_net.to(device)
-        
+            self.payoff_net = PayoffNet.load("ace/data/payoff/cnn1d.pth")
         feat_space = Strategy.feat_space()
-        best_feats = None
-        best_win_rate = -float("inf")
-        # prepare input data
-        opponent_feats = np.tile(opponent.feats, (feat_space.shape[0], 1))
-        X = torch.tensor(np.hstack([feat_space, opponent_feats]), dtype=torch.float32, device=device)
-        with torch.no_grad():
-            win_rate = torch.nn.functional.softmax(self.payoff_net(X), dim=1)
-        max_idx = win_rate[:, 0].argmax().item()
-        if win_rate[max_idx, 0] > best_win_rate:
-            best_win_rate = win_rate[max_idx, 0]
-            best_feats = feat_space[max_idx]
-        response = Strategy.decode(best_feats).strategy
-        logger.info(f"Search for unseen win rate: {best_win_rate}")
-        logger.info(f"Best strategy: {response}")
-        return response, best_win_rate
+        response, win_rate = self.payoff_net.search_best_response(feat_space, opponent.feats)
+        if win_rate < 0.5:
+            response = self.meta_strategy
+        logger.info(f"Search for unseen win rate: {win_rate}")
+        logger.info(f"Best strategy: {response.strategy}")
+        return response.strategy, win_rate
 
 
 class NaiveAgent(Agent):

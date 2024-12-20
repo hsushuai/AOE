@@ -164,7 +164,7 @@ def analyze_diversity():
     plt.tight_layout()
     plt.legend()
     # plt.grid(True)
-    filename = "results/strategy_distribution_map.png"
+    filename = "results/strategy_distribution.png"
     plt.savefig(filename, dpi=300)
     logger.info(f"Strategy distribution map saved to {filename}")
 
@@ -213,7 +213,7 @@ def gen_strategies():
 
 
 if __name__ == "__main__":
-    gen_strategies()
+    # gen_strategies()
     analyze_diversity()
-    extract_strategies_to_csv()
+    # extract_strategies_to_csv()
     # sample_strategies()
