@@ -1,11 +1,18 @@
 import argparse
 from omegaconf import OmegaConf
 import json
-from skill_rts.envs.wrappers import MicroRTSLLMEnv
+from skill_rts.envs import MicroRTSLLMEnv
 from ace.agent  import Planner, AceAgent
-from skill_rts.agents import bot_agent
+from skill_rts.agents import bot_ais, VanillaAgent, CoTAgent, PLAPAgent
 from skill_rts import logger
 import time
+
+
+llm_based_baselines = {
+    "Vanilla": VanillaAgent,
+    "CoT": CoTAgent,
+    "PLAP": PLAPAgent
+}
 
 
 def parse_args():
@@ -48,14 +55,24 @@ def main():
     cfg = parse_args()
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
 
-    if cfg.agents[1].strategy in bot_agent.ALL_AIS:
-        opponent_agent = bot_agent.ALL_AIS[cfg.agents[1].strategy]
+    if cfg.agents[1].strategy in bot_ais:
+        opponent_agent = bot_ais[cfg.agents[1].strategy]
         opponent_name = cfg.agents[1].strategy
-    else:
+    elif "json" in cfg.agents[1].strategy:
         opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
         opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
+    elif cfg.agents[1].strategy in llm_based_baselines:
+        opponent_agent = llm_based_baselines[cfg.agents[1].strategy](
+            cfg.agents[1].model,
+            cfg.agents[1].temperature,
+            cfg.agents[1].max_tokens,
+            player_id=1
+        )
+        opponent_name = cfg.agents[1].strategy
+    else:
+        raise ValueError(f"Unknown opponent strategy: {cfg.agents[1].strategy}")
     
-    runs_dir = f"runs/online_runs/{opponent_name}_interval100"
+    runs_dir = f"runs/main_runs/{opponent_name}"
     logger.set_level(logger.DEBUG)
 
     agent = AceAgent(player_id=0, map_name=map_name, **cfg.agents[0])

@@ -124,6 +124,8 @@ class MicroRTSLLMEnv(gym.Env):
         """
         self.game_over = False
         self.time = 0
+        for agent in self.llm_agents:
+            agent.reset()
         return self.env.reset()
     
     def prepare_run(self) -> None:
@@ -143,8 +145,6 @@ class MicroRTSLLMEnv(gym.Env):
         self.plans = []
         for player_id in range(self.num_players):
             self.players.append(Player(player_id, GameState(raw_info[player_id]["player_obs"])))
-        for agent in self.llm_agents:
-            agent.reset()
     
     def step_run(self):
         actions = []

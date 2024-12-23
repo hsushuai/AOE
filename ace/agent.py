@@ -1,7 +1,7 @@
 import yaml
 import os
 from omegaconf import OmegaConf
-from skill_rts.agents.llm_clients import LLMs
+from skill_rts.agents import Agent
 from skill_rts.game.trajectory import Trajectory
 from skill_rts.game.game_state import GameState
 from skill_rts import logger
@@ -10,14 +10,6 @@ from ace.traj_feat import TrajectoryFeature
 from ace.offline.payoff_net import PayoffNet
 import pandas as pd
 import json
-
-
-class Agent:
-    def __init__(self, model: str, temperature: float, max_tokens: int):
-        self.model = model
-        self.temperature = temperature
-        self.max_tokens = max_tokens
-        self.client = LLMs(model, temperature, max_tokens)
 
 
 class Planner(Agent):
@@ -148,6 +140,10 @@ class AceAgent(Agent):
         if obs.time % self.strategy_interval == 0 and traj is not None:
             self.update_strategy(traj)
         return self.planner.step(obs)
+    
+    def reset(self):
+        self.strategy = self.meta_strategy.to_string()
+        self.planner.strategy = self.strategy
     
     def update_strategy(self, traj: Trajectory):
         abs_traj = TrajectoryFeature(traj).to_string()
