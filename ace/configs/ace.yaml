@@ -16,4 +16,4 @@ agents:
     prompt: few-shot-w-strategy
     strategy: ace/data/strategies/strategy_1.json
 
-episodes: 1
+episodes: 3

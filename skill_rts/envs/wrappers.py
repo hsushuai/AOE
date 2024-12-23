@@ -143,6 +143,8 @@ class MicroRTSLLMEnv(gym.Env):
         self.plans = []
         for player_id in range(self.num_players):
             self.players.append(Player(player_id, GameState(raw_info[player_id]["player_obs"])))
+        for agent in self.llm_agents:
+            agent.reset()
     
     def step_run(self):
         actions = []
@@ -185,15 +187,24 @@ class MicroRTSLLMEnv(gym.Env):
         return False
 
     def _record_plan(self, player, tasks):
-        if len(self.plans) <= self.time / self.interval:
-            d = {
+        strategy = getattr(self.agents[player.id], "strategy", None)
+        player_data = {
+            "id": player.id,
+            "obs": player.obs.to_string(),
+            "plan": tasks
+        }
+        if strategy:
+            player_data["strategy"] = strategy
+
+        plan_index = int(self.time / self.interval)
+        
+        if len(self.plans) <= plan_index:
+            self.plans.append({
                 "time": self.time,
-                "players": [{"id": player.id, "obs": player.obs.to_string(), "strategy": self.agents[player.id].strategy, "plan": tasks}]
-            }
-            self.plans.append(d)
+                "players": [player_data]
+            })
         else:
-            d = {"id": player.id, "obs": player.obs.to_string(), "strategy": self.agents[player.id].strategy, "plan": tasks}
-            self.plans[int(self.time / self.interval)]["players"].append(d)
+            self.plans[plan_index]["players"].append(player_data)
     
     def step(self, actions: np.ndarray):
         """Step the environment.

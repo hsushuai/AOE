@@ -36,6 +36,11 @@ done
 # Step 5 (Online): Fight against AI Bot
 bots=("randomAI" "randomBiasedAI" "guidedRojoA3N" "passiveAI" "workerRushAI" "lightRushAI" "coacAI" "mixedBot" "rojo" "izanagi" "tiamat" "droplet" "naiveMCTSAI" "mayari")
 
-for bot in "${bots[@]}"; do
-    python "ace/experiment/eval_ace.py" --opponent "$bot"
+for opponent in "${bots[@]}"; do
+    python "ace/experiment/eval_ace.py" --opponent "$opponent"
+done
+
+# Step 6 (Online): Fight against no strategy llm
+for opponent in "Vanilla" "CoT" "PLAP"; do
+    python "ace/experiment/eval_ace.py" --opponent "$opponent"
 done

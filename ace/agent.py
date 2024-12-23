@@ -235,8 +235,7 @@ if __name__ == "__main__":
     agent_config = {
         "model": "Qwen2.5-72B-Instruct",
         "temperature": 0,
-        "max_tokens": 8192,
-        "map_name": "basesWorkers8x8"
+        "max_tokens": 8192
     }
     agent = AceAgent(0, **agent_config)
     opponent = Planner(

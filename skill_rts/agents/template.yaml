@@ -1,0 +1,75 @@
+INSTRUCTION: |
+  You are an RTS game expert tasked with planning a winning task plan in MicroRTS based on the provided scenario.
+
+INTRODUCTION: |
+  # Game Manual
+  Here are the core rules and mechanics you need to follow: 
+  This is a 2-player grid-based game where all units occupy 1x1 tiles. Each player controls units and can create more by spending a single resource type, which acts as money. The grid position coordinates range from 0 to map width - 1 or map height - 1.
+  
+  Here is the game units description:
+  - Resource: A non-player unit that provides resources.
+  - Base: 10 HP, costs 10 resources, and takes 250 time units to build. Can produce Workers.
+  - Barracks: 4 HP, costs 5 resources, and takes 200 time units to build. Can produce Light, Heavy, or Ranged units.
+  - Worker: 1 HP, costs 1 resource, takes 50 time units to build. Can [Attack Enemy](1 damage), and harvest mineral.
+  - Light Unit: 4 HP, costs 2 resources, takes 80 time units to build. Can [Attack Enemy] (2 damage).
+  - Heavy Unit: 4 HP, costs 2 resources, takes 120 time units to build. Can [Attack Enemy] (4 damage).
+  - Ranged Unit: 1 HP, costs 2 resources, takes 100 time units to build. Can [Attack Enemy] from 3 distance (1 damage, range 3).
+  
+  # Task Space
+  Develop a winning task plan using allowed task space: 
+  You are only allowed to utilize the specified tasks to devise your strategy. All tasks will only be assigned to one corresponding unit, so if you want multiple units to work together, please generate multiple repeated tasks.
+  Each task comprises a task name (enclosed in square brackets, e.g. "[Harvest Mineral]") and task parameters (enclosed in parentheses, e.g. "(0, 0)"). 
+  Your game plan should be a list of tasks, with "START OF TASK" and "END OF TASK" marking the beginning and end of the list, for example:
+  START OF TASK
+  [Harvest Mineral] (0, 0)
+  [Produce Unit] (worker, 0)
+  ...
+  END OF TASK
+  
+  Here are the available tasks and their descriptions:
+  - [Harvest Mineral] (x, y): Assign one worker to harvest resources from the mineral field located at (x, y). Note that this task is a continued task, which means that the worker will continue to harvest resources until mineral disappear or the game ends.
+  - [Produce Unit] (unit_type, direction): Produce a unit of the specified type ("worker", "light", "heavy", or "ranged") in the specified direction ("north", "east", "south", or "west").
+  - [Build Building] (building_type, (x, y), condition): Constructs a specified building type ("base" or "barracks") at coordinates (x, y) if the condition is met. The condition must be a resource-related expression, like resource >= 7, or set to False, indicating that construction will never occur.
+  - [Deploy Unit] (unit_type, (x, y)): Deploy a unit of the specified type to the specified location (x, y). ONE location can ONLY have ONE unit deployed.
+  - [Attack Enemy] (unit_type, enemy_type): Use a unit of a specified type ("worker", "light", "heavy", or "ranged") to attack an enemy unit of a specified type ("worker", "light", "heavy", "ranged", "base", or "barracks").
+
+  Please note that your plans will be executed in order, so the one listed first will be executed first. You should strictly follow the parameter format and avoid outputting extra parameters.
+  If you produce a unit type, be sure to assign a task to that unit type, otherwise they will block the entrance to the base or barracks, preventing the next unit from coming out.
+  Please pay attention to the actual location of your current base. If you need to harvest resources, please go to the nearest mine location.
+
+TIPS: |
+  # Tips
+  Here are some tips to help you win the game:
+  - Two workers will be more efficient in harvesting, but do not exceed two.
+  - Workers offer a better cost-effectiveness, so produce them in large quantities, i.e. [Produce Unit] x4.
+  - Attack the enemy base to prevent them from returning resources to the base.
+  - If the enemy has a barracks, attack the barracks first to prevent them from producing high-level soldiers.
+  - The enemy will probably continue to create worker invasions in the next period of time, so we need more [Attack Enemy] (workers, workers).
+  - If there are no resources left to harvest in the current situation, let's attack with all our workers.
+  - As long as our side have resources, don't stop producing workers. Don't stop the invasion.
+  - If your resources are less than 8, please do not build a barracks.
+  - When your resources are greater than 8, you only need one worker to harvest resources and building barracks near to base first (top priority), but don't forget to continue making workers and launching attacks.
+  - When a have a barrack, produce a ranged first.
+
+START: |
+  # Battlefield Situation
+  Here is the description of the **current situation**: 
+  {observation}
+
+  You are now **player {player_id}**. Please create a task plan to win the game based on the current situation.
+
+VANILLA: |
+  ${INSTRUCTION}
+  ${INTRODUCTION}
+  ${START}
+
+COT: |
+  ${INSTRUCTION}
+  ${INTRODUCTION}
+  ${START}Let's think step by step.
+
+PLAP: |
+  ${INSTRUCTION}
+  ${INTRODUCTION}
+  ${TIPS}
+  ${START}
