@@ -1,26 +1,23 @@
 import json
 import time
 import os
-from ace.strategy import Strategy
 from ace.offline.payoff_net import PayoffNet
 from ace.agent import Planner
+from ace.strategy import Strategy
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
 from omegaconf import OmegaConf
 from skill_rts import logger
 
 
-logger.set_level(logger.DEBUG)
-
-cfg = {
-    "model": "Qwen2.5-72B-Instruct",
-    "temperature": 0,
-    "max_tokens": 8192,
-    "prompt": "few-shot-w-strategy",
-    "map_name": "basesWorkers8x8"
-}
-
-
-def eval_payoff():
+def eval_model():
+    logger.set_level(logger.DEBUG)
+    cfg = {
+        "model": "Qwen2.5-72B-Instruct",
+        "temperature": 0,
+        "max_tokens": 8192,
+        "prompt": "few-shot-w-strategy",
+        "map_name": "basesWorkers8x8"
+    }
     runs_dir = "runs/test_payoff"
     model = PayoffNet.load("ace/data/payoff/payoff_net.pth")
 
@@ -58,5 +55,4 @@ def eval_payoff():
 
 
 if __name__ == "__main__":
-    eval_payoff()
-    # eval_on_matrix()
+    eval_model()

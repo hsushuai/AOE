@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from skill_rts import logger
 from openai import OpenAI
 from zhipuai import ZhipuAI
@@ -23,43 +23,29 @@ class LLM(ABC):
     def is_excessive_token(self, prompt: str) -> bool:
         pass
 
-    @abstractmethod
     def call(self, prompt: str) -> str:
-        raise NotImplementedError
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=self.temperature,
+            max_tokens=self.max_tokens
+        )
+        return response.choices[0].message.content
 
 
 class Qwen(LLM):
     def __init__(self, model, temperature, max_tokens):
         super().__init__(model, temperature, max_tokens)
         if "qwen" in model:  # deploy on localhost
-            self.client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+            self.client = OpenAI(base_url="http://172.18.36.55:11434/v1", api_key="ollama")
         else:
             self.client = OpenAI(base_url=os.getenv("QWEN_API_BASE"), api_key=os.getenv("QWEN_API_KEY"))
-        # openai.Model.list()
-    
-    def call(self, prompt: str) -> str:
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=self.temperature,
-            max_tokens=self.max_tokens
-        )
-        return response.choices[0].message.content
 
 
 class GLM(LLM):
     def __init__(self, model, temperature, max_tokens):
         super().__init__(model, temperature, max_tokens)
         self.client = ZhipuAI()
-    
-    def call(self, prompt: str) -> str:
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=self.temperature,
-            max_tokens=self.max_tokens
-        )
-        return response.choices[0].message.content
 
 
 class WebChatGPT(LLM):
@@ -82,18 +68,34 @@ class Llama(LLM):
     def __init__(self, model, temperature, max_tokens):
         super().__init__(model, temperature, max_tokens)
         self.client = OpenAI(base_url="http://172.18.36.59:11434/v1", api_key="ollama")
+
+
+class TaiChu(LLM):
+    def __init__(self, model="taichu_70b", temperature=0, max_tokens=8192):
+        super().__init__(model, temperature, max_tokens)
+        self.client = OpenAI(base_url=os.getenv("TAICHU_API_BASE"), api_key=os.getenv("TAICHU_API_KEY"))
+
+
+class LLMs(LLM):
+    def __init__(self, model, temperature, max_tokens):
+        super().__init__(model, temperature, max_tokens)
+        if "qwen" in model.lower():
+            self.client = Qwen(model, temperature, max_tokens)
+        elif "taichu" in model.lower():
+            self.client = TaiChu(model, temperature, max_tokens)
+        elif "llama" in model.lower():
+            self.client = Llama(model, temperature, max_tokens)
+        elif "glm" in model.lower():
+            self.client = GLM(model, temperature, max_tokens)
+        else:
+            raise ValueError(f"Model {model} not available.")
     
-    def call(self, prompt: str) -> str:
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=self.temperature,
-            max_tokens=self.max_tokens
-        )
-        return response.choices[0].message.content
+
+    def __call__(self, prompt: str) -> str | None:
+        return self.client(prompt)
 
 
 if __name__ == "__main__":
-    # llm = GLM("glm-4-flash", 0, 1024)
-    llm = Llama("llama3.3:70b", 0, 8192)
+    llm = LLMs("Qwen2.5-72B-Instruct", 0, 8192)
     print(llm("who are you"))
+    

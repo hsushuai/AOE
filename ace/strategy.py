@@ -48,18 +48,18 @@ class Strategy:
             return None
     
     def _parse_feats(self):
-        self.economic = re.search(r'.*?Economic Feature.*?: (.*)', self.strategy).group(1)
-        self.barracks = re.search(r'.*?Barracks Feature.*?: (.*)', self.strategy).group(1)
-        self.military = re.search(r'.*?Military Feature.*?: (.*)', self.strategy).group(1)
-        self.aggression = re.search(r'.*?Aggression Feature.*?: (.*)', self.strategy).group(1)
-        self.attack = re.search(r'.*?Attack Feature.*?: (.*)', self.strategy).group(1)
-        self.defense = re.search(r'.*?Defense Feature.*?: (.*)', self.strategy).group(1)
+        self.economic = re.search(r'.*?Economic Feature.*?: (\w+)', self.strategy).group(1)
+        self.barracks = re.search(r'.*?Barracks Feature.*?: ([^\(\#]*)', self.strategy).group(1)
+        self.military = re.search(r'.*?Military Feature.*?: ([^\(\#]*)', self.strategy).group(1)
+        self.aggression = re.search(r'.*?Aggression Feature.*?: (\w+)', self.strategy).group(1)
+        self.attack = re.search(r'.*?Attack Feature.*?: (\w+)', self.strategy).group(1)
+        self.defense = re.search(r'.*?Defense Feature.*?: (\w+)', self.strategy).group(1)
 
         self.economic = int(self.economic)
         if "False" in self.barracks:
             self.barracks = False
         else:
-            self.barracks = float(self.barracks.split(">= ")[1])
+            self.barracks = float(re.search(r'resource\s*>=\s*(\d+)', self.barracks).group(1))
         self.aggression = eval(self.aggression)
         if not self.aggression:
             self.attack = None
@@ -79,7 +79,7 @@ class Strategy:
             barracks_feat = [0, 0]
         
         # military
-        militaries = [self.UNIT2IDX[unit_type.lower()] for unit_type in self.military.split(" and ")]
+        militaries = [self.UNIT2IDX[unit_type.lower()] for unit_type in self.military.split(" and ") if unit_type.lower() in self.UNIT2IDX]
         military_feat = [1 if idx in militaries else 0 for idx in range(4)]
         
         # aggression

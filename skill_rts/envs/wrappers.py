@@ -150,7 +150,7 @@ class MicroRTSLLMEnv(gym.Env):
 
         for player in self.players:
             if self.time % self.interval == 0:
-                tasks = self.llm_agents[player.id].step(player.obs.to_string(), self.get_traj())
+                tasks = self.llm_agents[player.id].step(player.obs, self.get_traj())
                 self._record_plan(player, tasks)
                 player.set_tasks(tasks)
             ac = player.step()

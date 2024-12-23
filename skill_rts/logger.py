@@ -18,29 +18,37 @@ log_stream: TextIO = sys.stdout
 # Set up warnings
 warnings.simplefilter("once", DeprecationWarning)
 
+
 def set_level(level: int) -> None:
     """Set logging threshold on current logger."""
     global min_level
     min_level = level
+
 
 def set_stream(output_stream: TextIO) -> None:
     """Set logging output stream."""
     global log_stream
     log_stream = output_stream
 
+
 def is_tty(stream: TextIO) -> bool:
     """Check if the stream is a TTY (interactive terminal)."""
     return hasattr(stream, 'isatty') and stream.isatty()
 
+
 def debug(msg: str, *args: object):
+    output_stream = log_stream if is_stream_available(log_stream) else sys.stdout
     if min_level <= DEBUG:
         message = f"DEBUG: {msg % args}"
-        print(colorize(message, "cyan") if is_tty(log_stream) else message, file=log_stream, flush=True)
+        print(colorize(message, "cyan") if is_tty(log_stream) else message, file=output_stream, flush=True)
+
 
 def info(msg: str, *args: object):
+    output_stream = log_stream if is_stream_available(log_stream) else sys.stdout
     if min_level <= INFO:
         message = f"{msg % args}"
-        print(colorize(message, "green") if is_tty(log_stream) else message, file=log_stream, flush=True)
+        print(colorize(message, "green") if is_tty(log_stream) else message, file=output_stream, flush=True)
+
 
 def warn(
     msg: str,
@@ -56,13 +64,21 @@ def warn(
             stacklevel=stacklevel + 1,
         )
 
+
 def deprecation(msg: str, *args: object):
     warn(msg, *args, category=DeprecationWarning, stacklevel=2)
 
+
 def error(msg: str, *args: object):
+    output_stream = log_stream if is_stream_available(log_stream) else sys.stdout
     if min_level <= ERROR:
         message = f"ERROR: {msg % args}"
-        print(colorize(message, "red") if is_tty(log_stream) else message, file=log_stream, flush=True)
+        print(colorize(message, "red") if is_tty(log_stream) else message, file=output_stream, flush=True)
+
+
+def is_stream_available(stream: TextIO) -> bool:
+    return not stream.closed and stream.writable()
+
 
 # Color codes for terminal output
 color2num = dict(
@@ -76,6 +92,7 @@ color2num = dict(
     white=37,
     crimson=38,
 )
+
 
 def colorize(string: str, color: str, bold: bool = False, highlight: bool = False) -> str:
     """Return string surrounded by appropriate terminal color codes to

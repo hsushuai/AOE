@@ -2,7 +2,7 @@ import argparse
 from omegaconf import OmegaConf
 import yaml
 import os
-from skill_rts.agents.llm_clients import Qwen
+from skill_rts.agents.llm_clients import LLMs
 from skill_rts import logger
 from ace.strategy import Strategy
 import numpy as np
@@ -188,7 +188,7 @@ def gen_strategies():
     cfg = parse_args()
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
     prompt_template = get_prompt_template(map_name)
-    llm_client = Qwen(cfg.llm.model, cfg.llm.temperature, cfg.llm.max_tokens)
+    llm_client = LLMs(cfg.llm.model, cfg.llm.temperature, cfg.llm.max_tokens)
     exist_strategies = []
     strategy_space = Strategy.feat_space()
 

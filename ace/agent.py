@@ -1,16 +1,15 @@
 import yaml
 import os
 from omegaconf import OmegaConf
-from skill_rts.agents.llm_clients import Qwen, GLM, WebChatGPT
+from skill_rts.agents.llm_clients import LLMs
 from skill_rts.game.trajectory import Trajectory
+from skill_rts.game.game_state import GameState
 from skill_rts import logger
 from ace.strategy import Strategy
 from ace.traj_feat import TrajectoryFeature
 from ace.offline.payoff_net import PayoffNet
 import pandas as pd
-import numpy as np
 import json
-import torch
 
 
 class Agent:
@@ -18,17 +17,7 @@ class Agent:
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
-        self.client = self._get_client()
-    
-    def _get_client(self):
-        if "qwen" in  self.model.lower():
-            return Qwen(self.model, self.temperature, self.max_tokens)
-        elif "glm" in self.model.lower():
-            return GLM(self.model, self.temperature, self.max_tokens)
-        elif "chatgpt" in self.model.lower():
-            return WebChatGPT(self.model, self.temperature, self.max_tokens)
-        else:
-            raise ValueError("Model not supported")
+        self.client = LLMs(model, temperature, max_tokens)
 
 
 class Planner(Agent):
@@ -71,11 +60,11 @@ class Planner(Agent):
         }[self.prompt]
         return OmegaConf.load("ace/templates/planner.yaml")[prompt]
     
-    def step(self, obs: str, *args, **kwargs) -> str:
+    def step(self, obs: GameState, *args, **kwargs) -> str:
         """Make a task plan based on the observation.
 
         Args:
-            obs (str): The observation from the environment.
+            obs (GameState): The observation from the environment.
         
         Returns:
             str: The task plan.
@@ -88,7 +77,7 @@ class Planner(Agent):
         return response
     
     def _get_prompt(self):
-        kwargs = {"observation": self.obs, "player_id": self.player_id}
+        kwargs = {"observation": self.obs.to_string(), "player_id": self.player_id}
         if self.prompt == "zero-shot":
             return self.template.format(**kwargs)
         elif self.prompt == "few-shot":
@@ -127,27 +116,25 @@ class Recognizer(Agent):
     
     def step(self, traj: str, *args, **kwargs) -> Strategy:
         prompt = self.template.format(trajectory=traj)
-        feat_space = Strategy.feat_space()
         for _ in range(self.max_retry):
             try:
                 response = self.client(prompt)
                 strategy = Strategy(response, "")
-                feat = strategy.encode()
-                # check if the strategy is in the feature space
-                if np.any(np.all(feat_space == feat, axis=1)):
-                    return strategy
+                strategy.encode()  # check if the strategy valid
+                return strategy
             except Exception as e:
-                print(f"Recognizer error {e}, retrying...")
-                print(f"Wrong response:\n{response}")
+                logger.info(f"Recognizer error {e}, retrying...")
+                logger.info(f"Wrong response:\n{response}")
         raise ValueError("Recognizer failed to generate a valid strategy")
 
 
 class AceAgent(Agent):
     strategy_dir = "ace/data/train"
 
-    def __init__(self, player_id, model, temperature, max_tokens, map_name):
+    def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1):
         super().__init__(model, temperature, max_tokens)
         self.player_id = player_id
+        self.strategy_interval = strategy_interval
         self.planner = Planner(model, "few-shot-w-strategy", temperature, max_tokens, map_name, player_id)
         self.recognizer = Recognizer(model, temperature, max_tokens)
         self.payoff_matrix = None
@@ -155,23 +142,24 @@ class AceAgent(Agent):
         # initialized meta strategy is the highest average payoff strategy
         self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategy_23.json")
         self.strategy = self.meta_strategy.to_string()
+        self.planner.strategy = self.strategy
     
-    def step(self, obs: str, traj: Trajectory | None):
-        if traj:
-            abs_traj = TrajectoryFeature(traj).to_string()
-            opponent = self.recognizer.step(abs_traj)
-            idx = self.match_strategy(opponent)
-            if idx:  # seen opponent
-                logger.debug(f"Matched strategy: {idx}")
-                self.strategy = self.response4seen(idx)
-            else:  # unseen opponent
-                logger.debug(f"Unseen opponent:\n{opponent}")
-                strategy, win_rate = self.response4unseen(opponent)
-                self.strategy = strategy if win_rate >= 0.8 else self.strategy
-            self.planner.strategy = self.strategy
-        else:
-            self.planner.strategy = self.meta_strategy
+    def step(self, obs: GameState, traj: Trajectory | None):
+        if obs.time % self.strategy_interval == 0 and traj is not None:
+            self.update_strategy(traj)
         return self.planner.step(obs)
+    
+    def update_strategy(self, traj: Trajectory):
+        abs_traj = TrajectoryFeature(traj).to_string()
+        opponent = self.recognizer.step(abs_traj)
+        idx = self.match_strategy(opponent)
+        if idx:  # seen opponent
+            logger.debug(f"Matched strategy: {idx}")
+            self.strategy = self.response4seen(idx)
+        else:  # unseen opponent
+            logger.debug(f"Unseen opponent:\n{opponent}")
+            self.strategy, win_rate = self.response4unseen(opponent)
+        self.planner.strategy = self.strategy
     
     def match_strategy(self, opponent):
         for filename in os.listdir(f"{self.strategy_dir}"):
@@ -193,7 +181,7 @@ class AceAgent(Agent):
     
     def response4unseen(self, opponent: Strategy) -> str:
         if self.payoff_net is None:
-            self.payoff_net = PayoffNet.load("ace/data/payoff/cnn1d.pth")
+            self.payoff_net = PayoffNet.load("ace/data/payoff/payoff_net.pth")
         feat_space = Strategy.feat_space()
         response, win_rate = self.payoff_net.search_best_response(feat_space, opponent.feats)
         if win_rate < 0.5:

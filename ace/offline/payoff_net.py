@@ -4,6 +4,7 @@ import numpy as np
 import json
 import random
 import matplotlib.pyplot as plt
+import scikitplot as skplt
 import torch.nn as nn
 import torch
 import torch.optim as optim
@@ -11,7 +12,6 @@ import torch.nn.functional as F
 from ace.strategy import Strategy
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.model_selection import train_test_split
-import scikitplot as skplt
 
 
 def same_seeds(seed):
@@ -138,7 +138,7 @@ class PayoffNet(nn.Module):
     
     def search_best_response(self, feat_space, opponent_feats) -> tuple[Strategy, float]:
         # Shuffle the feature space
-        np.random.seed(520)
+        # np.random.seed(520)
         shuffled_space = feat_space[np.random.permutation(feat_space.shape[0])]
         opponent_feats = np.tile(opponent_feats, (shuffled_space.shape[0], 1))
         X = torch.tensor(np.hstack([shuffled_space, opponent_feats]), dtype=torch.float32, device="cuda")
@@ -146,7 +146,7 @@ class PayoffNet(nn.Module):
         with torch.no_grad():
             win_rate = self(X)
         max_idx = win_rate.argmax().item()
-        response = Strategy.decode(shuffled_space[max_idx]).strategy
+        response = Strategy.decode(shuffled_space[max_idx])
         return response, win_rate[max_idx].item()
 
 
@@ -250,6 +250,7 @@ def train_model():
     skplt.metrics.plot_confusion_matrix(y_true, y_preds, normalize=True)
     plt.tight_layout()
     plt.savefig("results/confusion_matrix.png", dpi=300)
+
 
 
 if __name__ == "__main__":

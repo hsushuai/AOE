@@ -10,7 +10,7 @@ import time
 
 def parse_args():
 
-    cfg = OmegaConf.load("ace/configs/main.yaml")
+    cfg = OmegaConf.load("ace/configs/ace.yaml")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--map_path", type=str, help="Path to the map file")
@@ -55,11 +55,10 @@ def main():
         opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
         opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
     
-    runs_dir = f"runs/online_runs/{opponent_name}"
+    runs_dir = f"runs/online_runs/{opponent_name}_interval100"
     logger.set_level(logger.DEBUG)
 
     agent = AceAgent(player_id=0, map_name=map_name, **cfg.agents[0])
-    # agent = Planner(**cfg.agents[0], player_id=0, map_name=map_name, prompt="few-shot-w-strategy", strategy="ace/data/train/strategy_10.json")
     env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env)
     # reviewer = Reviewer(**cfg.agents[0])
     
