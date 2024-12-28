@@ -18,7 +18,7 @@ def eval_model():
         "prompt": "few-shot-w-strategy",
         "map_name": "basesWorkers8x8"
     }
-    runs_dir = "runs/test_payoff"
+    runs_dir = "runs/eval_payoff"
     model = PayoffNet.load("ace/data/payoff/payoff_net.pth")
 
     feat_space = Strategy.feat_space()

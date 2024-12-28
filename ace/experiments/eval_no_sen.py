@@ -2,8 +2,7 @@ import argparse
 from omegaconf import OmegaConf
 import json
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from ace.agent import Planner, AceAgent
-from ace.strategy import Strategy
+from ace.agent import Planner, AceAgentWithoutSEN
 from skill_rts.agents import bot_agent
 from skill_rts import logger
 import time
@@ -41,10 +40,7 @@ def parse_args():
         cfg.agents[1].strategy = args.opponent
     if args.interval is not None:
         cfg.env.interval = args.interval
-    
-    # do not update strategy during the match
-    cfg.agents[0].strategy_interval = cfg.env.max_steps
-    cfg.episodes = 5
+
     return cfg
 
 
@@ -60,16 +56,12 @@ def main():
         opponent_agent = Planner(**cfg.agents[1], player_id=1, map_name=map_name)
         opponent_name = cfg.agents[1].strategy.split('/')[-1].split('.')[0]
     
-    runs_dir = f"runs/eval_adaption/{opponent_name}"
+    runs_dir = f"runs/eval_no_sen/{opponent_name}"
     logger.set_level(logger.DEBUG)
 
-    ace = AceAgent(player_id=0, map_name=map_name, **cfg.agents[0])
-    ace.meta_strategy = Strategy.load_from_json("ace/data/strategies/strategy_10.json")
-    ace.strategy = ace.meta_strategy.to_string()
-    ace.planner.strategy = ace.strategy
+    ace = AceAgentWithoutSEN(player_id=0, map_name=map_name, **cfg.agents[0])
     env = MicroRTSLLMEnv([ace, opponent_agent], **cfg.env)
     os.makedirs(runs_dir, exist_ok=True)
-    adaption_log = open(f"{runs_dir}/adaption.log", "w")
     
     # Run the episodes
     for episode in range(cfg.episodes):
@@ -82,10 +74,6 @@ def main():
             print(f"Error in episode {episode}: {e}")
             env.close()
             break
-        
-        # Update the strategy
-        logger.set_stream(adaption_log)
-        ace.update_strategy(trajectory)
 
         # Save the results
         OmegaConf.save(cfg, f"{run_dir}/config.yaml")
@@ -93,8 +81,7 @@ def main():
         env.metric.to_json(f"{run_dir}/metric.json")
         with open(f"{run_dir}/plans.json", "w") as f:
             json.dump(env.plans, f, indent=4)
-        print(f"Match {episode} | Opponent {opponent_name} | Payoffs: {payoffs} | Runtime: {(time.time() - start_time) / 60:.2f}min, {env.time}steps")
-    adaption_log.close()
+        print(f"NO SEN | Match {episode} | Opponent {opponent_name} | Payoffs: {payoffs} | Runtime: {(time.time() - start_time) / 60:.2f}min, {env.time}steps")
 
 
 if __name__ == "__main__":
