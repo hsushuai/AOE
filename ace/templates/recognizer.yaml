@@ -54,19 +54,6 @@ EXAMPLES: |
   - Attack Feature: Building
   - Defense Feature: None
 
-basesWorkers8x8_MAP: |
-  # Map Initialization Sate
-  The Game map is 8x8 grid
-  Available Mineral Fields: 2
-  - Mineral(0, 0), resources: 20
-  - Mineral(7, 7), resources: 20
-  Player 0 State:
-  - base(1, 2), action: noop
-  - worker(1, 1), action: noop
-  Player 1 State:
-  - base(6, 5), action: noop
-  - worker(6, 6), action: noop
-
 TRAJECTORY: |
   # Trajectory
   Until the current game track summary features is as follows:

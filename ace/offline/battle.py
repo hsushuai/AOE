@@ -43,6 +43,8 @@ def parse_args(config_path: str = "ace/configs/battle.yaml"):
         cfg.agents[1].strategy = args.opponent
     if args.strategy is not None:
         cfg.agents[0].strategy = args.strategy
+
+    cfg.env.map_path = "maps/16x16/basesWorkers16x16.xml"
     
     return cfg
 
@@ -110,7 +112,7 @@ def run():
     map_name = cfg.env.map_path.split("/")[-1].split(".")[0]
     strategy_name = re.search(r"strategy_(\d+)", cfg.agents[0].strategy).group(1)
     opponent_name = re.search(r"strategy_(\d+)", cfg.agents[1].strategy).group(1)
-    run_dir = f"offline_runs/{strategy_name}_{opponent_name}"
+    run_dir = f"runs/offline_runs_16x16/{strategy_name}_{opponent_name}"
     logger.set_level(logger.DEBUG)
 
     # Run the game

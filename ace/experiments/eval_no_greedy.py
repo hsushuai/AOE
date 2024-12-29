@@ -2,7 +2,7 @@ import argparse
 from omegaconf import OmegaConf
 import json
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from ace.agent import Planner, AceAgent
+from ace.agent import Planner, NoGreedyAce
 from skill_rts.agents import bot_agent
 from skill_rts import logger
 import time
@@ -61,7 +61,7 @@ def main():
     runs_dir = f"runs/eval_no_greedy/{opponent_name}"
     logger.set_level(logger.DEBUG)
 
-    ace = AceAgent(player_id=0, map_name=map_name, **cfg.agents[0])
+    ace = NoGreedyAce(player_id=0, map_name=map_name, **cfg.agents[0])
     env = MicroRTSLLMEnv([ace, opponent_agent], **cfg.env)
     os.makedirs(runs_dir, exist_ok=True)
     

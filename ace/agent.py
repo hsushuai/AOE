@@ -187,31 +187,11 @@ class AceAgent(Agent):
         return response.strategy, win_rate
 
 
-class AceAgentWithoutSEN(Agent):
-    strategy_dir = "ace/data/train"
-
-    def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1):
-        super().__init__(model, temperature, max_tokens)
-        self.player_id = player_id
-        self.strategy_interval = strategy_interval
-        self.planner = Planner(model, "few-shot-w-strategy", temperature, max_tokens, map_name, player_id)
-        self.recognizer = Recognizer(model, temperature, max_tokens)
-        self.payoff_matrix = None
-        self.payoff_net = None
-        # initialized meta strategy is the highest average payoff strategy
-        self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategy_23.json")
-        self.strategy = self.meta_strategy.to_string()
-        self.planner.strategy = self.strategy
+class AceAgentWithoutSEN(AceAgent):
+    """Exploit by LLM for ablation """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.gen_strategy_template = OmegaConf.load("ace/templates/gen_response.yaml")["TEMPLATE"]
-    
-    def step(self, obs: GameState, traj: Trajectory | None):
-        if obs.time % self.strategy_interval == 0 and traj is not None:
-            self.update_strategy(traj)
-        return self.planner.step(obs)
-    
-    def reset(self):
-        self.strategy = self.meta_strategy.to_string()
-        self.planner.strategy = self.strategy
     
     def update_strategy(self, traj: Trajectory):
         abs_traj = TrajectoryFeature(traj).to_string()
@@ -219,6 +199,12 @@ class AceAgentWithoutSEN(Agent):
         self.strategy = self.client(self.gen_strategy_template.format(opponent=opponent.to_string()))
         logger.info(f"Response strategy: {self.strategy}")
         self.planner.strategy = self.strategy
+
+
+class NoGreedyAce(AceAgent):
+    """No greedy exploitation for ablation"""
+    def reset(self):
+        pass
 
 
 class NaiveAgent(Agent):
