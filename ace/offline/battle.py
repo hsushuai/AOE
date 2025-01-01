@@ -75,7 +75,7 @@ def train_test_split(train_size=0.6):
 
 
 def extract_battle_results():
-    runs_dir = "offline_runs"
+    runs_dir = "runs/offline_runs_16x16"
     df = pd.DataFrame()
     runs = os.listdir(runs_dir)
     runs = sorted(runs, key=lambda x: int(x.split("_")[0]) * 100 + int(x.split("_")[1]))
@@ -103,7 +103,7 @@ def extract_battle_results():
         df.loc[opponent, strategy] = payoffs[1]
     df = df.fillna(0)
     df = df.sort_index(key=lambda x: x.astype(int))
-    df.to_csv("ace/data/payoff/payoff_matrix.csv")
+    df.to_csv("ace/data/payoff/payoff_matrix_16x16.csv")
 
 
 def run():
@@ -140,5 +140,5 @@ def run():
 
 if __name__ == "__main__":
     # train_test_split()
-    run()
-    # extract_battle_results()
+    # run()
+    extract_battle_results()

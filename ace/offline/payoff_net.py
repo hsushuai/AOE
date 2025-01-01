@@ -26,7 +26,7 @@ def same_seeds(seed):
         torch.cuda.manual_seed_all(seed)
 
 
-def prepare_data(runs_dir = "runs/offline_runs", augment=True):
+def prepare_data(runs_dir = "runs/offline_runs_16x16", augment=True):
     df = pd.DataFrame()
     runs = os.listdir(runs_dir)
     runs = sorted(runs, key=lambda x: int(x.split("_")[0]) * 100 + int(x.split("_")[1]))
@@ -78,12 +78,12 @@ def prepare_data(runs_dir = "runs/offline_runs", augment=True):
                 ])
                 strategy_space.append(idx_opponent)
             df = pd.concat([df, aug_df])
-    df.to_csv("ace/data/payoff/payoff_data.csv", index=False)
+    df.to_csv("ace/data/payoff/payoff_data_16x16.csv", index=False)
 
 
 def get_loader():
     # Load the payoff data
-    df = pd.read_csv("ace/data/payoff/payoff_data.csv")
+    df = pd.read_csv("ace/data/payoff/payoff_data_16x16.csv")
     df["strategy"] = df["strategy"].apply(lambda x: np.array(eval(x)))
     df["opponent"] = df["opponent"].apply(lambda x: np.array(eval(x)))
 
@@ -209,7 +209,7 @@ def train_model():
 
         if test_acc > best_acc:
             best_acc = test_acc
-            torch.save(model.state_dict(), "ace/data/payoff/payoff_net.pth")
+            torch.save(model.state_dict(), "ace/data/payoff/payoff_net_16x16.pth")
             patience_counter = 0
         else:
             patience_counter += 1
@@ -229,11 +229,11 @@ def train_model():
     plt.title("Accuracy over Epochs")
     plt.legend()
     plt.tight_layout()
-    plt.savefig("results/training_curve.png", dpi=300)
+    plt.savefig("results/training_curve_16x16.png", dpi=300)
 
     y_probas = []
     y_true = []
-    model.load_state_dict(torch.load("ace/data/payoff/payoff_net.pth", weights_only=True))
+    model.load_state_dict(torch.load("ace/data/payoff/payoff_net_16x16.pth", weights_only=True))
     model.eval()
     model.to(device)
     with torch.no_grad():
@@ -249,10 +249,10 @@ def train_model():
     os.environ["QT_QPA_PLATFORM"] = "offscreen"  # without GUI
     skplt.metrics.plot_confusion_matrix(y_true, y_preds, normalize=True)
     plt.tight_layout()
-    plt.savefig("results/confusion_matrix.png", dpi=300)
+    plt.savefig("results/confusion_matrix_16x16.png", dpi=300)
 
 
 
 if __name__ == "__main__":
-    # prepare_data()
-    train_model()  # 0.7944
+    prepare_data()
+    train_model()  # 0.7944 (8x8), 0.8278 (16x16)

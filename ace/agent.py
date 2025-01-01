@@ -123,16 +123,17 @@ class Recognizer(Agent):
 class AceAgent(Agent):
     strategy_dir = "ace/data/train"
 
-    def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1):
+    def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1, meta_strategy_idx=23):
         super().__init__(model, temperature, max_tokens)
         self.player_id = player_id
         self.strategy_interval = strategy_interval
+        self.map_name = map_name
         self.planner = Planner(model, "few-shot-w-strategy", temperature, max_tokens, map_name, player_id)
         self.recognizer = Recognizer(model, temperature, max_tokens)
         self.payoff_matrix = None
         self.payoff_net = None
         # initialized meta strategy is the highest average payoff strategy
-        self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategy_23.json")
+        self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategy_{meta_strategy_idx}.json")
         self.strategy = self.meta_strategy.to_string()
         self.planner.strategy = self.strategy
     
@@ -167,7 +168,8 @@ class AceAgent(Agent):
     
     def response4seen(self, idx) -> str:
         if self.payoff_matrix is None:
-            self.payoff_matrix = pd.read_csv("ace/data/payoff/payoff_matrix.csv", index_col=0)
+            filename = "ace/data/payoff/payoff_matrix.csv" if "8x8" in self.map_name else "ace/data/payoff/payoff_matrix_16x16.csv"
+            self.payoff_matrix = pd.read_csv(filename, index_col=0)
         payoff = self.payoff_matrix[idx]
         resp_idx = payoff.idxmax()
         logger.info(f"Match for seen: strategy_{idx} -> strategy_{resp_idx}")
@@ -177,7 +179,8 @@ class AceAgent(Agent):
     
     def response4unseen(self, opponent: Strategy) -> str:
         if self.payoff_net is None:
-            self.payoff_net = PayoffNet.load("ace/data/payoff/payoff_net.pth")
+            filename = "ace/data/payoff/payoff_net.pth" if "8x8" in self.map_name else "ace/data/payoff/payoff_net_16x16.pth"
+            self.payoff_net = PayoffNet.load(filename)
         feat_space = Strategy.feat_space()
         response, win_rate = self.payoff_net.search_best_response(feat_space, opponent.feats)
         if win_rate < 0.5:

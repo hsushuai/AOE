@@ -30,12 +30,15 @@ class Trajectory:
     
     def to_json(self, filename):
         import json
+        
         with open(filename, "w") as f:
             json.dump(self.raw_traj, f, indent=4)
     
     @staticmethod
     def load(filename) -> "Trajectory":  # noqa: F821
+        """Load a trajectory from a JSON file."""
         import json
+        
         with open(filename, "r") as f:
             return Trajectory(json.load(f))
     

@@ -41,7 +41,6 @@ class UnitState:
         return f"- {self.type}{self.location}, action: {self.action}{params}\n"
 
 
-
 @dataclass
 class EnvState:
     height: int

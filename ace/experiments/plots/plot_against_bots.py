@@ -71,6 +71,7 @@ def plot():
         # "randomAI",
     ]
     n_rows, n_cols = 4, 3
+    plt.rcParams.update({"font.size": 17})
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(10, 14), sharex=True, sharey=True)
 
     colors = ["#d86c50", "#0ac9bf", "#a39aef"]
