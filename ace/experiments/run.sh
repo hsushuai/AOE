@@ -50,23 +50,29 @@ export PYTHONPATH="/root/desc/skill-rts/"
 
 # Ablation
 
-# no greedy
-for i in {31..50}; do
-    opponent="ace/data/strategies/strategy_${i}.json"
-    python "ace/experiments/eval_no_greedy.py" --opponent "$opponent"
-done
+# # no greedy
+# for i in {1..50}; do
+#     opponent="ace/data/strategies/strategy_${i}.json"
+#     python "ace/experiments/eval_no_greedy.py" --opponent "$opponent"
+# done
 
-# no SEN
-for i in {31..50}; do
-    opponent="ace/data/strategies/strategy_${i}.json"
-    python "ace/experiments/eval_no_sen.py" --opponent "$opponent"
-done
+# # no SEN
+# for i in {1..50}; do
+#     opponent="ace/data/strategies/strategy_${i}.json"
+#     python "ace/experiments/eval_no_sen.py" --opponent "$opponent"
+# done
 
-# fixed strategy
-for i in {31..50}; do
-    opponent="ace/data/strategies/strategy_${i}.json"
-    python "ace/experiments/eval_fixed.py" --opponent "$opponent"
-done
+# # fixed strategy
+# for i in {1..50}; do
+#     opponent="ace/data/strategies/strategy_${i}.json"
+#     python "ace/experiments/eval_fixed.py" --opponent "$opponent"
+# done
+
+# # no tips
+# for i in {1..50}; do
+#     opponent="ace/data/strategies/strategy_${i}.json"
+#     python "ace/experiments/eval_no_tips.py" --opponent "$opponent"
+# done
 
 # 16x16 offline battle
 # json_files=$(find ace/data/train -type f -name "*.json")
@@ -87,11 +93,11 @@ done
 #     done
 # done
 
-# # ACE Fight against 50 strategies
-# for i in {1..50}; do
-#     opponent="ace/data/strategies/strategy_${i}.json"
-#     python "ace/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
-# done
+# ACE Fight against 50 strategies
+for i in {1..50}; do
+    opponent="ace/data/strategies/strategy_${i}.json"
+    python "ace/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
+done
 
 # # ACE Fight against AI Bot
 # bots=("randomAI" "randomBiasedAI" "guidedRojoA3N" "passiveAI" "workerRushAI" "lightRushAI" "coacAI" "mixedBot" "rojo" "izanagi" "tiamat" "droplet" "naiveMCTSAI" "mayari")
@@ -100,7 +106,7 @@ done
 #     python "ace/experiments/eval_map_scaling.py" --opponent "$opponent" --episodes 10 --max_steps 4000
 # done
 
-# # ACE Fight against no strategy llm
-# for opponent in "Vanilla" "CoT" "PLAP"; do
-#     python "ace/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
-# done
+# ACE Fight against no strategy llm
+for opponent in "Vanilla" "CoT" "PLAP"; do
+    python "ace/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
+done

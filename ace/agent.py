@@ -48,7 +48,8 @@ class Planner(Agent):
             "zero-shot": "ZERO_SHOT",
             "few-shot": "FEW_SHOT",
             "zero-shot-w-strategy": "ZERO_SHOT_W_STRATEGY",
-            "few-shot-w-strategy": "FEW_SHOT_W_STRATEGY"
+            "few-shot-w-strategy": "FEW_SHOT_W_STRATEGY",
+            "few-shot-w-strategy-wo-tips": "FEW_SHOT_W_STRATEGY_WO_TIPS"
         }[self.prompt]
         return OmegaConf.load("ace/templates/planner.yaml")[prompt]
     
@@ -76,8 +77,10 @@ class Planner(Agent):
             return self.template.format(examples=self.examples, **kwargs)
         elif self.prompt == "zero-shot-w-strategy":
             return self.template.format(strategy=self.strategy, **kwargs)
-        elif self.prompt == "few-shot-w-strategy":
+        elif self.prompt == "few-shot-w-strategy" or self.prompt == "few-shot-w-strategy-wo-tips":
             return self.template.format(examples=self.examples, strategy=self.strategy, **kwargs)
+        else:
+            raise ValueError(f"Unknown prompt type: {self.prompt}")
     
     def _get_examples(self):
         with open(f"ace/templates/example_{self.map_name}.yaml") as f:
@@ -208,6 +211,23 @@ class NoGreedyAce(AceAgent):
     """No greedy exploitation for ablation"""
     def reset(self):
         pass
+
+class AceAgentWithoutTips(AceAgent):
+    strategy_dir = "ace/data/train"
+
+    def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1, meta_strategy_idx=23):
+        super().__init__(player_id, model, temperature, max_tokens, map_name, strategy_interval, meta_strategy_idx)
+        self.player_id = player_id
+        self.strategy_interval = strategy_interval
+        self.map_name = map_name
+        self.planner = Planner(model, "few-shot-w-strategy-wo-tips", temperature, max_tokens, map_name, player_id)
+        self.recognizer = Recognizer(model, temperature, max_tokens)
+        self.payoff_matrix = None
+        self.payoff_net = None
+        # initialized meta strategy is the highest average payoff strategy
+        self.meta_strategy = Strategy.load_from_json(f"{self.strategy_dir}/strategy_{meta_strategy_idx}.json")
+        self.strategy = self.meta_strategy.strategy
+        self.planner.strategy = self.strategy
 
 
 class NaiveAgent(Agent):

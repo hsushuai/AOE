@@ -19,6 +19,7 @@ class LLM(ABC):
             return self.call(prompt)
         except Exception as e:
             logger.error(f"Error calling LLM: {e}")
+            logger.error(f"Input prompt: {prompt}")
 
     def is_excessive_token(self, prompt: str) -> bool:
         pass

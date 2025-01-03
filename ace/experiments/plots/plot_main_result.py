@@ -136,5 +136,18 @@ def get_main_result(win_loss_only):
     df.to_csv("ace/experiments/plots/main_results.csv")
 
 
+def get_scaling_result():
+    results = get_ace_result("runs/scaling_runs", win_loss_only=True)
+    df = pd.DataFrame()
+    for opponent, payoffs in results.items():
+        df.loc["ACE", opponent] = payoffs[0]
+        df.loc[opponent, "ACE"] = payoffs[1]
+    df = df.fillna(0)
+    order = ["Vanilla", "CoT", "PLAP", "Seen", "Unseen", "ACE"]
+    df = df.reindex(index=order, columns=order, fill_value=0)
+    df.to_csv("ace/experiments/plots/scaling_results.csv")
+
+
 if __name__ == "__main__":
-    get_main_result(win_loss_only=False)
+    # get_main_result(win_loss_only=False)
+    get_scaling_result()
