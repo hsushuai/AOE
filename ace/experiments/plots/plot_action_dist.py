@@ -8,7 +8,7 @@ import matplotlib.patches as mpatches
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 plt.rcParams.update({"font.size": 17})
-actions = ["move", "harvest", "return", "produce", "attack"]
+actions = ["attack", "harvest", "return", "produce"]
 
 def get_action_distribution():
     data = {
@@ -30,18 +30,20 @@ def get_action_distribution():
                     for unit in gs:
                         if unit is not None and unit.owner == player_id and unit.action in actions:
                             action_stat[actions.index(unit.action)] += 1
-                action_stat /= action_stat.sum()
+                # action_stat /= action_stat.sum()
+                action_stat /= traj.get_gametime()
                 data[method].append(action_stat.tolist())
         
         # against ACE
-        action_stat = np.zeros(len(actions))
         for run in os.listdir(f"runs/eval_ace/{method}"):
+            action_stat = np.zeros(len(actions))
             traj = Trajectory.load(f"runs/eval_ace/{method}/{run}/traj.json")
             for gs in traj:
                 for unit in gs:
                     if unit is not None and unit.owner == 1 and unit.action in actions:
                         action_stat[actions.index(unit.action)] += 1
-            action_stat /= action_stat.sum()
+            # action_stat /= action_stat.sum()
+            action_stat /= traj.get_gametime()
             data[method].append(action_stat.tolist())
     
     # ACE
@@ -55,7 +57,8 @@ def get_action_distribution():
                 for unit in gs:
                     if unit is not None and unit.owner == 0 and unit.action in actions:
                         action_stat[actions.index(unit.action)] += 1
-            action_stat /= action_stat.sum()
+            # action_stat /= action_stat.sum()
+            action_stat /= traj.get_gametime()
             data["ACE"].append(action_stat.tolist())
     
     with open("ace/experiments/plots/action_distribution.json", "w") as f:
@@ -74,6 +77,7 @@ def plot():
     for j, action in enumerate(actions, start=1):
         positions = [j + (i - num_methods / 2) * 0.2 for i in range(num_methods)]
         stats = [[data[method][trial][j - 1] * 100 for trial in range(len(data[method]))] for method in methods]
+        
         bplot = plt.boxplot(stats, positions=positions, widths=0.15, patch_artist=True, showfliers=True)
         
         for patch, color in zip(bplot["boxes"], colors):
@@ -86,7 +90,7 @@ def plot():
     legend_patches = [mpatches.Patch(facecolor=colors[i], label=method, edgecolor="black") for i, method in enumerate(methods)]
     plt.legend(handles=legend_patches, loc="upper right")
 
-    plt.ylabel("Action Distribution (%)")
+    plt.ylabel("Action Distribution")
     # plt.yticks(np.arange(0, 120, 20))
     plt.xticks(ticks=range(1, len(actions) + 1), labels=actions)
     
@@ -110,20 +114,20 @@ def get_metric_data():
                 player_id = 0 if method == match.split("_vs_")[0] else 1
                 with open(f"runs/eval_baseline/{match}/metric.json", "r") as f:
                     metric = json.load(f)
-                resource_harvested = metric["resource_harvested"][player_id] / (metric["game_time"] / 50)
-                unit_produced = sum(metric["unit_produced"][player_id].values()) / (metric["game_time"] / 50)
-                damage_dealt = metric["damage_dealt"][player_id] / (metric["game_time"] / 50)
-                damage_taken = metric["damage_taken"][player_id] / (metric["game_time"] / 50)  
+                resource_harvested = metric["resource_harvested"][player_id] / (metric["game_time"])
+                unit_produced = sum(metric["unit_produced"][player_id].values()) / (metric["game_time"])
+                damage_dealt = metric["damage_dealt"][player_id] / (metric["game_time"])
+                damage_taken = metric["damage_taken"][player_id] / (metric["game_time"])  
                 data[method].append([damage_dealt, damage_taken, resource_harvested, unit_produced])
         
         # against ACE
         for run in os.listdir(f"runs/eval_ace/{method}"):
             with open(f"runs/eval_ace/{method}/{run}/metric.json", "r") as f:
                 metric = json.load(f)
-            resource_harvested = metric["resource_harvested"][1] / (metric["game_time"] / 50)
-            unit_produced = sum(metric["unit_produced"][1].values()) /( metric["game_time"] / 50)
-            damage_dealt = metric["damage_dealt"][1] / (metric["game_time"] / 50)
-            damage_taken = metric["damage_taken"][1] / (metric["game_time"] / 50)            
+            resource_harvested = metric["resource_harvested"][1] / (metric["game_time"])
+            unit_produced = sum(metric["unit_produced"][1].values()) /( metric["game_time"])
+            damage_dealt = metric["damage_dealt"][1] / (metric["game_time"])
+            damage_taken = metric["damage_taken"][1] / (metric["game_time"])            
             data[method].append([damage_dealt, damage_taken, resource_harvested, unit_produced])
     
     # ACE
@@ -133,10 +137,10 @@ def get_metric_data():
         for run in os.listdir(f"runs/eval_ace/{match}"):
             with open(f"runs/eval_ace/{match}/{run}/metric.json", "r") as f:
                 metric = json.load(f)
-            resource_harvested = metric["resource_harvested"][0] / (metric["game_time"] / 50)
-            unit_produced = sum(metric["unit_produced"][0].values()) /( metric["game_time"] / 50)
-            damage_dealt = metric["damage_dealt"][0] / (metric["game_time"] / 50)
-            damage_taken = metric["damage_taken"][0] / (metric["game_time"] / 50)
+            resource_harvested = metric["resource_harvested"][0] / (metric["game_time"])
+            unit_produced = sum(metric["unit_produced"][0].values()) /( metric["game_time"])
+            damage_dealt = metric["damage_dealt"][0] / (metric["game_time"])
+            damage_taken = metric["damage_taken"][0] / (metric["game_time"])
             data["ACE"].append([damage_dealt, damage_taken, resource_harvested, unit_produced])
 
     with open("ace/experiments/plots/metric_data.json", "w") as f:
@@ -150,7 +154,7 @@ def plot_metric():
     plt.figure()
     colors = ["#d86c50", "#0ac9bf", "#a39aef", "#f4cc71"]
     methods = list(data.keys())
-    metrics = ["RH", "UP", "DD", "DT"]
+    metrics = ["DD", "DT", "RH", "UP"]
 
     bar_width = 0.2  # Width of each bar
     x = np.arange(len(metrics))  # Positions for metrics
@@ -160,7 +164,7 @@ def plot_metric():
         means = []
         stds = []
         for j in range(len(metrics)):
-            metric_data = [data[method][trial][j] for trial in range(len(data[method]))]
+            metric_data = [data[method][trial][j] * 100 for trial in range(len(data[method]))]
             means.append(np.mean(metric_data))
             stds.append(np.std(metric_data))
 
@@ -182,7 +186,7 @@ def plot_metric():
 
 
 if __name__ == "__main__":
-    # get_action_distribution()
-    # plot()
-    get_metric_data()
-    plot_metric()
+    get_action_distribution()
+    plot()
+    # get_metric_data()
+    # plot_metric()

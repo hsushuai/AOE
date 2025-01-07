@@ -1,3 +1,3 @@
-# ACE: Adaptive Competitor Exploration with Integrated Multi-Style Strategies for Improved Planning in Large Language Models
+# Strategy-Augmented Planning for Large Language Models via Opponent Exploitation
 
 ![Framework](misc/framework.svg)

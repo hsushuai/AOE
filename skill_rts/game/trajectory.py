@@ -9,7 +9,7 @@ class Trajectory:
     def __init__(self, raw_traj):
         self.raw_traj = raw_traj
     
-    def get_gametime(self):
+    def get_gametime(self) -> int:
         """Get the latest game time."""
         return self.raw_traj["entries"][-1]["time"]
     

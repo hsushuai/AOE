@@ -11,13 +11,14 @@ def get_results():
         "ace": "runs/eval_ace",
         "no_greedy": "runs/eval_no_greedy",
         "no_sen": "runs/eval_no_sen",
-        "fixed": "runs/eval_fixed"
+        "fixed": "runs/eval_fixed",
+        "no_tips": "runs/eval_no_tips"
     }
     results = {}
     for run_name, run_dir in runs_dir.items():
         results[run_name] = {}
-        for i in range(1, 31):
-            opponent = f"strategy_{i}"
+        for i in range(50):
+            opponent = f"strategy_{i + 1}"
             avg_payoffs = []
             win_loss = [0, 0, 0]  # loss, draw, win
             for run in os.listdir(f"{run_dir}/{opponent}"):
@@ -100,4 +101,4 @@ def plot():
 
 if __name__ == "__main__":
     get_results()
-    plot()
+    # plot()
