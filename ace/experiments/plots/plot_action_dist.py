@@ -12,7 +12,7 @@ actions = ["attack", "harvest", "return", "produce"]
 
 def get_action_distribution():
     data = {
-        "ACE": [],
+        "SAP": [],
         "Vanilla": [],
         "CoT": [],
         "PLAP": []
@@ -47,7 +47,7 @@ def get_action_distribution():
             data[method].append(action_stat.tolist())
     
     # ACE
-    for match in tqdm(os.listdir("runs/eval_ace"), desc="ACE"):
+    for match in tqdm(os.listdir("runs/eval_ace"), desc="SAP"):
         if match not in baseline and "strategy" not in match:
             continue
         for run in os.listdir(f"runs/eval_ace/{match}"):
@@ -59,7 +59,7 @@ def get_action_distribution():
                         action_stat[actions.index(unit.action)] += 1
             # action_stat /= action_stat.sum()
             action_stat /= traj.get_gametime()
-            data["ACE"].append(action_stat.tolist())
+            data["SAP"].append(action_stat.tolist())
     
     with open("ace/experiments/plots/action_distribution.json", "w") as f:
         json.dump(data, f)
@@ -100,7 +100,7 @@ def plot():
 
 def get_metric_data():
     data = {
-        "ACE": [],
+        "SAP": [],
         "Vanilla": [],
         "CoT": [],
         "PLAP": []
@@ -141,7 +141,7 @@ def get_metric_data():
             unit_produced = sum(metric["unit_produced"][0].values()) /( metric["game_time"])
             damage_dealt = metric["damage_dealt"][0] / (metric["game_time"])
             damage_taken = metric["damage_taken"][0] / (metric["game_time"])
-            data["ACE"].append([damage_dealt, damage_taken, resource_harvested, unit_produced])
+            data["SAP"].append([damage_dealt, damage_taken, resource_harvested, unit_produced])
 
     with open("ace/experiments/plots/metric_data.json", "w") as f:
         json.dump(data, f)
@@ -186,7 +186,7 @@ def plot_metric():
 
 
 if __name__ == "__main__":
-    get_action_distribution()
+    # get_action_distribution()
     plot()
     # get_metric_data()
-    # plot_metric()
+    plot_metric()
