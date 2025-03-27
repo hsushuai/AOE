@@ -155,7 +155,7 @@ def analyze_diversity():
     axes[0].set_ylabel("Frequency")
 
     batch_2d = tsne_2d[np.hstack(batch_indices)]
-    axes[1].scatter(batch_2d[:, 0], batch_2d[:, 1], alpha=0.7, color="darkorange", label="generated strategies")
+    axes[1].scatter(batch_2d[:, 0], batch_2d[:, 1], alpha=0.7, color="red", label="generated strategies")
     axes[1].scatter(tsne_2d[:, 0], tsne_2d[:, 1], alpha=0.1, label="all strategies")
     axes[1].set_title("Strategy Distribution Map (t-SNE Dimensionality Reduction)")
     axes[1].set_xlabel("t-SNE Dimension 1")
@@ -164,8 +164,8 @@ def analyze_diversity():
     plt.tight_layout()
     plt.legend()
     # plt.grid(True)
-    filename = "results/strategy_distribution.png"
-    plt.savefig(filename, dpi=300)
+    filename = "temp/strategy_distribution.pdf"
+    plt.savefig(filename)
     logger.info(f"Strategy distribution map saved to {filename}")
 
 
