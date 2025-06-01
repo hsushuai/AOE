@@ -1,8 +1,8 @@
 # 大语言模型在对手建模中的应用研究
 
-> ACE: Adaptive Competitor Exploration with Integrated Multi-strategies for Improved Planning in Large Language Models
+> SAP: Adaptive Competitor Exploration with Integrated Multi-strategies for Improved Planning in Large Language Models
 
-> IM ACE: Integrated Multi-strategies with Adaptive Competitor Exploration for Improved Planning in Large Language Models
+> IM SAP: Integrated Multi-strategies with Adaptive Competitor Exploration for Improved Planning in Large Language Models
 
 ## 研究目标：
 
@@ -174,7 +174,7 @@ position:
 | - | -  | -  | - |
 | RL-based |  |  |  |
 | LLM-based |  |  |  |
-| ACE |  |  |  |
+| SAP |  |  |  |
 
 ## 悬而未决的问题
 
