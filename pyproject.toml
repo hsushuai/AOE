@@ -29,3 +29,11 @@ dependencies = [
 [[tool.uv.index]]
 url = "https://mirrors.aliyun.com/pypi/simple/"
 default = true
+
+[dependency-groups]
+dev = [
+    "deepspeed>=0.16.9",
+    "liger-kernel>=0.5.10",
+    "ms-swift>=3.4.1.post1",
+    "swanlab>=0.6.0",
+]
