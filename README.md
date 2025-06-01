@@ -105,7 +105,7 @@ This project builds on the foundations of [MicroRTS-Py](https://github.com/Faram
 If you find this work useful, please consider citing our paper:
 
 ```bibtex
-@misc{xu2025strategyaugmentedplanninglargelanguage,
+@misc{xu2025sap,
       title={Strategy-Augmented Planning for Large Language Models via Opponent Exploitation}, 
       author={Shuai Xu and Sijia Cui and Yanna Wang and Bo Xu and Qi Wang},
       year={2025},
