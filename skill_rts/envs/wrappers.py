@@ -26,7 +26,8 @@ class MicroRTSLLMEnv(gym.Env):
         run_dir: str="runs",
         display: bool=False,
         payoff_weights: list=[1, 0 ,0],  # alpha, beta, gamma
-        theme: str="white"
+        theme: str="white",
+        auto_build: bool=False
     ):
         """
         Initializes a new instance of the MicroRTS environment with specified settings.
@@ -41,6 +42,7 @@ class MicroRTSLLMEnv(gym.Env):
             display (bool, optional): Flag indicating whether to display video of the gameplay. Default is False.
             payoff_weights (list, optional): List of weights for calculating the payoff. Default is [0.1, 0.1].
             theme (str, optional): Theme of the game interface; possible values include "white" and "black". Default is "white".
+            auto_build (bool, optional): Whether to enable automatic building of Java projects. Default is False.
         """
         self.llm_agents = []
         self.bot_agents = []
@@ -54,12 +56,13 @@ class MicroRTSLLMEnv(gym.Env):
         self.display = display
         self.payoff_weights = payoff_weights
         self.theme = theme
+        self.auto_build = auto_build
 
         self.set_agent(agents)
         self._init_env()
 
         self.time = 0
-        self.game_over = True
+        self.game_over = False
     
     def _init_env(self):
         reward_weight = np.array([1, 0, 0, 0, 0, 0])
@@ -70,7 +73,7 @@ class MicroRTSLLMEnv(gym.Env):
                 max_steps=self.max_steps,
                 map_paths=[self.map_path],
                 reward_weight=reward_weight,
-                autobuild=False
+                autobuild=self.auto_build
             )
         elif self.num_players == 1 and len(self.bot_agents) == 1:
             self.env = MicroRTSGridModeVecEnv(
@@ -80,7 +83,7 @@ class MicroRTSLLMEnv(gym.Env):
                 ai2s=self.bot_agents,
                 map_paths=[self.map_path],
                 reward_weight=reward_weight,
-                autobuild=False
+                autobuild=self.auto_build
             )
         elif self.num_players == 2 and len(self.bot_agents) == 0:
             self.env = MicroRTSGridModeVecEnv(
@@ -89,7 +92,7 @@ class MicroRTSLLMEnv(gym.Env):
                 max_steps=self.max_steps,
                 map_paths=[self.map_path],
                 reward_weight=reward_weight,
-                autobuild=False
+                autobuild=self.auto_build
             )
         else:
             raise ValueError("Couldn't initialize environment base on the given `agents`.")
@@ -120,7 +123,7 @@ class MicroRTSLLMEnv(gym.Env):
 
         Returns:
             observation (object): the initial observation.
-            info (optional list): list of a dictionary containing extra information, this is only returned if return_info is set to true.
+            info (optional list): list of a dictionary containing extra information.
         """
         self.game_over = False
         self.time = 0
@@ -169,6 +172,8 @@ class MicroRTSLLMEnv(gym.Env):
         self.time += 1
     
     def _is_draw(self):
+        if len(self.bot_agents) == 2:
+            return False
         for i in range(self.num_players):
             if self._can_win(i):
                 return False

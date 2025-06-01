@@ -162,7 +162,7 @@ public class JNIBotClient {
             gs.getVectorObservation(player),
             rewards,
             dones,
-            new String[]{null, null});
+            ai1.computeInfo(gs, player1gs));
         return response;
     }
 
@@ -206,7 +206,7 @@ public class JNIBotClient {
             gs.getVectorObservation(player),
             rewards,
             dones,
-            new String[]{null, null});
+            ai1.computeInfo(gs, player1gs));
         return response;
     }
 
@@ -247,7 +247,7 @@ public class JNIBotClient {
             gs.getVectorObservation(player),
             rewards,
             dones,
-            new String[]{null, null});
+            ai1.computeInfo(gs, player1gs));
         return response;
     }
 

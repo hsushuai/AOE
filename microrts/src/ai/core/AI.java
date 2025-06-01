@@ -1,5 +1,6 @@
 package ai.core;
 
+import java.io.StringWriter;
 import java.util.List;
 import rts.GameState;
 import rts.PlayerAction;
@@ -120,5 +121,23 @@ public abstract class AI {
      */
     public void gameOver(int winner) throws Exception
     {
+    }
+
+    public String[] computeInfo(GameState gs, GameState playergs) throws Exception {
+        // raw game state, raw player observations
+        String[] info = new String[2];
+        info[0] = getJSONStringGameState(gs);
+        info[1] = getJSONStringGameState(playergs);
+        return info;
+    }
+
+    private String getJSONStringGameState(GameState gs) throws Exception {
+        StringWriter w = new StringWriter();
+        try{
+            gs.toJSON(w);
+            return w.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 } 
