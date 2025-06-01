@@ -21,6 +21,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git remote add mirror https://x-access-token:${{ secrets.teamx sync action }}@github.com/AI-Research-TeamX/SAP.git
+          git remote add mirror https://x-access-token:${{ secrets.TEAMX_SYNC_ACTION }}@github.com/AI-Research-TeamX/SAP.git
           git push mirror --all --force
           git push mirror --tags --force
