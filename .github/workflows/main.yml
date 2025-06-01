@@ -11,15 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout this repo
+      - name: Checkout source repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Mirror to Org Repo
+      - name: Set Git identity
         run: |
           git config user.name "hsushuai"
           git config user.email "hsushuai@outlook.com"
-          git remote add mirror https://x-access-token:${{ secrets.TEAMX_SYNC_ACTION }}@github.com/AI-Research-TeamX/SAP.git
+
+      - name: Add org remote and push
+        env:
+          TOKEN: ${{ secrets.TEAMX_SYNC_ACTION }}
+        run: |
+          git remote add mirror https://x-access-token:${TOKEN}@github.com/AI-Research-TeamX/SAP.git
+          git remote -v  # 输出远程信息，调试用
           git push mirror --all --force
           git push mirror --tags --force
