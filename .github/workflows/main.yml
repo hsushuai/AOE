@@ -18,6 +18,7 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
+        echo "Remote URL: https://x-access-token:${{ secrets.TEAMX_SYNC_ACTION }}@github.com/AI-Research-TeamX/SAP.git"
         git remote add target https://x-access-token:${{ secrets.TEAMX_SYNC_ACTION }}@github.com/AI-Research-TeamX/SAP.git
         git push target --mirror
 
