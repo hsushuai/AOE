@@ -1,31 +1,23 @@
-name: Sync to Org Repository
+name: Sync to Organization Repo
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # 或你使用的默认分支
+  workflow_dispatch:  # 也允许手动触发
 
 jobs:
   sync:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout source repo
+      uses: actions/checkout@v4
 
-      - name: Set Git identity
-        run: |
-          git config user.name "hsushuai"
-          git config user.email "hsushuai@outlook.com"
+    - name: Mirror push to org repo
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git remote add target https://x-access-token:${{ secrets.TEAMX_SYNC_ACTION }}@github.com/AI-Research-TeamX/SAP.git
+        git push target --mirror
 
-      - name: Add org remote and push
-        env:
-          TOKEN: ${{ secrets.TEAMX_SYNC_ACTION }}
-        run: |
-          git remote add mirror https://x-access-token:${TOKEN}@github.com/AI-Research-TeamX/SAP.git
-          git remote -v  # 输出远程信息，调试用
-          git push mirror --all --force
-          git push mirror --tags --force
