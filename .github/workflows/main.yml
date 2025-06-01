@@ -3,7 +3,7 @@ name: Sync to Org Repository
 on:
   push:
     branches:
-      - main   # 或你希望同步的分支
+      - main
   workflow_dispatch:
 
 jobs:
@@ -14,13 +14,12 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整 Git 历史（用于 push）
+          fetch-depth: 0
 
       - name: Mirror to Org Repo
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
+          git config user.name "hsushuai"
+          git config user.email "hsushuai@outlook.com"
           git remote add mirror https://x-access-token:${{ secrets.TEAMX_SYNC_ACTION }}@github.com/AI-Research-TeamX/SAP.git
           git push mirror --all --force
           git push mirror --tags --force
