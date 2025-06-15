@@ -2,7 +2,7 @@ import argparse
 from omegaconf import OmegaConf
 import json
 from skill_rts.envs import MicroRTSLLMEnv
-from sap.agent  import Planner, AceAgent
+from sap.agent  import Planner, SAPAgent
 from skill_rts.agents import bot_ais, VanillaAgent, CoTAgent, PLAPAgent
 from skill_rts import logger
 import time
@@ -75,7 +75,7 @@ def main():
     runs_dir = f"runs/main_runs/{opponent_name}"
     logger.set_level(logger.DEBUG)
 
-    agent = AceAgent(player_id=0, map_name=map_name, **cfg.agents[0])
+    agent = SAPAgent(player_id=0, map_name=map_name, **cfg.agents[0])
     env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env)
     # reviewer = Reviewer(**cfg.agents[0])
     

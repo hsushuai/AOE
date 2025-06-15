@@ -94,10 +94,10 @@ export PYTHONPATH="/root/desc/skill-rts/"
 # done
 
 # SAP Fight against 50 strategies
-for i in {1..50}; do
-    opponent="sap/data/strategies/strategy_${i}.json"
-    python "sap/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
-done
+# for i in {1..50}; do
+#     opponent="sap/data/strategies/strategy_${i}.json"
+#     python "sap/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
+# done
 
 # # SAP Fight against AI Bot
 # bots=("randomAI" "randomBiasedAI" "guidedRojoA3N" "passiveAI" "workerRushAI" "lightRushAI" "coacAI" "mixedBot" "rojo" "izanagi" "tiamat" "droplet" "naiveMCTSAI" "mayari")
@@ -107,6 +107,7 @@ done
 # done
 
 # SAP Fight against no strategy llm
-for opponent in "Vanilla" "CoT" "PLAP"; do
-    python "sap/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
-done
+# for opponent in "Vanilla" "CoT" "PLAP"; do
+#     python "sap/experiments/eval_map_scaling.py" --opponent "$opponent" --max_steps 4000
+# done
+

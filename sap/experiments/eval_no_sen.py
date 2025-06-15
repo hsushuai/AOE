@@ -2,7 +2,7 @@ import argparse
 from omegaconf import OmegaConf
 import json
 from skill_rts.envs.wrappers import MicroRTSLLMEnv
-from sap.agent import Planner, AceAgentWithoutSEN
+from sap.agent import Planner, SAPAgentWithoutSEN
 from skill_rts.agents import bot_agent
 from skill_rts import logger
 import time
@@ -59,7 +59,7 @@ def main():
     runs_dir = f"runs/eval_no_sen/{opponent_name}"
     logger.set_level(logger.DEBUG)
 
-    sap = AceAgentWithoutSEN(player_id=0, map_name=map_name, **cfg.agents[0])
+    sap = SAPAgentWithoutSEN(player_id=0, map_name=map_name, **cfg.agents[0])
     env = MicroRTSLLMEnv([sap, opponent_agent], **cfg.env)
     os.makedirs(runs_dir, exist_ok=True)
     

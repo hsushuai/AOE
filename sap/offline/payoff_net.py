@@ -131,8 +131,9 @@ class PayoffNet(nn.Module):
     
     @staticmethod
     def load(filename: str) -> "PayoffNet":
-        model = PayoffNet().to("cuda")
-        model.load_state_dict(torch.load(filename, weights_only=True))
+        device = torch.device("cuda:0")
+        model = PayoffNet().to(device)
+        model.load_state_dict(torch.load(filename, weights_only=True, map_location=device))
         model.eval()
         return model
     

@@ -38,6 +38,8 @@ class Planner(Agent):
         self.map_name = map_name
         self.player_id = player_id
         self.template = self._get_template()
+        if prompt == "zero-shot-messages":
+            self.sys_prompt = OmegaConf.load("sap/templates/planner.yaml")["SYSTEM"]
         if "few-shot" in self.prompt:
             self._get_examples()
         if "strategy" in self.prompt:
@@ -49,7 +51,8 @@ class Planner(Agent):
             "few-shot": "FEW_SHOT",
             "zero-shot-w-strategy": "ZERO_SHOT_W_STRATEGY",
             "few-shot-w-strategy": "FEW_SHOT_W_STRATEGY",
-            "few-shot-w-strategy-wo-tips": "FEW_SHOT_W_STRATEGY_WO_TIPS"
+            "few-shot-w-strategy-wo-tips": "FEW_SHOT_W_STRATEGY_WO_TIPS",
+            "zero-shot-messages": "USER"
         }[self.prompt]
         return OmegaConf.load("sap/templates/planner.yaml")[prompt]
     
@@ -64,7 +67,11 @@ class Planner(Agent):
         """
         self.obs = obs
         prompt = self._get_prompt()
-        response = self.client(prompt)
+        if self.prompt == "zero-shot-messages":
+            messages = [{"role": "system", "content": self.sys_prompt}, {"role": "user", "content": prompt}]
+            response = self.client(messages=messages)
+        else:
+            response = self.client(prompt)
         logger.debug(f"Prompt: {prompt}")
         logger.debug(f"Response: {response}")
         return response
@@ -75,7 +82,7 @@ class Planner(Agent):
             return self.template.format(**kwargs)
         elif self.prompt == "few-shot":
             return self.template.format(examples=self.examples, **kwargs)
-        elif self.prompt == "zero-shot-w-strategy":
+        elif self.prompt in ["zero-shot-w-strategy", "zero-shot-messages"]:
             return self.template.format(strategy=self.strategy, **kwargs)
         elif self.prompt == "few-shot-w-strategy" or self.prompt == "few-shot-w-strategy-wo-tips":
             return self.template.format(examples=self.examples, strategy=self.strategy, **kwargs)
@@ -123,15 +130,15 @@ class Recognizer(Agent):
         raise ValueError("Recognizer failed to generate a valid strategy")
 
 
-class AceAgent(Agent):
+class SAPAgent(Agent):
     strategy_dir = "sap/data/train"
 
-    def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1, meta_strategy_idx=23):
+    def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1, meta_strategy_idx=23, prompt="few-shot-w-strategy"):
         super().__init__(model, temperature, max_tokens)
         self.player_id = player_id
         self.strategy_interval = strategy_interval
         self.map_name = map_name
-        self.planner = Planner(model, "few-shot-w-strategy", temperature, max_tokens, map_name, player_id)
+        self.planner = Planner(model, prompt, temperature, max_tokens, map_name, player_id)
         self.recognizer = Recognizer(model, temperature, max_tokens)
         self.payoff_matrix = None
         self.payoff_net = None
@@ -193,7 +200,7 @@ class AceAgent(Agent):
         return response.strategy, win_rate
 
 
-class AceAgentWithoutSEN(AceAgent):
+class SAPAgentWithoutSEN(SAPAgent):
     """Exploit by LLM for ablation """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -207,12 +214,12 @@ class AceAgentWithoutSEN(AceAgent):
         self.planner.strategy = self.strategy
 
 
-class NoGreedyAce(AceAgent):
+class NoGreedyAce(SAPAgent):
     """No greedy exploitation for ablation"""
     def reset(self):
         pass
 
-class AceAgentWithoutTips(AceAgent):
+class SAPAgentWithoutTips(SAPAgent):
     strategy_dir = "sap/data/train"
 
     def __init__(self, player_id, model, temperature, max_tokens, map_name, strategy_interval=1, meta_strategy_idx=23):
@@ -276,7 +283,7 @@ if __name__ == "__main__":
         "temperature": 0,
         "max_tokens": 8192
     }
-    agent = AceAgent(0, **agent_config)
+    agent = SAPAgent(0, **agent_config)
     opponent = Planner(
         player_id=1, 
         prompt="few-shot-w-strategy",

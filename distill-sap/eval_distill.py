@@ -5,7 +5,6 @@ from skill_rts.envs import MicroRTSLLMEnv
 from sap.agent  import Planner, SAPAgent
 from skill_rts.agents import bot_ais, VanillaAgent, CoTAgent, PLAPAgent
 from skill_rts import logger
-from sap.strategy import Strategy
 import time
 
 
@@ -18,7 +17,7 @@ llm_based_baselines = {
 
 def parse_args():
 
-    cfg = OmegaConf.load("sap/configs/sap.yaml")
+    cfg = OmegaConf.load("distill-sap/configs/sap_distill.yaml")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--map_path", type=str, help="Path to the map file")
@@ -29,7 +28,7 @@ def parse_args():
     parser.add_argument("--num_generations", type=int, help="Number of generations for LLM")
     parser.add_argument("--opponent", type=str, help="Strategy for opponent")
     parser.add_argument("--interval", type=int, help="Interval for update plan")
-    parser.add_argument("--episodes", type=int, help="Number of episodes to run")
+    parser.add_argument("--episodes", type=int, default=10, help="Number of episodes to run")
 
     args = parser.parse_args()
 
@@ -48,12 +47,11 @@ def parse_args():
         cfg.agents[1].strategy = args.opponent
     if args.interval is not None:
         cfg.env.interval = args.interval
-    if args.episodes is not None:
-        cfg.episodes = args.episodes
     if args.max_steps is not None:
         cfg.env.max_steps = args.max_steps
+    if args.episodes is not None:
+        cfg.episodes = args.episodes
     
-    cfg.env.map_path = "maps/16x16/basesWorkers16x16.xml"    
     return cfg
 
 
@@ -79,10 +77,10 @@ def main():
     else:
         raise ValueError(f"Unknown opponent strategy: {cfg.agents[1].strategy}")
     
-    runs_dir = f"runs/scaling_runs/{opponent_name}"
+    runs_dir = f"runs/sap_distill/{opponent_name}"
     logger.set_level(logger.DEBUG)
 
-    agent = SAPAgent(player_id=0, map_name=map_name, meta_strategy_idx=37, **cfg.agents[0])
+    agent = SAPAgent(player_id=0, map_name=map_name, **cfg.agents[0])
     env = MicroRTSLLMEnv([agent, opponent_agent], **cfg.env)
     # reviewer = Reviewer(**cfg.agents[0])
     

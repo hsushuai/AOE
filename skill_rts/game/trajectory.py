@@ -21,9 +21,20 @@ class Trajectory:
             entry = next((e for e in self.raw_traj["entries"] if e["time"] == gametime), None)
         return GameState(entry) if entry else None
     
-    def to_string(self) -> str:
+    def to_string(self, begin=None, end=None) -> str:
+        """Convert the trajectory to a string representation, including all game states from begin to end.
+        
+        Args:
+            begin (int, optional): Start index for the entries. Defaults to 0.
+            end (int, optional): End index for the entries. Defaults to the length of entries.
+        """
         text = ""
+        begin = begin if begin is not None else 0
+        end = end if end is not None else self.get_gametime()
+        end = min(end, self.get_gametime())
         for entry in self.raw_traj["entries"]:
+            if entry["time"] < begin or entry["time"] > end:
+                continue
             gs = GameState(entry)
             text += gs.to_string() + "\n"
         return text

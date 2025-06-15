@@ -40,11 +40,13 @@ venv/
 env/
 .venv/
 .env
+output/
 
 # data files
 # data/
 # results/
 distill-sap/data/*.jsonl
+distill-sap/data/data-*
 
 # others
 TODO.md
